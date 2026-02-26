@@ -3,19 +3,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "Engine",
+    name: "Board",
     platforms: [
         .iOS(.v26),
         .macOS(.v26),
     ],
     products: [
         .library(
-            name: "Engine",
-            targets: ["Engine"]
-        ),
-        .library(
             name: "Board",
             targets: ["Board"]
+        ),
+        .library(
+            name: "BoardUI",
+            targets: ["BoardUI"]
         ),
     ],
     targets: [
@@ -23,21 +23,14 @@ let package = Package(
             name: "Board"
         ),
         .target(
-            name: "Engine",
-            dependencies: ["Board"]
+            name: "BoardUI",
+            dependencies: ["Board"],
+            resources: [.process("Resources")]
         ),
 
         .testTarget(
             name: "BoardTests",
             dependencies: ["Board"]
-        ),
-        .testTarget(
-            name: "EngineTests",
-            dependencies: ["Engine"]
-        ),
-        .testTarget(
-            name: "EngineBenchmarks",
-            dependencies: ["Engine"]
         ),
     ]
 )

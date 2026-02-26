@@ -1,30 +1,32 @@
 import Board
 import SwiftUI
 
-struct BoardView: View {
+public struct BoardView: View {
     private static let alphabet = [
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
     ]
 
-    let model: BoardViewModel
+    let board: Board
+    let onSquareTapped: (Position) -> Void
 
-    init(model: BoardViewModel) {
+    public init(board: Board, onSquareTapped: @escaping (Position) -> Void) {
         precondition(
-            model.board.size <= Self.alphabet.count,
+            board.size <= Self.alphabet.count,
             "BoardView supports sizes up to \(Self.alphabet.count)"
         )
-        self.model = model
+        self.board = board
+        self.onSquareTapped = onSquareTapped
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { proxy in
-            let cellSide = proxy.size.width / CGFloat(model.board.size)
+            let cellSide = proxy.size.width / CGFloat(board.size)
 
             VStack(spacing: 0) {
-                ForEach(0..<model.board.size, id: \.self) { row in
+                ForEach(0..<board.size, id: \.self) { row in
                     HStack(spacing: 0) {
-                        ForEach(0..<model.board.size, id: \.self) { column in
+                        ForEach(0..<board.size, id: \.self) { column in
                             square(row: row, column: column, cellSide: cellSide)
                         }
                     }
@@ -36,22 +38,26 @@ struct BoardView: View {
 
     private func square(row: Int, column: Int, cellSide: CGFloat) -> some View {
         let isLightSquare = row.isMultiple(of: 2) == column.isMultiple(of: 2)
-        let fillColor = isLightSquare ? Color.boardLight : Color.boardDark
-        let labelColor = isLightSquare ? Color.boardDark : Color.boardLight
+        let fillColor = isLightSquare
+            ? Color("BoardLight", bundle: .module)
+            : Color("BoardDark", bundle: .module)
+        let labelColor = isLightSquare
+            ? Color("BoardDark", bundle: .module)
+            : Color("BoardLight", bundle: .module)
 
         return Rectangle()
             .fill(fillColor)
             .overlay(alignment: .topLeading) {
                 if column == 0 {
                     coordinateLabel(
-                        "\(model.board.size - row)",
+                        "\(board.size - row)",
                         color: labelColor,
                         cellSide: cellSide
                     )
                 }
             }
             .overlay(alignment: .bottomTrailing) {
-                if row == model.board.size - 1 {
+                if row == board.size - 1 {
                     coordinateLabel(
                         Self.alphabet[column],
                         color: labelColor,
@@ -60,8 +66,8 @@ struct BoardView: View {
                 }
             }
             .overlay {
-                if model.board.squares[.init(row: row, column: column)] != nil {
-                    Image(.blackQueen)
+                if let occupant = board.squares[.init(row: row, column: column)] {
+                    Image(of: occupant)
                         .resizable()
                         .scaledToFit()
                         .padding(cellSide * 0.1)
@@ -69,7 +75,7 @@ struct BoardView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                model.squareTapped(.init(row: row, column: column))
+                onSquareTapped(.init(row: row, column: column))
             }
     }
 
@@ -97,10 +103,10 @@ struct BoardView: View {
     }
 }
 
-#Preview {
-    BoardView(model: BoardViewModel(size: 8))
+#Preview("8×8 empty") {
+    BoardView(board: Board(size: 8)) { _ in }
 }
 
-#Preview {
-    BoardView(model: BoardViewModel(size: 4))
+#Preview("4×4 empty") {
+    BoardView(board: Board(size: 4)) { _ in }
 }

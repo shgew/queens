@@ -7,15 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		890F9B462F508EEE009F8D21 /* Engine in Frameworks */ = {isa = PBXBuildFile; productRef = 890F9B452F508EEE009F8D21 /* Engine */; };
 		89D6C6D92F509671006FCBCD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 89D6C6D82F509671006FCBCD /* README.md */; };
-		89D6C6E12F50B992006FCBCD /* Board in Frameworks */ = {isa = PBXBuildFile; productRef = 89D6C6E02F50B992006FCBCD /* Board */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		89D64A742F50C121006FCBCD /* Board */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Board; sourceTree = "<group>"; };
+		89D64A752F50C127006FCBCD /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
 		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		89D6C6DC2F50A4DD006FCBCD /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		89FD60E82F508EB90085AC95 /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
+		89D6F2B42F50BCE8006FCBCD /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -31,29 +30,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				890F9B462F508EEE009F8D21 /* Engine in Frameworks */,
-				89D6C6E12F50B992006FCBCD /* Board in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		89D6C6DF2F50B992006FCBCD /* Frameworks */ = {
+		89D64A722F50C0C8006FCBCD /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				89D64A742F50C121006FCBCD /* Board */,
+				89D64A752F50C127006FCBCD /* Engine */,
 			);
-			name = Frameworks;
+			path = Dependencies;
 			sourceTree = "<group>";
 		};
 		89FD60CE2F5088400085AC95 = {
 			isa = PBXGroup;
 			children = (
+				89D64A722F50C0C8006FCBCD /* Dependencies */,
 				89FD60D92F5088400085AC95 /* Queens */,
-				89FD60E82F508EB90085AC95 /* Engine */,
 				89D6C6D82F509671006FCBCD /* README.md */,
-				89D6C6DC2F50A4DD006FCBCD /* Queens.app */,
-				89D6C6DF2F50B992006FCBCD /* Frameworks */,
+				89D6F2B42F50BCE8006FCBCD /* Queens.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,11 +75,9 @@
 			);
 			name = Queens;
 			packageProductDependencies = (
-				890F9B452F508EEE009F8D21 /* Engine */,
-				89D6C6E02F50B992006FCBCD /* Board */,
 			);
 			productName = Queens;
-			productReference = 89D6C6DC2F50A4DD006FCBCD /* Queens.app */;
+			productReference = 89D6F2B42F50BCE8006FCBCD /* Queens.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -349,17 +345,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		890F9B452F508EEE009F8D21 /* Engine */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Engine;
-		};
-		89D6C6E02F50B992006FCBCD /* Board */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Board;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89FD60CF2F5088400085AC95 /* Project object */;
 }

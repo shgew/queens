@@ -1,3 +1,4 @@
+import BoardUI
 import Observation
 import SwiftUI
 
@@ -23,7 +24,9 @@ struct ContentView: View {
                 statPill(title: "Status", value: model.isSolved ? "Solved" : "Playing")
             }
 
-            BoardView(model: model)
+            BoardView(board: model.board) { position in
+                model.squareTapped(position)
+            }
         }
         .padding()
     }
