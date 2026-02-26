@@ -6,8 +6,8 @@ An iOS puzzle game based on the N-Queens problem. Place N queens on an N×N ches
 
 ## Requirements
 
-- Xcode 16+
-- iOS 18+
+- Xcode 26+
+- iOS 26+
 
 ## Gameplay
 
