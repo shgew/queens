@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		890F9B462F508EEE009F8D21 /* Engine in Frameworks */ = {isa = PBXBuildFile; productRef = 890F9B452F508EEE009F8D21 /* Engine */; };
+		89D6C6D92F509671006FCBCD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 89D6C6D82F509671006FCBCD /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		89FD60D72F5088400085AC95 /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		89FD60D72F5088400085AC95 /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Queens.app; path = "/Users/shgew/repos/Queens/build/Debug-iphoneos/Queens.app"; sourceTree = "<absolute>"; };
 		89FD60E82F508EB90085AC95 /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,16 +42,8 @@
 			children = (
 				89FD60D92F5088400085AC95 /* Queens */,
 				89FD60E82F508EB90085AC95 /* Engine */,
-				89FD60D82F5088400085AC95 /* Products */,
+				89D6C6D82F509671006FCBCD /* README.md */,
 			);
-			sourceTree = "<group>";
-		};
-		89FD60D82F5088400085AC95 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				89FD60D72F5088400085AC95 /* Queens.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -105,7 +99,7 @@
 			packageReferences = (
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 89FD60D82F5088400085AC95 /* Products */;
+			productRefGroup = 89FD60CE2F5088400085AC95;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -119,6 +113,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D6C6D92F509671006FCBCD /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

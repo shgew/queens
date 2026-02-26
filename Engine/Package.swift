@@ -22,5 +22,9 @@ let package = Package(
             name: "EngineTests",
             dependencies: ["Engine"]
         ),
+        .testTarget(
+            name: "EngineBenchmarks",
+            dependencies: ["Engine"]
+        ),
     ]
 )
