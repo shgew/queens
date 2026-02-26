@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		89D64A782F50C505006FCBCD /* Board in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A772F50C505006FCBCD /* Board */; };
+		89D64A7A2F50C505006FCBCD /* BoardUI in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A792F50C505006FCBCD /* BoardUI */; };
+		89D64A7C2F50C505006FCBCD /* Engine in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A7B2F50C505006FCBCD /* Engine */; };
 		89D6C6D92F509671006FCBCD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 89D6C6D82F509671006FCBCD /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -14,7 +17,7 @@
 		89D64A742F50C121006FCBCD /* Board */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Board; sourceTree = "<group>"; };
 		89D64A752F50C127006FCBCD /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
 		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		89D6F2B42F50BCE8006FCBCD /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89D6F2B42F50BCE8006FCBCD /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Queens.app; path = "/Users/shgew/repos/Queens/build/Debug-iphoneos/Queens.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +33,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D64A782F50C505006FCBCD /* Board in Frameworks */,
+				89D64A7A2F50C505006FCBCD /* BoardUI in Frameworks */,
+				89D64A7C2F50C505006FCBCD /* Engine in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,10 +54,9 @@
 		89FD60CE2F5088400085AC95 = {
 			isa = PBXGroup;
 			children = (
-				89D64A722F50C0C8006FCBCD /* Dependencies */,
 				89FD60D92F5088400085AC95 /* Queens */,
+				89D64A722F50C0C8006FCBCD /* Dependencies */,
 				89D6C6D82F509671006FCBCD /* README.md */,
-				89D6F2B42F50BCE8006FCBCD /* Queens.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +80,9 @@
 			);
 			name = Queens;
 			packageProductDependencies = (
+				89D64A772F50C505006FCBCD /* Board */,
+				89D64A792F50C505006FCBCD /* BoardUI */,
+				89D64A7B2F50C505006FCBCD /* Engine */,
 			);
 			productName = Queens;
 			productReference = 89D6F2B42F50BCE8006FCBCD /* Queens.app */;
@@ -345,6 +353,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		89D64A772F50C505006FCBCD /* Board */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Board;
+		};
+		89D64A792F50C505006FCBCD /* BoardUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BoardUI;
+		};
+		89D64A7B2F50C505006FCBCD /* Engine */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Engine;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89FD60CF2F5088400085AC95 /* Project object */;
 }

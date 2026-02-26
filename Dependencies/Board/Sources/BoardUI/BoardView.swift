@@ -38,12 +38,8 @@ public struct BoardView: View {
 
     private func square(row: Int, column: Int, cellSide: CGFloat) -> some View {
         let isLightSquare = row.isMultiple(of: 2) == column.isMultiple(of: 2)
-        let fillColor = isLightSquare
-            ? Color("BoardLight", bundle: .module)
-            : Color("BoardDark", bundle: .module)
-        let labelColor = isLightSquare
-            ? Color("BoardDark", bundle: .module)
-            : Color("BoardLight", bundle: .module)
+        let fillColor = isLightSquare ? Color(.boardLight) : Color(.boardDark)
+        let labelColor = isLightSquare ? Color(.boardDark) : Color(.boardLight)
 
         return Rectangle()
             .fill(fillColor)
@@ -69,8 +65,7 @@ public struct BoardView: View {
                 if let occupant = board.squares[.init(row: row, column: column)] {
                     Image(of: occupant)
                         .resizable()
-                        .scaledToFit()
-                        .padding(cellSide * 0.1)
+                        .aspectRatio(contentMode: .fit)
                 }
             }
             .contentShape(Rectangle())
@@ -103,10 +98,59 @@ public struct BoardView: View {
     }
 }
 
-#Preview("8×8 empty") {
-    BoardView(board: Board(size: 8)) { _ in }
+#Preview("8×8 solved queens") {
+    BoardView(board: .preview8x8Solution) { _ in }
 }
 
-#Preview("4×4 empty") {
-    BoardView(board: Board(size: 4)) { _ in }
+#Preview("4×4 solved queens") {
+    BoardView(board: .preview4x4Solution) { _ in }
+}
+
+#Preview("8×8 mixed pieces") {
+    BoardView(board: .preview8x8Mixed) { _ in }
+}
+
+private extension Board {
+    static let preview4x4Solution = board(
+        size: 4,
+        occupants: [
+            (.init(row: 0, column: 1), .init(piece: .queen, side: .white)),
+            (.init(row: 1, column: 3), .init(piece: .queen, side: .white)),
+            (.init(row: 2, column: 0), .init(piece: .queen, side: .white)),
+            (.init(row: 3, column: 2), .init(piece: .queen, side: .white)),
+        ]
+    )
+
+    static let preview8x8Solution = board(
+        size: 8,
+        occupants: [
+            (.init(row: 0, column: 0), .init(piece: .queen, side: .white)),
+            (.init(row: 1, column: 4), .init(piece: .queen, side: .white)),
+            (.init(row: 2, column: 7), .init(piece: .queen, side: .white)),
+            (.init(row: 3, column: 5), .init(piece: .queen, side: .white)),
+            (.init(row: 4, column: 2), .init(piece: .queen, side: .white)),
+            (.init(row: 5, column: 6), .init(piece: .queen, side: .white)),
+            (.init(row: 6, column: 1), .init(piece: .queen, side: .white)),
+            (.init(row: 7, column: 3), .init(piece: .queen, side: .white)),
+        ]
+    )
+
+    static let preview8x8Mixed = board(
+        size: 8,
+        occupants: [
+            (.init(row: 0, column: 3), .init(piece: .queen, side: .black)),
+            (.init(row: 1, column: 6), .init(piece: .queen, side: .white)),
+            (.init(row: 3, column: 1), .init(piece: .queen, side: .black)),
+            (.init(row: 4, column: 4), .init(piece: .queen, side: .white)),
+            (.init(row: 6, column: 2), .init(piece: .queen, side: .black)),
+        ]
+    )
+
+    static func board(size: Int, occupants: [(Position, Occupant)]) -> Board {
+        var board = Board(size: size)
+        for (position, occupant) in occupants {
+            board.toggle(occupant, at: position)
+        }
+        return board
+    }
 }
