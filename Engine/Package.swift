@@ -12,11 +12,24 @@ let package = Package(
         .library(
             name: "Engine",
             targets: ["Engine"]
-        )
+        ),
+        .library(
+            name: "Board",
+            targets: ["Board"]
+        ),
     ],
     targets: [
         .target(
-            name: "Engine"
+            name: "Board"
+        ),
+        .target(
+            name: "Engine",
+            dependencies: ["Board"]
+        ),
+
+        .testTarget(
+            name: "BoardTests",
+            dependencies: ["Board"]
         ),
         .testTarget(
             name: "EngineTests",

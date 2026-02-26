@@ -1,3 +1,4 @@
+import Board
 import Engine
 import Observation
 
@@ -5,28 +6,36 @@ import Observation
 @Observable
 final class BoardViewModel {
     private(set) var board: Board
+    private let rule: any ConflictRule
 
-    init(size: Int = 8) {
+    init(size: Int = 8, rule: any ConflictRule = QueenConflictRule()) {
         board = Board(size: size)
+        self.rule = rule
     }
 
     var queensPlaced: Int {
-        board.queens.count
+        board.squares.count
     }
 
     var queensRemaining: Int {
-        board.queensRemaining
+        board.size - board.squares.count
     }
 
-    func isSolved() -> Bool {
-        board.isSolved()
+    var conflicts: Set<Position> {
+        rule.conflicts(on: board)
+    }
+
+    var isSolved: Bool {
+        board.squares.count == board.size && conflicts.isEmpty
     }
 
     func squareTapped(_ position: Position) {
-        do {
-            try board.toggleQueen(at: position)
-        } catch {
-            // TODO: Trigger visual indication
+        let occupant = Occupant(piece: .queen, side: .white)
+        if board.squares[position] == occupant {
+            board.toggle(occupant, at: position)
+        } else {
+            guard board.squares.count < board.size else { return }
+            board.toggle(occupant, at: position)
         }
     }
 

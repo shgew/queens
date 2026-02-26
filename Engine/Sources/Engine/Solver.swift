@@ -1,3 +1,5 @@
+import Board
+
 public struct Solver: Sendable {
     public static func solve(size: Int) -> Board {
         precondition(
@@ -25,8 +27,9 @@ public struct Solver: Sendable {
         }
 
         var board = Board(size: size)
+        let queen = Occupant(piece: .queen, side: .white)
         for (row, col) in queenColumns.enumerated() {
-            try! board.toggleQueen(at: Position(row: row, column: col))
+            board.toggle(queen, at: Position(row: row, column: col))
         }
         return board
     }

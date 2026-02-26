@@ -1,3 +1,4 @@
+import Board
 import Engine
 import XCTest
 

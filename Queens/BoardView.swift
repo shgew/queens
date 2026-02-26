@@ -1,4 +1,4 @@
-import Engine
+import Board
 import SwiftUI
 
 struct BoardView: View {
@@ -60,7 +60,7 @@ struct BoardView: View {
                 }
             }
             .overlay {
-                if model.board.queens.contains(.init(row: row, column: column)) {
+                if model.board.squares[.init(row: row, column: column)] != nil {
                     Image(.blackQueen)
                         .resizable()
                         .scaledToFit()

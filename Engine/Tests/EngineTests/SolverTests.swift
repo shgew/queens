@@ -1,3 +1,4 @@
+import Board
 import Testing
 
 @testable import Engine
@@ -7,11 +8,13 @@ struct SolverTests {
     @Test(arguments: 4...10)
     func findsASolution(size: Int) {
         let board = Solver.solve(size: size)
-        #expect(board.isSolved())
+        let rule = QueenConflictRule()
+        #expect(board.squares.count == size)
+        #expect(rule.conflicts(on: board).isEmpty)
     }
 
     @Test func solutionHasCorrectQueenCount() {
         let board = Solver.solve(size: 8)
-        #expect(board.queens.count == 8)
+        #expect(board.squares.count == 8)
     }
 }

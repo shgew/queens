@@ -20,7 +20,7 @@ struct ContentView: View {
             HStack(spacing: 12) {
                 statPill(title: "Placed", value: "\(model.queensPlaced)")
                 statPill(title: "Remaining", value: "\(model.queensRemaining)")
-                statPill(title: "Status", value: model.isSolved() ? "Solved" : "Playing")
+                statPill(title: "Status", value: model.isSolved ? "Solved" : "Playing")
             }
 
             BoardView(model: model)

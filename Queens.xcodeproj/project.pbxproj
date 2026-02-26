@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		890F9B462F508EEE009F8D21 /* Engine in Frameworks */ = {isa = PBXBuildFile; productRef = 890F9B452F508EEE009F8D21 /* Engine */; };
 		89D6C6D92F509671006FCBCD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 89D6C6D82F509671006FCBCD /* README.md */; };
+		89D6C6E12F50B992006FCBCD /* Board in Frameworks */ = {isa = PBXBuildFile; productRef = 89D6C6E02F50B992006FCBCD /* Board */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,12 +32,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				890F9B462F508EEE009F8D21 /* Engine in Frameworks */,
+				89D6C6E12F50B992006FCBCD /* Board in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		89D6C6DF2F50B992006FCBCD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		89FD60CE2F5088400085AC95 = {
 			isa = PBXGroup;
 			children = (
@@ -44,6 +53,7 @@
 				89FD60E82F508EB90085AC95 /* Engine */,
 				89D6C6D82F509671006FCBCD /* README.md */,
 				89D6C6DC2F50A4DD006FCBCD /* Queens.app */,
+				89D6C6DF2F50B992006FCBCD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,6 +78,7 @@
 			name = Queens;
 			packageProductDependencies = (
 				890F9B452F508EEE009F8D21 /* Engine */,
+				89D6C6E02F50B992006FCBCD /* Board */,
 			);
 			productName = Queens;
 			productReference = 89D6C6DC2F50A4DD006FCBCD /* Queens.app */;
@@ -343,6 +354,10 @@
 		890F9B452F508EEE009F8D21 /* Engine */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Engine;
+		};
+		89D6C6E02F50B992006FCBCD /* Board */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Board;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
