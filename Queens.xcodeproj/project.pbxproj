@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		890F9B462F508EEE009F8D21 /* Engine in Frameworks */ = {isa = PBXBuildFile; productRef = 890F9B452F508EEE009F8D21 /* Engine */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		89FD60D72F5088400085AC95 /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89FD60E82F508EB90085AC95 /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890F9B462F508EEE009F8D21 /* Engine in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +39,7 @@
 			isa = PBXGroup;
 			children = (
 				89FD60D92F5088400085AC95 /* Queens */,
+				89FD60E82F508EB90085AC95 /* Engine */,
 				89FD60D82F5088400085AC95 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,6 +72,7 @@
 			);
 			name = Queens;
 			packageProductDependencies = (
+				890F9B452F508EEE009F8D21 /* Engine */,
 			);
 			productName = Queens;
 			productReference = 89FD60D72F5088400085AC95 /* Queens.app */;
@@ -94,6 +102,8 @@
 			);
 			mainGroup = 89FD60CE2F5088400085AC95;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 89FD60D82F5088400085AC95 /* Products */;
 			projectDirPath = "";
@@ -332,6 +342,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		890F9B452F508EEE009F8D21 /* Engine */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Engine;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89FD60CF2F5088400085AC95 /* Project object */;
 }
