@@ -23,7 +23,11 @@ final class BoardViewModel {
     }
 
     func squareTapped(_ position: Position) {
-        board.toggleQueen(at: position)
+        do {
+            try board.toggleQueen(at: position)
+        } catch {
+            // TODO: Trigger visual indication
+        }
     }
 
     func resetButtonTapped() {

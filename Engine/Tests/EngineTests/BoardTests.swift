@@ -11,80 +11,91 @@ struct BoardTests {
         #expect(!board.isSolved())
     }
 
-    @Test func togglePlacesAndRemoves() {
+    @Test func togglePlacesAndRemoves() throws {
         var board = Board(size: 4)
         let pos = Position(row: 0, column: 0)
-        board.toggleQueen(at: pos)
+        try board.toggleQueen(at: pos)
         #expect(board.queens.contains(pos))
-        board.toggleQueen(at: pos)
+        try board.toggleQueen(at: pos)
         #expect(!board.queens.contains(pos))
     }
 
-    @Test func resetClearsBoard() {
+    @Test func resetClearsBoard() throws {
         var board = Board(size: 4)
-        board.toggleQueen(at: Position(row: 0, column: 1))
-        board.toggleQueen(at: Position(row: 1, column: 3))
+        try board.toggleQueen(at: Position(row: 0, column: 1))
+        try board.toggleQueen(at: Position(row: 1, column: 3))
         board.reset()
         #expect(board.queens.isEmpty)
     }
 
-    @Test func rowConflict() {
+    @Test func rowConflict() throws {
         var board = Board(size: 4)
         let a = Position(row: 0, column: 0)
         let b = Position(row: 0, column: 3)
-        board.toggleQueen(at: a)
-        board.toggleQueen(at: b)
+        try board.toggleQueen(at: a)
+        try board.toggleQueen(at: b)
         let c = board.conflicts()
         #expect(c.contains(a))
         #expect(c.contains(b))
     }
 
-    @Test func columnConflict() {
+    @Test func columnConflict() throws {
         var board = Board(size: 4)
         let a = Position(row: 0, column: 1)
         let b = Position(row: 3, column: 1)
-        board.toggleQueen(at: a)
-        board.toggleQueen(at: b)
+        try board.toggleQueen(at: a)
+        try board.toggleQueen(at: b)
         let c = board.conflicts()
         #expect(c.contains(a))
         #expect(c.contains(b))
     }
 
-    @Test func diagonalConflict() {
+    @Test func diagonalConflict() throws {
         var board = Board(size: 4)
         let a = Position(row: 0, column: 0)
         let b = Position(row: 2, column: 2)
-        board.toggleQueen(at: a)
-        board.toggleQueen(at: b)
+        try board.toggleQueen(at: a)
+        try board.toggleQueen(at: b)
         let c = board.conflicts()
         #expect(c.contains(a))
         #expect(c.contains(b))
     }
 
-    @Test func antiDiagonalConflict() {
+    @Test func antiDiagonalConflict() throws {
         var board = Board(size: 4)
         let a = Position(row: 0, column: 3)
         let b = Position(row: 3, column: 0)
-        board.toggleQueen(at: a)
-        board.toggleQueen(at: b)
+        try board.toggleQueen(at: a)
+        try board.toggleQueen(at: b)
         let c = board.conflicts()
         #expect(c.contains(a))
         #expect(c.contains(b))
     }
 
-    @Test func noConflictForValidPlacement() {
+    @Test func noConflictForValidPlacement() throws {
         var board = Board(size: 4)
-        board.toggleQueen(at: Position(row: 0, column: 1))
-        board.toggleQueen(at: Position(row: 1, column: 3))
+        try board.toggleQueen(at: Position(row: 0, column: 1))
+        try board.toggleQueen(at: Position(row: 1, column: 3))
         #expect(board.conflicts().isEmpty)
     }
 
-    @Test func solvedBoardIsRecognised() {
+    @Test func solvedBoardIsRecognised() throws {
         var board = Board(size: 4)
-        board.toggleQueen(at: Position(row: 0, column: 1))
-        board.toggleQueen(at: Position(row: 1, column: 3))
-        board.toggleQueen(at: Position(row: 2, column: 0))
-        board.toggleQueen(at: Position(row: 3, column: 2))
+        try board.toggleQueen(at: Position(row: 0, column: 1))
+        try board.toggleQueen(at: Position(row: 1, column: 3))
+        try board.toggleQueen(at: Position(row: 2, column: 0))
+        try board.toggleQueen(at: Position(row: 3, column: 2))
         #expect(board.isSolved())
+    }
+
+    @Test func boardFullThrows() throws {
+        var board = Board(size: 4)
+        try board.toggleQueen(at: Position(row: 0, column: 1))
+        try board.toggleQueen(at: Position(row: 1, column: 3))
+        try board.toggleQueen(at: Position(row: 2, column: 0))
+        try board.toggleQueen(at: Position(row: 3, column: 2))
+        #expect(throws: Board.Error.boardFull) {
+            try board.toggleQueen(at: Position(row: 0, column: 0))
+        }
     }
 }

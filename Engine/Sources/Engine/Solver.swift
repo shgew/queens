@@ -26,7 +26,7 @@ public struct Solver: Sendable {
 
         var board = Board(size: size)
         for (row, col) in queenColumns.enumerated() {
-            board.toggleQueen(at: Position(row: row, column: col))
+            try! board.toggleQueen(at: Position(row: row, column: col))
         }
         return board
     }

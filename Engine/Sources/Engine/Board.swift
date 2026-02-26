@@ -1,4 +1,8 @@
 public struct Board: Sendable {
+    public enum Error: Swift.Error {
+        case boardFull
+    }
+
     public static let minimumSize = 4
 
     public let size: Int
@@ -17,7 +21,7 @@ public struct Board: Sendable {
         size - queens.count
     }
 
-    public mutating func toggleQueen(at position: Position) {
+    public mutating func toggleQueen(at position: Position) throws(Error) {
         precondition(
             position.row >= 0
                 && position.row < size
@@ -25,9 +29,13 @@ public struct Board: Sendable {
                 && position.column < size,
             "Position out of bounds"
         )
+
         if queens.contains(position) {
             queens.remove(position)
         } else {
+            guard queens.count < size else {
+                throw Error.boardFull
+            }
             queens.insert(position)
         }
     }

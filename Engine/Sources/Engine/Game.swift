@@ -21,9 +21,9 @@ public struct Game {
         phase = .playing
     }
 
-    public mutating func toggleQueen(at position: Position) {
+    public mutating func toggleQueen(at position: Position) throws {
         guard phase == .playing else { return }
-        board.toggleQueen(at: position)
+        try board.toggleQueen(at: position)
         if board.isSolved() {
             phase = .won
         }
