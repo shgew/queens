@@ -21,12 +21,19 @@ struct ContentView: View {
             HStack(spacing: 12) {
                 statPill(title: "Placed", value: "\(model.queensPlaced)")
                 statPill(title: "Remaining", value: "\(model.queensRemaining)")
-                statPill(title: "Status", value: model.isSolved ? "Solved" : "Playing")
+                statPill(
+                    title: "Status",
+                    value: model.isSolved ? "Solved" : "Playing"
+                )
             }
 
-            BoardView(board: model.board) { position in
-                model.squareTapped(position)
-            }
+            BoardView(board: model.board)
+                .onSquareTapped { position in
+                    model.squareTapped(position)
+                }
+                .cellState { position in
+                    model.conflicts.contains(position) ? .conflicting : .normal
+                }
         }
         .padding()
     }

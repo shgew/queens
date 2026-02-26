@@ -7,16 +7,33 @@ public struct BoardView: View {
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
     ]
 
-    let board: Board
-    let onSquareTapped: (Position) -> Void
+    public enum CellState: Sendable {
+        case normal
+        case conflicting
+    }
 
-    public init(board: Board, onSquareTapped: @escaping (Position) -> Void) {
+    let board: Board
+    private var squareTapHandler: (Position) -> Void = { _ in }
+    private var cellStateProvider: (Position) -> CellState = { _ in .normal }
+
+    public init(board: Board) {
         precondition(
             board.size <= Self.alphabet.count,
             "BoardView supports sizes up to \(Self.alphabet.count)"
         )
         self.board = board
-        self.onSquareTapped = onSquareTapped
+    }
+
+    public func onSquareTapped(_ action: @escaping (Position) -> Void) -> Self {
+        var copy = self
+        copy.squareTapHandler = action
+        return copy
+    }
+
+    public func cellState(_ state: @escaping (Position) -> CellState) -> Self {
+        var copy = self
+        copy.cellStateProvider = state
+        return copy
     }
 
     public var body: some View {
@@ -41,37 +58,55 @@ public struct BoardView: View {
         let fillColor = isLightSquare ? Color(.boardLight) : Color(.boardDark)
         let labelColor = isLightSquare ? Color(.boardDark) : Color(.boardLight)
 
-        return Rectangle()
-            .fill(fillColor)
-            .overlay(alignment: .topLeading) {
-                if column == 0 {
-                    coordinateLabel(
-                        "\(board.size - row)",
-                        color: labelColor,
-                        cellSide: cellSide
-                    )
-                }
+        let position = Position(row: row, column: column)
+
+        return ZStack {
+            Rectangle()
+                .fill(fillColor)
+
+            if column == 0 {
+                coordinateLabel(
+                    "\(board.size - row)",
+                    color: labelColor,
+                    cellSide: cellSide
+                )
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .topLeading
+                )
             }
-            .overlay(alignment: .bottomTrailing) {
-                if row == board.size - 1 {
-                    coordinateLabel(
-                        Self.alphabet[column],
-                        color: labelColor,
-                        cellSide: cellSide
-                    )
-                }
+
+            if row == board.size - 1 {
+                coordinateLabel(
+                    Self.alphabet[column],
+                    color: labelColor,
+                    cellSide: cellSide
+                )
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .bottomTrailing
+                )
             }
-            .overlay {
-                if let occupant = board.squares[.init(row: row, column: column)] {
-                    Image(of: occupant)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                }
+
+            if let occupant = board.squares[position] {
+                let image = Image(of: occupant)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                image
+                    .overlay {
+                        if cellStateProvider(position) == .conflicting {
+                            Color.red.opacity(0.4)
+                                .mask { image }
+                        }
+                    }
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                onSquareTapped(.init(row: row, column: column))
-            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            squareTapHandler(position)
+        }
     }
 
     private func coordinateLabel(
@@ -98,20 +133,35 @@ public struct BoardView: View {
     }
 }
 
+// MARK: - Previews
 #Preview("8×8 solved queens") {
-    BoardView(board: .preview8x8Solution) { _ in }
+    BoardView(board: .preview8x8Solution)
 }
 
 #Preview("4×4 solved queens") {
-    BoardView(board: .preview4x4Solution) { _ in }
+    BoardView(board: .preview4x4Solution)
 }
 
 #Preview("8×8 mixed pieces") {
-    BoardView(board: .preview8x8Mixed) { _ in }
+    BoardView(board: .preview8x8Mixed)
 }
 
-private extension Board {
-    static let preview4x4Solution = board(
+#Preview("8×8 conflicts highlighted") {
+    let conflicts: Set<Position> = [
+        .init(row: 0, column: 0),
+        .init(row: 0, column: 4),
+        .init(row: 3, column: 3),
+        .init(row: 6, column: 0),
+    ]
+
+    return BoardView(board: .preview8x8ConflictingQueens)
+        .cellState { position in
+            conflicts.contains(position) ? .conflicting : .normal
+        }
+}
+
+extension Board {
+    fileprivate static let preview4x4Solution = board(
         size: 4,
         occupants: [
             (.init(row: 0, column: 1), .init(piece: .queen, side: .white)),
@@ -121,7 +171,7 @@ private extension Board {
         ]
     )
 
-    static let preview8x8Solution = board(
+    fileprivate static let preview8x8Solution = board(
         size: 8,
         occupants: [
             (.init(row: 0, column: 0), .init(piece: .queen, side: .white)),
@@ -135,7 +185,7 @@ private extension Board {
         ]
     )
 
-    static let preview8x8Mixed = board(
+    fileprivate static let preview8x8Mixed = board(
         size: 8,
         occupants: [
             (.init(row: 0, column: 3), .init(piece: .queen, side: .black)),
@@ -146,7 +196,20 @@ private extension Board {
         ]
     )
 
-    static func board(size: Int, occupants: [(Position, Occupant)]) -> Board {
+    fileprivate static let preview8x8ConflictingQueens = board(
+        size: 8,
+        occupants: [
+            (.init(row: 0, column: 0), .init(piece: .queen, side: .white)),
+            (.init(row: 0, column: 4), .init(piece: .queen, side: .white)),
+            (.init(row: 3, column: 3), .init(piece: .queen, side: .black)),
+            (.init(row: 6, column: 0), .init(piece: .queen, side: .black)),
+            (.init(row: 7, column: 5), .init(piece: .queen, side: .white)),
+        ]
+    )
+
+    fileprivate static func board(size: Int, occupants: [(Position, Occupant)])
+        -> Board
+    {
         var board = Board(size: size)
         for (position, occupant) in occupants {
             board.toggle(occupant, at: position)
