@@ -1,3 +1,4 @@
+import Engine
 import SwiftUI
 
 struct BoardView: View {
@@ -7,6 +8,9 @@ struct BoardView: View {
     ]
 
     let size: Int
+    let queens: Set<Position> = [
+        .init(row: 0, column: 7), .init(row: 7, column: 3),
+    ]
 
     init(size: Int) {
         precondition(size >= 4, "BoardView size must be at least 4")
@@ -59,6 +63,12 @@ struct BoardView: View {
                     )
                 }
             }
+            .overlay {
+                if queens.contains(.init(row: row, column: column)) {
+                    Image(.blackQueen)
+                        .resizable()
+                }
+            }
     }
 
     private func coordinateLabel(
@@ -66,12 +76,18 @@ struct BoardView: View {
         color: Color,
         cellSide: CGFloat
     ) -> some View {
-        let fontSize = cellSide * 0.2
-        let horizontalPadding = cellSide * 0.05
+        let fontSize = cellSide * 0.25
+        let horizontalPadding = cellSide * 0.04
         let verticalPadding = horizontalPadding / 2
 
         return Text(text)
-            .font(.system(size: fontSize, weight: .bold, design: .monospaced))
+            .font(
+                .system(
+                    size: fontSize,
+                    weight: .semibold,
+                    design: .monospaced
+                )
+            )
             .foregroundStyle(color)
             .aspectRatio(contentMode: .fit)
             .padding(.horizontal, horizontalPadding)
