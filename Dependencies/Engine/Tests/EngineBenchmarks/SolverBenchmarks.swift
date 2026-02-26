@@ -19,7 +19,7 @@ final class SolverBenchmarks: XCTestCase {
         measure { _ = Solver.solve(size: 16) }
     }
 
-    func testSolve26() {
-        measure { _ = Solver.solve(size: 26) }
+    func testSolve32() {
+        measure { _ = Solver.solve(size: 32) }
     }
 }

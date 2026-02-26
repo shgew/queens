@@ -6,26 +6,13 @@ public struct Solver: Sendable {
             size >= Board.minimumSize,
             "Solver size must be at least \(Board.minimumSize)"
         )
+        precondition(size <= 32, "Solver size must be at most 32")
 
-        let diagonalCount = 2 * size - 1
-        var usedColumns = Array(repeating: false, count: size)
-        var usedDiagonals = Array(repeating: false, count: diagonalCount)
-        var usedAntiDiagonals = Array(repeating: false, count: diagonalCount)
-        var queenColumns = Array(repeating: 0, count: size)
+        let queenColumns = constructSolutionColumns(size: size)
+        return buildBoard(size: size, queenColumns: queenColumns)
+    }
 
-        guard
-            placeQueens(
-                row: 0,
-                size: size,
-                usedColumns: &usedColumns,
-                usedDiagonals: &usedDiagonals,
-                usedAntiDiagonals: &usedAntiDiagonals,
-                queenColumns: &queenColumns
-            )
-        else {
-            preconditionFailure("No solution exists for board size \(size)")
-        }
-
+    private static func buildBoard(size: Int, queenColumns: [Int]) -> Board {
         var board = Board(size: size)
         let queen = Occupant(piece: .queen, side: .white)
         for (row, col) in queenColumns.enumerated() {
@@ -34,46 +21,30 @@ public struct Solver: Sendable {
         return board
     }
 
-    private static func placeQueens(
-        row: Int,
-        size: Int,
-        usedColumns: inout [Bool],
-        usedDiagonals: inout [Bool],
-        usedAntiDiagonals: inout [Bool],
-        queenColumns: inout [Int]
-    ) -> Bool {
-        if row == size { return true }
+    private static func constructSolutionColumns(size: Int) -> [Int] {
+        var evenColumns = Array(stride(from: 1, to: size, by: 2))
+        var oddColumns = Array(stride(from: 0, to: size, by: 2))
 
-        let diagonalOffset = size - 1
-        for col in 0..<size {
-            let diagonalIndex = row - col + diagonalOffset
-            let antiDiagonalIndex = row + col
-            if usedColumns[col] || usedDiagonals[diagonalIndex]
-                || usedAntiDiagonals[antiDiagonalIndex]
-            {
-                continue
-            }
+        switch size % 6 {
+        case 2:
+            // 1-based rule: swap 1 and 3, move 5 to the end of odd columns.
+            oddColumns.swapAt(0, 1)
+            let fiveIndex = oddColumns.firstIndex(of: 4)!
+            oddColumns.remove(at: fiveIndex)
+            oddColumns.append(4)
+        case 3:
+            // 1-based rule: move 2 to the end of even columns, and move 1 and 3 to the end of odd columns.
+            let twoIndex = evenColumns.firstIndex(of: 1)!
+            evenColumns.remove(at: twoIndex)
+            evenColumns.append(1)
 
-            usedColumns[col] = true
-            usedDiagonals[diagonalIndex] = true
-            usedAntiDiagonals[antiDiagonalIndex] = true
-            queenColumns[row] = col
-
-            if placeQueens(
-                row: row + 1,
-                size: size,
-                usedColumns: &usedColumns,
-                usedDiagonals: &usedDiagonals,
-                usedAntiDiagonals: &usedAntiDiagonals,
-                queenColumns: &queenColumns
-            ) {
-                return true
-            }
-
-            usedColumns[col] = false
-            usedDiagonals[diagonalIndex] = false
-            usedAntiDiagonals[antiDiagonalIndex] = false
+            oddColumns.removeAll { $0 == 0 || $0 == 2 }
+            oddColumns.append(0)
+            oddColumns.append(2)
+        default:
+            break
         }
-        return false
+
+        return evenColumns + oddColumns
     }
 }

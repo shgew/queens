@@ -4,29 +4,72 @@ public struct QueenConflictRule: ConflictRule {
     public init() {}
 
     public func conflicts(on board: Board) -> Set<Position> {
-        let queens = board.squares.filter { $0.value.piece == .queen }
+        precondition(board.size <= 32, "Board size must be at most 32")
 
-        let diagonalCount = 2 * board.size - 1
+        var queens: [Position] = []
+        queens.reserveCapacity(board.squares.count)
+        for (position, occupant) in board.squares where occupant.piece == .queen {
+            queens.append(position)
+        }
+        guard queens.count > 1 else { return [] }
+
         let diagonalOffset = board.size - 1
 
-        var rowCounts = Array(repeating: 0, count: board.size)
-        var columnCounts = Array(repeating: 0, count: board.size)
-        var diagonalCounts = Array(repeating: 0, count: diagonalCount)
-        var antiDiagonalCounts = Array(repeating: 0, count: diagonalCount)
+        var seenRows: UInt64 = 0
+        var seenColumns: UInt64 = 0
+        var seenDiagonals: UInt64 = 0
+        var seenAntiDiagonals: UInt64 = 0
 
-        for position in queens.keys {
-            rowCounts[position.row] += 1
-            columnCounts[position.column] += 1
-            diagonalCounts[position.row - position.column + diagonalOffset] += 1
-            antiDiagonalCounts[position.row + position.column] += 1
+        var duplicateRows: UInt64 = 0
+        var duplicateColumns: UInt64 = 0
+        var duplicateDiagonals: UInt64 = 0
+        var duplicateAntiDiagonals: UInt64 = 0
+
+        for position in queens {
+            let rowBit = UInt64(1) << UInt64(position.row)
+            let columnBit = UInt64(1) << UInt64(position.column)
+            let diagonalIndex = position.row - position.column + diagonalOffset
+            let antiDiagonalIndex = position.row + position.column
+
+            if (seenRows & rowBit) != 0 {
+                duplicateRows |= rowBit
+            } else {
+                seenRows |= rowBit
+            }
+
+            if (seenColumns & columnBit) != 0 {
+                duplicateColumns |= columnBit
+            } else {
+                seenColumns |= columnBit
+            }
+
+            let diagonalBit = UInt64(1) << UInt64(diagonalIndex)
+            if (seenDiagonals & diagonalBit) != 0 {
+                duplicateDiagonals |= diagonalBit
+            } else {
+                seenDiagonals |= diagonalBit
+            }
+
+            let antiDiagonalBit = UInt64(1) << UInt64(antiDiagonalIndex)
+            if (seenAntiDiagonals & antiDiagonalBit) != 0 {
+                duplicateAntiDiagonals |= antiDiagonalBit
+            } else {
+                seenAntiDiagonals |= antiDiagonalBit
+            }
         }
 
         var result: Set<Position> = []
-        for position in queens.keys {
-            if rowCounts[position.row] > 1
-                || columnCounts[position.column] > 1
-                || diagonalCounts[position.row - position.column + diagonalOffset] > 1
-                || antiDiagonalCounts[position.row + position.column] > 1
+        result.reserveCapacity(queens.count)
+        for position in queens {
+            let rowBit = UInt64(1) << UInt64(position.row)
+            let columnBit = UInt64(1) << UInt64(position.column)
+            let diagonalBit =
+                UInt64(1) << UInt64(position.row - position.column + diagonalOffset)
+            let antiDiagonalBit = UInt64(1) << UInt64(position.row + position.column)
+            if (duplicateRows & rowBit) != 0
+                || (duplicateColumns & columnBit) != 0
+                || (duplicateDiagonals & diagonalBit) != 0
+                || (duplicateAntiDiagonals & antiDiagonalBit) != 0
             {
                 result.insert(position)
             }

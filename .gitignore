@@ -1,0 +1,12 @@
+# Repo-wide local build and user-specific files
+.DS_Store
+
+# SwiftPM
+.build/
+.swiftpm/
+
+# Xcode
+DerivedData/
+xcuserdata/
+*.xcuserdatad/
+*.xcuserstate
