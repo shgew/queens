@@ -13,7 +13,7 @@
 
 /* Begin PBXFileReference section */
 		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		89FD60D72F5088400085AC95 /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Queens.app; path = "/Users/shgew/repos/Queens/build/Debug-iphoneos/Queens.app"; sourceTree = "<absolute>"; };
+		89D6C6DC2F50A4DD006FCBCD /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89FD60E82F508EB90085AC95 /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -43,6 +43,7 @@
 				89FD60D92F5088400085AC95 /* Queens */,
 				89FD60E82F508EB90085AC95 /* Engine */,
 				89D6C6D82F509671006FCBCD /* README.md */,
+				89D6C6DC2F50A4DD006FCBCD /* Queens.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,7 +70,7 @@
 				890F9B452F508EEE009F8D21 /* Engine */,
 			);
 			productName = Queens;
-			productReference = 89FD60D72F5088400085AC95 /* Queens.app */;
+			productReference = 89D6C6DC2F50A4DD006FCBCD /* Queens.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
