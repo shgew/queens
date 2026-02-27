@@ -26,10 +26,6 @@ let package = Package(
         ),
 
         .testTarget(
-            name: "EngineTests",
-            dependencies: ["Engine"]
-        ),
-        .testTarget(
             name: "EngineBenchmarks",
             dependencies: ["Engine"]
         ),

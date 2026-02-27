@@ -1,9 +1,33 @@
 import Board
 
-public struct QueenConflictRule: ConflictRule {
+/// The N-Queens problem: place *N* queens on an *N*×*N* board so that no two
+/// queens share the same row, column, or diagonal.
+///
+/// The diagnostic is the set of positions whose queens participate in at least
+/// one conflict. An empty set in the ``Evaluation/unsolved(_:)`` case means
+/// there are no conflicts yet but not enough queens have been placed.
+public struct NQueensProblem: Problem {
     public init() {}
 
-    public func conflicts(on board: Board) -> Set<Position> {
+    /// Evaluates whether the board is a valid N-Queens solution.
+    ///
+    /// - Parameter board: A board of size 32 or smaller.
+    /// - Returns: ``Evaluation/solved`` when exactly *N* non-conflicting queens
+    ///   are placed, or ``Evaluation/unsolved(_:)`` with the conflicting
+    ///   positions otherwise.
+    public func evaluate(_ board: Board) -> Evaluation<Set<Position>> {
+        let conflicts = computeConflicts(on: board)
+        if conflicts.isEmpty && board.squares.count == board.size {
+            return .solved
+        }
+        return .unsolved(conflicts)
+    }
+
+    /// Returns the set of queen positions involved in at least one conflict.
+    ///
+    /// Uses bitmask tracking across rows, columns, diagonals, and
+    /// anti-diagonals for O(*n*) detection where *n* is the number of queens.
+    private func computeConflicts(on board: Board) -> Set<Position> {
         precondition(board.size <= 32, "Board size must be at most 32")
 
         var queens: [Position] = []

@@ -8,12 +8,17 @@ final class BoardViewModel {
     static let maximumBoardSize = 32
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
-    private(set) var board: Board
-    private let rule: any ConflictRule
+    private(set) var board: Board {
+        didSet { evaluation = problem.evaluate(board) }
+    }
+    private let problem: NQueensProblem
+    private(set) var evaluation: Evaluation<Set<Position>>
 
-    init(size: Int = 8, rule: any ConflictRule = QueenConflictRule()) {
-        board = Board(size: size)
-        self.rule = rule
+    init(size: Int = 8, problem: NQueensProblem = NQueensProblem()) {
+        self.problem = problem
+        let board = Board(size: size)
+        self.board = board
+        self.evaluation = problem.evaluate(board)
     }
 
     var queensPlaced: Int {
@@ -33,11 +38,14 @@ final class BoardViewModel {
     }
 
     var conflicts: Set<Position> {
-        rule.conflicts(on: board)
+        if case .unsolved(let positions) = evaluation {
+            return positions
+        }
+        return []
     }
 
     var isSolved: Bool {
-        board.squares.count == board.size && conflicts.isEmpty
+        evaluation == .solved
     }
 
     func squareTapped(_ position: Position) {

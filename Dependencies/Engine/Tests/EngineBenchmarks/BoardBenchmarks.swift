@@ -9,8 +9,8 @@ final class BoardBenchmarks: XCTestCase {
         for col in 0..<8 {
             board.toggle(queen, at: Position(row: col, column: col))
         }
-        let rule = QueenConflictRule()
-        measure { _ = rule.conflicts(on: board) }
+        let problem = NQueensProblem()
+        measure { _ = problem.evaluate(board) }
     }
 
     func testConflictsOn16x16() {
@@ -19,7 +19,17 @@ final class BoardBenchmarks: XCTestCase {
         for col in 0..<16 {
             board.toggle(queen, at: Position(row: col, column: col))
         }
-        let rule = QueenConflictRule()
-        measure { _ = rule.conflicts(on: board) }
+        let problem = NQueensProblem()
+        measure { _ = problem.evaluate(board) }
+    }
+
+    func testConflictsOn32x32() {
+        var board = Board(size: 32)
+        let queen = Occupant(piece: .queen, side: .white)
+        for col in 0..<32 {
+            board.toggle(queen, at: Position(row: col, column: col))
+        }
+        let problem = NQueensProblem()
+        measure { _ = problem.evaluate(board) }
     }
 }
