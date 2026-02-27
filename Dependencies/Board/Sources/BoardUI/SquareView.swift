@@ -1,7 +1,26 @@
 import Board
 import SwiftUI
 
-public struct SquareView: View {
+/// A single square on the board.
+///
+/// Renders a colored tile with optional coordinate labels in the top-leading
+/// and bottom-trailing corners, and an optional piece image. Configure
+/// appearance using modifier-style methods:
+///
+/// ```swift
+/// SquareView(cellSide: 44)
+///     .fillColor(.white)
+///     .labelColor(.black)
+///     .topLeadingText("8")
+///     .bottomTrailingText("a")
+///     .occupant(Occupant(piece: .queen, side: .white))
+///     .conflicting(true)
+/// ```
+///
+/// Font size and label padding scale proportionally with `cellSide`.
+/// When ``conflicting(_:)`` is set to `true`, a red tinted mask is applied
+/// over the occupant image.
+struct SquareView: View {
     let cellSide: CGFloat
     private var fillColor: Color = .clear
     private var labelColor: Color = .primary
@@ -10,47 +29,47 @@ public struct SquareView: View {
     private var occupant: Occupant?
     private var isConflicting = false
 
-    public init(cellSide: CGFloat) {
+    init(cellSide: CGFloat) {
         self.cellSide = cellSide
     }
 
-    public func fillColor(_ color: Color) -> Self {
+    func fillColor(_ color: Color) -> Self {
         var copy = self
         copy.fillColor = color
         return copy
     }
 
-    public func labelColor(_ color: Color) -> Self {
+    func labelColor(_ color: Color) -> Self {
         var copy = self
         copy.labelColor = color
         return copy
     }
 
-    public func topLeadingText(_ text: String?) -> Self {
+    func topLeadingText(_ text: String?) -> Self {
         var copy = self
         copy.topLeadingText = text
         return copy
     }
 
-    public func bottomTrailingText(_ text: String?) -> Self {
+    func bottomTrailingText(_ text: String?) -> Self {
         var copy = self
         copy.bottomTrailingText = text
         return copy
     }
 
-    public func occupant(_ occupant: Occupant?) -> Self {
+    func occupant(_ occupant: Occupant?) -> Self {
         var copy = self
         copy.occupant = occupant
         return copy
     }
 
-    public func conflicting(_ isConflicting: Bool) -> Self {
+    func conflicting(_ isConflicting: Bool) -> Self {
         var copy = self
         copy.isConflicting = isConflicting
         return copy
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             Rectangle()
                 .fill(fillColor)

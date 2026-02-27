@@ -2,6 +2,11 @@ import Board
 import SwiftUI
 
 extension Image {
+    /// Creates an image for the given board occupant from the module's asset
+    /// catalog.
+    ///
+    /// The image is resolved from `Pieces/{side}{piece}` where side is
+    /// `"w"` or `"b"` and piece is `"q"`.
     init(of occupant: Occupant) {
         let side =
             switch occupant.side {

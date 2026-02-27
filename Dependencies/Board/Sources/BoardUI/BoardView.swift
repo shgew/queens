@@ -1,14 +1,33 @@
 import Board
 import SwiftUI
 
+/// A chess-style board that displays pieces on an alternating grid.
+///
+/// The board renders row numbers along the left edge and column letters along
+/// the bottom edge. Supports sizes up to 26 (a–z).
+///
+/// Use modifier-style methods to handle taps and highlight conflicting cells:
+///
+/// ```swift
+/// BoardView(board: board)
+///     .onSquareTapped { position in
+///         // handle tap
+///     }
+///     .cellState { position in
+///         conflicts.contains(position) ? .conflicting : .normal
+///     }
+/// ```
 public struct BoardView: View {
     private static let alphabet = [
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
     ]
 
+    /// The visual state of a cell on the board.
     public enum CellState: Sendable {
+        /// Default appearance.
         case normal
+        /// Highlights the cell's occupant with a red tinted overlay.
         case conflicting
     }
 
