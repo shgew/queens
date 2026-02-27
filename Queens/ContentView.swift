@@ -1,4 +1,5 @@
 import BoardUI
+import Game
 import Observation
 import SwiftUI
 
@@ -20,8 +21,11 @@ struct ContentView: View {
                 }
 
                 HStack(spacing: 12) {
-                    statPill(title: "Placed", value: "\(model.queensPlaced)")
-                    statPill(title: "Remaining", value: "\(model.queensRemaining)")
+                    statPill(title: "Placed", value: "\(model.piecesPlaced)")
+                    statPill(
+                        title: "Remaining",
+                        value: "\(model.piecesRemaining)"
+                    )
                     statPill(
                         title: "Status",
                         value: model.isSolved ? "Solved" : "Playing"
@@ -34,7 +38,8 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                     Spacer()
                     Picker("Board Size", selection: $model.selectedBoardSize) {
-                        ForEach(BoardViewModel.supportedBoardSizes, id: \.self) { size in
+                        ForEach(BoardViewModel.supportedBoardSizes, id: \.self)
+                        { size in
                             Text("\(size)×\(size)")
                                 .tag(size)
                         }
@@ -46,7 +51,7 @@ struct ContentView: View {
             .padding(.horizontal)
             .padding(.top)
 
-            BoardView(board: model.board)
+            BoardView(board: model.game.board)
                 .onSquareTapped { position in
                     model.squareTapped(position)
                 }

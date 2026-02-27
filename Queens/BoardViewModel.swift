@@ -1,5 +1,6 @@
 import Board
 import Engine
+import Game
 import Observation
 
 @MainActor
@@ -8,57 +9,54 @@ final class BoardViewModel {
     static let maximumBoardSize = 32
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
-    private(set) var board: Board {
-        didSet { evaluation = problem.evaluate(board) }
-    }
-    private let problem: NQueensProblem
-    private(set) var evaluation: Evaluation<Set<Position>>
+    private(set) var game: Game<NQueensProblem>
 
-    init(size: Int = 8, problem: NQueensProblem = NQueensProblem()) {
-        self.problem = problem
-        let board = Board(size: size)
-        self.board = board
-        self.evaluation = problem.evaluate(board)
-    }
+    private let occupant = Occupant(piece: .queen, side: .white)
 
-    var queensPlaced: Int {
-        board.squares.count
-    }
-
-    var queensRemaining: Int {
-        board.size - board.squares.count
+    init(size: Int = 8) {
+        self.game = Game(size: size, problem: NQueensProblem())
     }
 
     var selectedBoardSize: Int {
-        get { board.size }
+        get { game.board.size }
         set {
-            guard newValue != board.size else { return }
-            board = Board(size: newValue)
+            guard newValue != game.board.size else { return }
+            game = Game(size: newValue, problem: NQueensProblem())
         }
     }
 
+    var piecesPlaced: Int {
+        game.board.squares.count
+    }
+
+    var piecesRemaining: Int {
+        game.board.size - game.board.squares.count
+    }
+
+    var isSolved: Bool {
+        game.isSolved
+    }
+
     var conflicts: Set<Position> {
-        if case .unsolved(let positions) = evaluation {
+        if case .unsolved(let positions) = game.evaluation {
             return positions
         }
         return []
     }
 
-    var isSolved: Bool {
-        evaluation == .solved
-    }
-
     func squareTapped(_ position: Position) {
-        let occupant = Occupant(piece: .queen, side: .white)
-        if board.squares[position] == occupant {
-            board.toggle(occupant, at: position)
-        } else {
-            guard board.squares.count < board.size else { return }
-            board.toggle(occupant, at: position)
+        let occupant = self.occupant
+        game.apply { board in
+            if board.squares[position] == occupant {
+                board.toggle(occupant, at: position)
+            } else {
+                guard board.squares.count < board.size else { return }
+                board.toggle(occupant, at: position)
+            }
         }
     }
 
     func resetButtonTapped() {
-        board.reset()
+        game.reset()
     }
 }
