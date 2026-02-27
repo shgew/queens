@@ -55,81 +55,23 @@ public struct BoardView: View {
 
     private func square(row: Int, column: Int, cellSide: CGFloat) -> some View {
         let isLightSquare = row.isMultiple(of: 2) == column.isMultiple(of: 2)
-        let fillColor = isLightSquare ? Color(.boardLight) : Color(.boardDark)
-        let labelColor = isLightSquare ? Color(.boardDark) : Color(.boardLight)
-
         let position = Position(row: row, column: column)
 
-        return ZStack {
-            Rectangle()
-                .fill(fillColor)
-
-            if column == 0 {
-                coordinateLabel(
-                    "\(board.size - row)",
-                    color: labelColor,
-                    cellSide: cellSide
-                )
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
-            }
-
-            if row == board.size - 1 {
-                coordinateLabel(
-                    Self.alphabet[column],
-                    color: labelColor,
-                    cellSide: cellSide
-                )
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .bottomTrailing
-                )
-            }
-
-            if let occupant = board.squares[position] {
-                let image = Image(of: occupant)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                image
-                    .overlay {
-                        if cellStateProvider(position) == .conflicting {
-                            Color.red.opacity(0.4)
-                                .mask { image }
-                        }
-                    }
-            }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            squareTapHandler(position)
-        }
-    }
-
-    private func coordinateLabel(
-        _ text: String,
-        color: Color,
-        cellSide: CGFloat
-    ) -> some View {
-        let fontSize = cellSide * 0.25
-        let horizontalPadding = cellSide * 0.04
-        let verticalPadding = horizontalPadding / 2
-
-        return Text(text)
-            .font(
-                .system(
-                    size: fontSize,
-                    weight: .semibold,
-                    design: .monospaced
-                )
+        return SquareView(cellSide: cellSide)
+            .fillColor(isLightSquare ? Color(.boardLight) : Color(.boardDark))
+            .labelColor(isLightSquare ? Color(.boardDark) : Color(.boardLight))
+            .topLeadingText(
+                column == 0 ? "\(board.size - row)" : nil
             )
-            .foregroundStyle(color)
-            .aspectRatio(contentMode: .fit)
-            .padding(.horizontal, horizontalPadding)
-            .padding(.vertical, verticalPadding)
+            .bottomTrailingText(
+                row == board.size - 1 ? Self.alphabet[column] : nil
+            )
+            .occupant(board.squares[position])
+            .conflicting(cellStateProvider(position) == .conflicting)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                squareTapHandler(position)
+            }
     }
 }
 
