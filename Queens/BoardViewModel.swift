@@ -5,7 +5,7 @@ import Observation
 @MainActor
 @Observable
 final class BoardViewModel {
-    static let maximumBoardSize = 26
+    static let maximumBoardSize = 32
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
     private(set) var board: Board

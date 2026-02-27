@@ -4,7 +4,7 @@ import SwiftUI
 /// A chess-style board that displays pieces on an alternating grid.
 ///
 /// The board renders row numbers along the left edge and column letters along
-/// the bottom edge. Supports sizes up to 26 (a–z).
+/// the bottom edge. Supports sizes up to 32 (a–z, then A–F).
 ///
 /// Use modifier-style methods to handle taps and highlight conflicting cells:
 ///
@@ -18,9 +18,10 @@ import SwiftUI
 ///     }
 /// ```
 public struct BoardView: View {
-    private static let alphabet = [
+    private static let columnLabels = [
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+        "A", "B", "C", "D", "E", "F",
     ]
 
     /// The visual state of a cell on the board.
@@ -37,8 +38,8 @@ public struct BoardView: View {
 
     public init(board: Board) {
         precondition(
-            board.size <= Self.alphabet.count,
-            "BoardView supports sizes up to \(Self.alphabet.count)"
+            board.size <= Self.columnLabels.count,
+            "BoardView supports sizes up to \(Self.columnLabels.count)"
         )
         self.board = board
     }
@@ -83,7 +84,7 @@ public struct BoardView: View {
                 column == 0 ? "\(board.size - row)" : nil
             )
             .bottomTrailingText(
-                row == board.size - 1 ? Self.alphabet[column] : nil
+                row == board.size - 1 ? Self.columnLabels[column] : nil
             )
             .occupant(board.squares[position])
             .conflicting(cellStateProvider(position) == .conflicting)
