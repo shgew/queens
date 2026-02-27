@@ -9,23 +9,42 @@ struct ContentView: View {
         @Bindable var model = model
 
         VStack(spacing: 16) {
-            HStack {
-                Text("Queens")
-                    .font(.title.bold())
-                Spacer()
-                Button("Reset") {
-                    model.resetButtonTapped()
+            VStack(spacing: 16) {
+                HStack {
+                    Text("Queens")
+                        .font(.title.bold())
+                    Spacer()
+                    Button("Reset") {
+                        model.resetButtonTapped()
+                    }
+                }
+
+                HStack(spacing: 12) {
+                    statPill(title: "Placed", value: "\(model.queensPlaced)")
+                    statPill(title: "Remaining", value: "\(model.queensRemaining)")
+                    statPill(
+                        title: "Status",
+                        value: model.isSolved ? "Solved" : "Playing"
+                    )
+                }
+
+                HStack {
+                    Text("Board Size")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Picker("Board Size", selection: $model.selectedBoardSize) {
+                        ForEach(BoardViewModel.supportedBoardSizes, id: \.self) { size in
+                            Text("\(size)×\(size)")
+                                .tag(size)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
                 }
             }
-
-            HStack(spacing: 12) {
-                statPill(title: "Placed", value: "\(model.queensPlaced)")
-                statPill(title: "Remaining", value: "\(model.queensRemaining)")
-                statPill(
-                    title: "Status",
-                    value: model.isSolved ? "Solved" : "Playing"
-                )
-            }
+            .padding(.horizontal)
+            .padding(.top)
 
             BoardView(board: model.board)
                 .onSquareTapped { position in
@@ -35,7 +54,6 @@ struct ContentView: View {
                     model.conflicts.contains(position) ? .conflicting : .normal
                 }
         }
-        .padding()
     }
 
     private func statPill(title: String, value: String) -> some View {

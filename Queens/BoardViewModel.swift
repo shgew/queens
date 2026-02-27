@@ -5,6 +5,9 @@ import Observation
 @MainActor
 @Observable
 final class BoardViewModel {
+    static let maximumBoardSize = 26
+    static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
+
     private(set) var board: Board
     private let rule: any ConflictRule
 
@@ -19,6 +22,14 @@ final class BoardViewModel {
 
     var queensRemaining: Int {
         board.size - board.squares.count
+    }
+
+    var selectedBoardSize: Int {
+        get { board.size }
+        set {
+            guard newValue != board.size else { return }
+            board = Board(size: newValue)
+        }
     }
 
     var conflicts: Set<Position> {
