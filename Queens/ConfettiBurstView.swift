@@ -5,21 +5,32 @@ struct ConfettiBurstView: View {
     @State private var particles: [Particle] = []
 
     var body: some View {
-        GeometryReader { proxy in
-            TimelineView(.animation(minimumInterval: 1.0 / 45.0)) { timeline in
-                let elapsed = timeline.date.timeIntervalSince(startedAt)
+        TimelineView(.animation) { timeline in
+            let elapsed = timeline.date.timeIntervalSince(startedAt)
 
-                ZStack {
-                    ForEach(particles) { particle in
-                        if let frame = particle.frame(at: elapsed, in: proxy.size) {
-                            RoundedRectangle(cornerRadius: 1.5)
-                                .fill(particle.color)
-                                .frame(width: particle.size, height: particle.size * 0.65)
-                                .rotationEffect(.radians(frame.rotation))
-                                .position(x: frame.x, y: frame.y)
-                                .opacity(frame.opacity)
-                        }
+            Canvas(rendersAsynchronously: true) { context, size in
+                for particle in particles {
+                    guard let frame = particle.frame(at: elapsed, in: size) else {
+                        continue
                     }
+
+                    var particleContext = context
+                    particleContext.opacity = frame.opacity
+                    particleContext.translateBy(x: frame.x, y: frame.y)
+                    particleContext.rotate(by: .radians(frame.rotation))
+
+                    let width = particle.size
+                    let height = particle.size * 0.65
+                    let rect = CGRect(
+                        x: -width / 2,
+                        y: -height / 2,
+                        width: width,
+                        height: height
+                    )
+                    particleContext.fill(
+                        Path(roundedRect: rect, cornerRadius: 1.2),
+                        with: .color(particle.color)
+                    )
                 }
             }
             .onAppear {
