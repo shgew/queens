@@ -71,22 +71,13 @@ struct ContentView: View {
     }
 
     private var resetButton: some View {
-        Button {
-            model.resetButtonTapped()
-        } label: {
-            Text("Reset")
-        }
+        Button("Reset", action: model.resetButtonTapped)
     }
 
     private var board: some View {
         BoardView(board: model.board)
-            .onSquareTapped { position in
-                model.squareTapped(position)
-            }
-            .cellState { position in
-                model.conflicts.contains(position)
-                    ? .conflicting : .normal
-            }
+            .onSquareTapped(model.squareTapped)
+            .cellState { model.conflicts.contains($0) ? .conflicting : .normal }
     }
 
     private var winOverlay: some View {
@@ -100,9 +91,7 @@ struct ContentView: View {
                 elapsedTime: formattedElapsedTime(
                     now: model.solvedAt ?? .now
                 ),
-                onReset: {
-                    model.resetButtonTapped()
-                }
+                onReset: model.resetButtonTapped
             )
             .padding(24)
             .transition(.scale(0.9).combined(with: .opacity))
@@ -111,12 +100,16 @@ struct ContentView: View {
     }
 
     private func formattedElapsedTime(now: Date) -> String {
-        let elapsed = max(0, now.timeIntervalSince(model.startedAt))
-        let duration = Duration.seconds(elapsed)
-        if elapsed >= 3600 {
-            return duration.formatted(.time(pattern: .hourMinuteSecond))
+        let elapsed = Duration.seconds(
+            max(0, now.timeIntervalSince(model.startedAt))
+        )
+        let pattern: Duration.TimeFormatStyle.Pattern
+        if elapsed >= .seconds(3600) {
+            pattern = .hourMinuteSecond
+        } else {
+            pattern = .minuteSecond(padMinuteToLength: 2)
         }
-        return duration.formatted(.time(pattern: .minuteSecond))
+        return elapsed.formatted(.time(pattern: pattern))
     }
 }
 
