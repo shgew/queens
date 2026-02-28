@@ -90,7 +90,7 @@ struct ContentView: View {
     }
 
     private var winOverlay: some View {
-        Group {
+        ZStack {
             Color.black.opacity(0.2)
                 .ignoresSafeArea()
 
@@ -105,7 +105,9 @@ struct ContentView: View {
                 }
             )
             .padding(24)
+            .transition(.scale(0.9).combined(with: .opacity))
         }
+        .zIndex(1)
     }
 
     private func formattedElapsedTime(now: Date) -> String {

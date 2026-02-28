@@ -75,7 +75,7 @@ final class ContentViewModel {
 
         if game.isSolved {
             solvedAt = .now
-            withAnimation {
+            withAnimation(Self.animation) {
                 isWinScreenPresented = true
             }
         }
@@ -87,9 +87,13 @@ final class ContentViewModel {
 
     func resetButtonTapped() {
         game.reset()
-        withAnimation {
+        withAnimation(Self.animation) {
             isWinScreenPresented = false
         }
         solvedAt = nil
     }
+}
+
+private extension ContentViewModel {
+    private static let animation = Animation.default.speed(2)
 }
