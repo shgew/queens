@@ -7,78 +7,12 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 16) {
-                VStack(spacing: 16) {
-                    HStack(spacing: 12) {
-                        StatPill(
-                            systemImage: "crown",
-                            value: "\(model.piecesRemaining)"
-                        )
-                        TimelineView(.periodic(from: .now, by: 1)) { context in
-                            StatPill(
-                                systemImage: "clock",
-                                value: formattedElapsedTime(
-                                    now: model.solvedAt ?? context.date
-                                )
-                            )
-                        }
-                    }
-
-                    HStack {
-                        Picker(
-                            selection: $model.selectedBoardSize
-                        ) {
-                            ForEach(
-                                ContentViewModel.supportedBoardSizes,
-                                id: \.self
-                            ) { size in
-                                Text("\(size)×\(size)")
-                                    .tag(size)
-                            }
-                        } label: {
-                            Image(systemName: "square.grid.3x3")
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Spacer()
-
-                        Button {
-                            model.resetButtonTapped()
-                        } label: {
-                            Text("Reset")
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.top)
-
-                BoardView(board: model.board)
-                    .onSquareTapped { position in
-                        model.squareTapped(position)
-                    }
-                    .cellState { position in
-                        model.conflicts.contains(position)
-                            ? .conflicting : .normal
-                    }
+                topBar
+                board
             }
 
             if model.isWinScreenPresented {
-                ZStack {
-                    Color.black.opacity(0.2)
-                        .ignoresSafeArea()
-                        .onTapGesture {}
-
-                    WinScreen(
-                        boardSize: model.selectedBoardSize,
-                        moveCount: model.moveCount,
-                        elapsedTime: formattedElapsedTime(
-                            now: model.solvedAt ?? .now
-                        ),
-                        onReset: {
-                            model.resetButtonTapped()
-                        }
-                    )
-                    .padding(24)
-                }
+                winOverlay
             }
         }
         .sensoryFeedback(
@@ -89,6 +23,89 @@ struct ContentView: View {
             .impact(weight: .light, intensity: 0.6),
             trigger: model.removeFeedbackTrigger
         )
+    }
+
+    private var topBar: some View {
+        VStack(spacing: 16) {
+            statsRow
+            controlsRow
+        }
+        .padding(.horizontal)
+    }
+
+    private var statsRow: some View {
+        HStack(spacing: 12) {
+            StatPill(
+                systemImage: "crown",
+                value: "\(model.piecesRemaining)"
+            )
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                StatPill(
+                    systemImage: "clock",
+                    value: formattedElapsedTime(
+                        now: model.solvedAt ?? context.date
+                    )
+                )
+            }
+        }
+    }
+
+    private var controlsRow: some View {
+        HStack {
+            boardSizePicker
+            Spacer()
+            resetButton
+        }
+    }
+
+    private var boardSizePicker: some View {
+        Picker(selection: $model.selectedBoardSize) {
+            ForEach(ContentViewModel.supportedBoardSizes, id: \.self) { size in
+                Text("\(size)×\(size)")
+                    .tag(size)
+            }
+        } label: {
+            Image(systemName: "square.grid.3x3")
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var resetButton: some View {
+        Button {
+            model.resetButtonTapped()
+        } label: {
+            Text("Reset")
+        }
+    }
+
+    private var board: some View {
+        BoardView(board: model.board)
+            .onSquareTapped { position in
+                model.squareTapped(position)
+            }
+            .cellState { position in
+                model.conflicts.contains(position)
+                    ? .conflicting : .normal
+            }
+    }
+
+    private var winOverlay: some View {
+        Group {
+            Color.black.opacity(0.2)
+                .ignoresSafeArea()
+
+            WinScreen(
+                boardSize: model.selectedBoardSize,
+                moveCount: model.moveCount,
+                elapsedTime: formattedElapsedTime(
+                    now: model.solvedAt ?? .now
+                ),
+                onReset: {
+                    model.resetButtonTapped()
+                }
+            )
+            .padding(24)
+        }
     }
 
     private func formattedElapsedTime(now: Date) -> String {

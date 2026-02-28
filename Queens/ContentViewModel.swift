@@ -3,6 +3,7 @@ import Foundation
 import Game
 import Observation
 import Problems
+import SwiftUI
 
 @MainActor
 @Observable
@@ -11,7 +12,7 @@ final class ContentViewModel {
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
     private var game: Game<NQueensProblem>
-    var isWinScreenPresented = false
+    private(set) var isWinScreenPresented = false
     private(set) var solvedAt: Date?
     private(set) var placeFeedbackTrigger = 0
     private(set) var removeFeedbackTrigger = 0
@@ -71,9 +72,12 @@ final class ContentViewModel {
             game.apply(move: .place(occupant, at: position))
             placeFeedbackTrigger += 1
         }
+
         if game.isSolved {
             solvedAt = .now
-            isWinScreenPresented = true
+            withAnimation {
+                isWinScreenPresented = true
+            }
         }
     }
 
@@ -83,7 +87,9 @@ final class ContentViewModel {
 
     func resetButtonTapped() {
         game.reset()
-        isWinScreenPresented = false
+        withAnimation {
+            isWinScreenPresented = false
+        }
         solvedAt = nil
     }
 }
