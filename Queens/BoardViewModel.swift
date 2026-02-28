@@ -38,8 +38,8 @@ final class BoardViewModel {
     }
 
     var conflicts: Set<Position> {
-        if case .unsolved(let positions) = game.evaluation {
-            return positions
+        if case .unsolved(let diagnostic) = game.evaluation {
+            return diagnostic.conflicts
         }
         return []
     }

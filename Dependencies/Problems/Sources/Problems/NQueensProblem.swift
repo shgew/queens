@@ -2,11 +2,16 @@ import Board
 
 /// The N-Queens problem: place *N* queens on an *N*×*N* board so that no two
 /// queens share the same row, column, or diagonal.
-///
-/// The diagnostic is the set of positions whose queens participate in at least
-/// one conflict. An empty set in the ``Evaluation/unsolved(_:)`` case means
-/// there are no conflicts yet but not enough queens have been placed.
 public struct NQueensProblem: Problem {
+    /// Describes the violations found during evaluation.
+    public struct Diagnostic: Sendable, Equatable {
+        /// Positions whose queens participate in at least one conflict.
+        ///
+        /// An empty set in the ``Evaluation/unsolved(_:)`` case means
+        /// there are no conflicts yet but not enough queens have been placed.
+        public let conflicts: Set<Position>
+    }
+
     public init() {}
 
     /// Evaluates whether the board is a valid N-Queens solution.
@@ -15,12 +20,12 @@ public struct NQueensProblem: Problem {
     /// - Returns: ``Evaluation/solved`` when exactly *N* non-conflicting queens
     ///   are placed, or ``Evaluation/unsolved(_:)`` with the conflicting
     ///   positions otherwise.
-    public func evaluate(_ board: Board) -> Evaluation<Set<Position>> {
+    public func evaluate(_ board: Board) -> Evaluation<Diagnostic> {
         let conflicts = computeConflicts(on: board)
         if conflicts.isEmpty && board.squares.count == board.size {
             return .solved
         }
-        return .unsolved(conflicts)
+        return .unsolved(Diagnostic(conflicts: conflicts))
     }
 
     /// Returns the set of queen positions involved in at least one conflict.
