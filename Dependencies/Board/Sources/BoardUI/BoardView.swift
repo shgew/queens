@@ -25,7 +25,7 @@ public struct BoardView: View {
     ]
 
     /// The visual state of a cell on the board.
-    public enum CellState: Sendable {
+    public enum CellState {
         /// Default appearance.
         case normal
         /// Highlights the cell's occupant with a red tinted overlay.
