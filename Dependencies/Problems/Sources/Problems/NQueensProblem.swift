@@ -27,7 +27,7 @@ public struct NQueensProblem: Problem {
         moves: [Move]
     ) -> Evaluation<Diagnostic> {
         let conflicts = computeConflicts(on: board)
-        if conflicts.isEmpty && board.squares.count == board.size {
+        if conflicts.isEmpty && board.occupiedSquares.count == board.size {
             return .solved
         }
         return .unsolved(Diagnostic(conflicts: conflicts))
@@ -41,8 +41,8 @@ public struct NQueensProblem: Problem {
         precondition(board.size <= 32, "Board size must be at most 32")
 
         var queens: [Position] = []
-        queens.reserveCapacity(board.squares.count)
-        for (position, occupant) in board.squares where occupant.piece == .queen {
+        queens.reserveCapacity(board.occupiedSquares.count)
+        for (position, occupant) in board.occupiedSquares where occupant.piece == .queen {
             queens.append(position)
         }
         guard queens.count > 1 else { return [] }

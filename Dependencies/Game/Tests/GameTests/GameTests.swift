@@ -12,7 +12,7 @@ struct StubProblem: Problem {
         on board: Board,
         moves: [Move]
     ) -> Evaluation<Set<Position>> {
-        let occupied = Set(board.squares.keys)
+        let occupied = Set(board.occupiedSquares.keys)
         return occupied.isEmpty ? .solved : .unsolved(occupied)
     }
 }
@@ -37,7 +37,7 @@ struct GameTests {
         let pos = Position(row: 1, column: 2)
         game.apply(move: .placed(queen, at: pos))
 
-        #expect(game.board.squares[pos] == queen)
+        #expect(game.board.occupiedSquares[pos] == queen)
         #expect(game.evaluation == .unsolved(Set([pos])))
     }
 
@@ -47,7 +47,7 @@ struct GameTests {
         #expect(!game.isSolved)
 
         game.reset()
-        #expect(game.board.squares.isEmpty)
+        #expect(game.board.occupiedSquares.isEmpty)
         #expect(game.isSolved)
     }
 
@@ -78,7 +78,7 @@ struct GameTests {
         game.apply(move: .removed(queen, from: pos))
 
         #expect(game.moves == [.placed(queen, at: pos), .removed(queen, from: pos)])
-        #expect(game.board.squares.isEmpty)
+        #expect(game.board.occupiedSquares.isEmpty)
     }
 
     // MARK: - Undo
@@ -90,7 +90,7 @@ struct GameTests {
 
         game.undo()
 
-        #expect(game.board.squares.isEmpty)
+        #expect(game.board.occupiedSquares.isEmpty)
         #expect(game.moves.isEmpty)
         #expect(game.isSolved)
     }
@@ -103,7 +103,7 @@ struct GameTests {
 
         game.undo()
 
-        #expect(game.board.squares[pos] == queen)
+        #expect(game.board.occupiedSquares[pos] == queen)
         #expect(game.moves == [.placed(queen, at: pos)])
     }
 
@@ -111,7 +111,7 @@ struct GameTests {
         var game = Game(size: 4, problem: problem)
         game.undo()
 
-        #expect(game.board.squares.isEmpty)
+        #expect(game.board.occupiedSquares.isEmpty)
         #expect(game.moves.isEmpty)
         #expect(game.isSolved)
     }
@@ -124,7 +124,7 @@ struct GameTests {
         game.reset()
 
         #expect(game.moves.isEmpty)
-        #expect(game.board.squares.isEmpty)
+        #expect(game.board.occupiedSquares.isEmpty)
     }
 
     // MARK: - Moved
@@ -138,8 +138,8 @@ struct GameTests {
 
         game.undo()
 
-        #expect(game.board.squares[from] == queen)
-        #expect(game.board.squares[to] == nil)
+        #expect(game.board.occupiedSquares[from] == queen)
+        #expect(game.board.occupiedSquares[to] == nil)
         #expect(game.moves == [.placed(queen, at: from)])
     }
 }

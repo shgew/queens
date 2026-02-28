@@ -26,11 +26,11 @@ final class BoardViewModel {
     }
 
     var piecesPlaced: Int {
-        game.board.squares.count
+        game.board.occupiedSquares.count
     }
 
     var piecesRemaining: Int {
-        game.board.size - game.board.squares.count
+        game.board.size - game.board.occupiedSquares.count
     }
 
     var isSolved: Bool {
@@ -49,7 +49,7 @@ final class BoardViewModel {
     }
 
     func squareTapped(_ position: Position) {
-        if game.board.squares[position] == occupant {
+        if game.board.occupiedSquares[position] == occupant {
             game.apply(move: .removed(occupant, from: position))
         } else {
             game.apply(move: .placed(occupant, at: position))

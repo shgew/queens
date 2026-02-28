@@ -86,7 +86,7 @@ public struct BoardView: View {
             .bottomTrailingText(
                 row == board.size - 1 ? Self.columnLabels[column] : nil
             )
-            .occupant(board.squares[position])
+            .occupant(board.occupiedSquares[position])
             .conflicting(cellStateProvider(position) == .conflicting)
             .contentShape(Rectangle())
             .onTapGesture {

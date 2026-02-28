@@ -9,8 +9,8 @@ public struct Board: Sendable {
     /// The number of rows (and columns) on this board.
     public let size: Int
 
-    /// The current contents of the board, keyed by position.
-    public private(set) var squares: [Position: Occupant]
+    /// The occupied positions on the board, keyed by position.
+    public private(set) var occupiedSquares: [Position: Occupant]
 
     /// Creates an empty board of the given size.
     ///
@@ -21,7 +21,7 @@ public struct Board: Sendable {
             "Board size must be at least \(Self.minimumSize)"
         )
         self.size = size
-        self.squares = [:]
+        self.occupiedSquares = [:]
     }
 
     /// Places or removes an occupant at the given position.
@@ -39,15 +39,15 @@ public struct Board: Sendable {
             "Position out of bounds"
         )
 
-        if squares[position] == occupant {
-            squares.removeValue(forKey: position)
+        if occupiedSquares[position] == occupant {
+            occupiedSquares.removeValue(forKey: position)
         } else {
-            squares[position] = occupant
+            occupiedSquares[position] = occupant
         }
     }
 
     /// Removes all occupants from the board.
     public mutating func reset() {
-        squares = [:]
+        occupiedSquares = [:]
     }
 }
