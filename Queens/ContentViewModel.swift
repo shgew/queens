@@ -69,6 +69,7 @@ final class ContentViewModel {
             game.apply(move: .remove(occupant, from: position))
             removeFeedbackTrigger += 1
         } else {
+            guard piecesRemaining > 0 else { return }
             game.apply(move: .place(occupant, at: position))
             placeFeedbackTrigger += 1
         }
