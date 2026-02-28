@@ -86,10 +86,10 @@ final class ContentViewModel {
     }
 
     func resetButtonTapped() {
-        game.reset()
         withAnimation(Self.animation) {
             isWinScreenPresented = false
         }
+        game.reset()
         solvedAt = nil
     }
 }
