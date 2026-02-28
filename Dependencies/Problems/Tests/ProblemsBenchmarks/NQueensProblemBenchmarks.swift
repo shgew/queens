@@ -10,7 +10,7 @@ final class NQueensProblemBenchmarks: XCTestCase {
             board.toggle(queen, at: Position(row: col, column: col))
         }
         let problem = NQueensProblem()
-        measure { _ = problem.evaluate(board: board, moves: []) }
+        measure { _ = problem.evaluate(on: board, moves: []) }
     }
 
     func testConflictsOn16x16() {
@@ -20,7 +20,7 @@ final class NQueensProblemBenchmarks: XCTestCase {
             board.toggle(queen, at: Position(row: col, column: col))
         }
         let problem = NQueensProblem()
-        measure { _ = problem.evaluate(board: board, moves: []) }
+        measure { _ = problem.evaluate(on: board, moves: []) }
     }
 
     func testConflictsOn32x32() {
@@ -30,6 +30,6 @@ final class NQueensProblemBenchmarks: XCTestCase {
             board.toggle(queen, at: Position(row: col, column: col))
         }
         let problem = NQueensProblem()
-        measure { _ = problem.evaluate(board: board, moves: []) }
+        measure { _ = problem.evaluate(on: board, moves: []) }
     }
 }

@@ -16,11 +16,16 @@ public struct NQueensProblem: Problem {
 
     /// Evaluates whether the board is a valid N-Queens solution.
     ///
-    /// - Parameter board: A board of size 32 or smaller.
+    /// - Parameters:
+    ///   - board: A board of size 32 or smaller.
+    ///   - moves: The move history used to reach this board state.
     /// - Returns: ``Evaluation/solved`` when exactly *N* non-conflicting queens
     ///   are placed, or ``Evaluation/unsolved(_:)`` with the conflicting
     ///   positions otherwise.
-    public func evaluate(board: Board, moves: [Move]) -> Evaluation<Diagnostic> {
+    public func evaluate(
+        on board: Board,
+        moves: [Move]
+    ) -> Evaluation<Diagnostic> {
         let conflicts = computeConflicts(on: board)
         if conflicts.isEmpty && board.squares.count == board.size {
             return .solved

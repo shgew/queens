@@ -18,7 +18,7 @@ public struct Game<P: Problem>: Sendable {
         self.problem = problem
         let board = Board(size: size)
         self.board = board
-        self.evaluation = problem.evaluate(board: board, moves: [])
+        self.evaluation = problem.evaluate(on: board, moves: [])
         self.startedAt = .now
     }
 
@@ -32,14 +32,14 @@ public struct Game<P: Problem>: Sendable {
     public mutating func apply(move: Move) {
         execute(move: move)
         moves.append(move)
-        evaluation = problem.evaluate(board: board, moves: moves)
+        evaluation = problem.evaluate(on: board, moves: moves)
     }
 
     /// Undoes the last move, reversing its effect on the board.
     public mutating func undo() {
         guard let move = moves.popLast() else { return }
         execute(move: move.opposite)
-        evaluation = problem.evaluate(board: board, moves: moves)
+        evaluation = problem.evaluate(on: board, moves: moves)
     }
 
     private mutating func execute(move: Move) {
@@ -57,7 +57,7 @@ public struct Game<P: Problem>: Sendable {
     public mutating func reset() {
         board.reset()
         moves.removeAll()
-        evaluation = problem.evaluate(board: board, moves: moves)
+        evaluation = problem.evaluate(on: board, moves: moves)
         startedAt = .now
     }
 }

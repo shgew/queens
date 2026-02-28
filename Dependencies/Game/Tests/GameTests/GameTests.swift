@@ -8,7 +8,10 @@ import Testing
 /// A stub problem that reports `.solved` when the board is empty
 /// and `.unsolved` with the occupied positions otherwise.
 struct StubProblem: Problem {
-    func evaluate(board: Board, moves: [Move]) -> Evaluation<Set<Position>> {
+    func evaluate(
+        on board: Board,
+        moves: [Move]
+    ) -> Evaluation<Set<Position>> {
         let occupied = Set(board.squares.keys)
         return occupied.isEmpty ? .solved : .unsolved(occupied)
     }
