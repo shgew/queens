@@ -67,6 +67,10 @@ struct ContentView: View {
                         .ignoresSafeArea()
                         .onTapGesture {}
 
+                    ConfettiBurstView()
+                        .ignoresSafeArea()
+                        .allowsHitTesting(false)
+
                     WinScreen(
                         boardSize: model.selectedBoardSize,
                         moveCount: model.moveCount,
