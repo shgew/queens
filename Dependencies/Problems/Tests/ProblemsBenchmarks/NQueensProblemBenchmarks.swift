@@ -2,7 +2,7 @@ import Board
 import Problems
 import XCTest
 
-final class BoardBenchmarks: XCTestCase {
+final class NQueensProblemBenchmarks: XCTestCase {
     func testConflictsOn8x8() {
         var board = Board(size: 8)
         let queen = Occupant(piece: .queen, side: .white)
@@ -10,7 +10,7 @@ final class BoardBenchmarks: XCTestCase {
             board.toggle(queen, at: Position(row: col, column: col))
         }
         let problem = NQueensProblem()
-        measure { _ = problem.evaluate(board) }
+        measure { _ = problem.evaluate(board: board, moves: []) }
     }
 
     func testConflictsOn16x16() {
@@ -20,7 +20,7 @@ final class BoardBenchmarks: XCTestCase {
             board.toggle(queen, at: Position(row: col, column: col))
         }
         let problem = NQueensProblem()
-        measure { _ = problem.evaluate(board) }
+        measure { _ = problem.evaluate(board: board, moves: []) }
     }
 
     func testConflictsOn32x32() {
@@ -30,6 +30,6 @@ final class BoardBenchmarks: XCTestCase {
             board.toggle(queen, at: Position(row: col, column: col))
         }
         let problem = NQueensProblem()
-        measure { _ = problem.evaluate(board) }
+        measure { _ = problem.evaluate(board: board, moves: []) }
     }
 }

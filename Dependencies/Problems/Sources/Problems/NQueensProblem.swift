@@ -20,7 +20,7 @@ public struct NQueensProblem: Problem {
     /// - Returns: ``Evaluation/solved`` when exactly *N* non-conflicting queens
     ///   are placed, or ``Evaluation/unsolved(_:)`` with the conflicting
     ///   positions otherwise.
-    public func evaluate(_ board: Board) -> Evaluation<Diagnostic> {
+    public func evaluate(board: Board, moves: [Move]) -> Evaluation<Diagnostic> {
         let conflicts = computeConflicts(on: board)
         if conflicts.isEmpty && board.squares.count == board.size {
             return .solved

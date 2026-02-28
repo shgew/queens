@@ -10,6 +10,7 @@ import Foundation
 public struct Game<P: Problem>: Sendable {
     public let problem: P
     public private(set) var board: Board
+    public private(set) var moves: [Move] = []
     public private(set) var evaluation: Evaluation<P.Diagnostic>
     public private(set) var startedAt: Date
 
@@ -17,7 +18,7 @@ public struct Game<P: Problem>: Sendable {
         self.problem = problem
         let board = Board(size: size)
         self.board = board
-        self.evaluation = problem.evaluate(board)
+        self.evaluation = problem.evaluate(board: board, moves: [])
         self.startedAt = .now
     }
 
@@ -27,16 +28,36 @@ public struct Game<P: Problem>: Sendable {
         return false
     }
 
-    /// Mutates the board via `body`, then re-evaluates.
-    public mutating func apply(_ body: (inout Board) -> Void) {
-        body(&board)
-        evaluation = problem.evaluate(board)
+    /// Applies a move to the board, records it, and re-evaluates.
+    public mutating func apply(move: Move) {
+        execute(move: move)
+        moves.append(move)
+        evaluation = problem.evaluate(board: board, moves: moves)
     }
 
-    /// Clears the board and resets the start time.
+    /// Undoes the last move, reversing its effect on the board.
+    public mutating func undo() {
+        guard let move = moves.popLast() else { return }
+        execute(move: move.opposite)
+        evaluation = problem.evaluate(board: board, moves: moves)
+    }
+
+    private mutating func execute(move: Move) {
+        switch move {
+        case .placed(let occupant, at: let position),
+             .removed(let occupant, from: let position):
+            board.toggle(occupant, at: position)
+        case .moved(let occupant, from: let origin, to: let destination):
+            board.toggle(occupant, at: origin)
+            board.toggle(occupant, at: destination)
+        }
+    }
+
+    /// Clears the board, move history, and resets the start time.
     public mutating func reset() {
         board.reset()
-        evaluation = problem.evaluate(board)
+        moves.removeAll()
+        evaluation = problem.evaluate(board: board, moves: moves)
         startedAt = .now
     }
 }

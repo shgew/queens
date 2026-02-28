@@ -37,6 +37,10 @@ final class BoardViewModel {
         game.isSolved
     }
 
+    var canUndo: Bool {
+        !game.moves.isEmpty
+    }
+
     var conflicts: Set<Position> {
         if case .unsolved(let diagnostic) = game.evaluation {
             return diagnostic.conflicts
@@ -45,15 +49,15 @@ final class BoardViewModel {
     }
 
     func squareTapped(_ position: Position) {
-        let occupant = self.occupant
-        game.apply { board in
-            if board.squares[position] == occupant {
-                board.toggle(occupant, at: position)
-            } else {
-                guard board.squares.count < board.size else { return }
-                board.toggle(occupant, at: position)
-            }
+        if game.board.squares[position] == occupant {
+            game.apply(move: .removed(occupant, from: position))
+        } else {
+            game.apply(move: .placed(occupant, at: position))
         }
+    }
+
+    func undoButtonTapped() {
+        game.undo()
     }
 
     func resetButtonTapped() {

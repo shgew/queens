@@ -21,8 +21,10 @@ public protocol Problem<Diagnostic>: Sendable {
 
     /// Evaluates the board and returns whether it is solved.
     ///
-    /// - Parameter board: The board to evaluate.
+    /// - Parameters:
+    ///   - board: The board to evaluate.
+    ///   - moves: The sequence of moves that produced the current board state.
     /// - Returns: ``Evaluation/solved`` when all constraints are satisfied,
     ///   or ``Evaluation/unsolved(_:)`` with a diagnostic otherwise.
-    func evaluate(_ board: Board) -> Evaluation<Diagnostic>
+    func evaluate(board: Board, moves: [Move]) -> Evaluation<Diagnostic>
 }
