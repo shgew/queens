@@ -20,7 +20,7 @@
 - [x] Show a counter of queens remaining
 - [x] Restart/reset the game
 - [ ] Store and display best times
-- [ ] SFX and animations for placement and victory
+- [x] SFX and animations for placement and victory
 
 ## Testing & Architecture
 
