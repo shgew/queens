@@ -18,6 +18,9 @@ struct ContentView: View {
                 winOverlay
             }
         }
+        .task {
+            model.preload()
+        }
         .sensoryFeedback(
             .impact(weight: .heavy, intensity: 0.9),
             trigger: model.placeFeedbackTrigger
