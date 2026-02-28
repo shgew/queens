@@ -82,7 +82,7 @@ struct ContentView: View {
 
     private var winOverlay: some View {
         ZStack {
-            Color.black.opacity(0.24)
+            Color.black.opacity(0.2)
                 .ignoresSafeArea()
 
             WinScreen(
@@ -94,7 +94,7 @@ struct ContentView: View {
                 onReset: model.resetButtonTapped
             )
             .padding(24)
-            .transition(.scale(0.92).combined(with: .opacity))
+            .transition(.scale(0.9).combined(with: .opacity))
         }
         .zIndex(1)
     }
