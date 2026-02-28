@@ -1,5 +1,5 @@
 import Board
-import Engine
+import Problems
 import Game
 import Observation
 

@@ -3,15 +3,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "Engine",
+    name: "Problems",
     platforms: [
         .iOS(.v26),
         .macOS(.v26),
     ],
     products: [
         .library(
-            name: "Engine",
-            targets: ["Engine"]
+            name: "Problems",
+            targets: ["Problems"]
         ),
     ],
     dependencies: [
@@ -19,15 +19,15 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Engine",
+            name: "Problems",
             dependencies: [
                 .product(name: "Board", package: "Board"),
             ]
         ),
 
         .testTarget(
-            name: "EngineBenchmarks",
-            dependencies: ["Engine"]
+            name: "ProblemsBenchmarks",
+            dependencies: ["Problems"]
         ),
     ]
 )

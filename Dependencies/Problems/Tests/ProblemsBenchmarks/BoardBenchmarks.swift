@@ -1,5 +1,5 @@
 import Board
-import Engine
+import Problems
 import XCTest
 
 final class BoardBenchmarks: XCTestCase {

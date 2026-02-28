@@ -9,16 +9,16 @@
 /* Begin PBXBuildFile section */
 		89D64A782F50C505006FCBCD /* Board in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A772F50C505006FCBCD /* Board */; };
 		89D64A7A2F50C505006FCBCD /* BoardUI in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A792F50C505006FCBCD /* BoardUI */; };
-		89D64A7C2F50C505006FCBCD /* Engine in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A7B2F50C505006FCBCD /* Engine */; };
+		89D64A7C2F50C505006FCBCD /* Problems in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A7B2F50C505006FCBCD /* Problems */; };
 		89D64A7F2F50C505006FCBCD /* Game in Frameworks */ = {isa = PBXBuildFile; productRef = 89D64A7E2F50C505006FCBCD /* Game */; };
-		89D6C6D92F509671006FCBCD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 89D6C6D82F509671006FCBCD /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		89162C832F520AA300BFBA60 /* Game */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Game; sourceTree = "<group>"; };
+		89275EF32F534633001A9796 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		89C800232F520A20004C2087 /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D64A742F50C121006FCBCD /* Board */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Board; sourceTree = "<group>"; };
-		89D64A752F50C127006FCBCD /* Engine */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Engine; sourceTree = "<group>"; };
+		89D64A752F50C127006FCBCD /* Problems */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Problems; sourceTree = "<group>"; };
 		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -37,7 +37,7 @@
 			files = (
 				89D64A782F50C505006FCBCD /* Board in Frameworks */,
 				89D64A7A2F50C505006FCBCD /* BoardUI in Frameworks */,
-				89D64A7C2F50C505006FCBCD /* Engine in Frameworks */,
+				89D64A7C2F50C505006FCBCD /* Problems in Frameworks */,
 				89D64A7F2F50C505006FCBCD /* Game in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,7 +49,7 @@
 			isa = PBXGroup;
 			children = (
 				89D64A742F50C121006FCBCD /* Board */,
-				89D64A752F50C127006FCBCD /* Engine */,
+				89D64A752F50C127006FCBCD /* Problems */,
 				89162C832F520AA300BFBA60 /* Game */,
 			);
 			path = Dependencies;
@@ -61,6 +61,7 @@
 				89FD60D92F5088400085AC95 /* Queens */,
 				89D64A722F50C0C8006FCBCD /* Dependencies */,
 				89D6C6D82F509671006FCBCD /* README.md */,
+				89275EF32F534633001A9796 /* TODO.md */,
 				89C800232F520A20004C2087 /* Queens.app */,
 			);
 			sourceTree = "<group>";
@@ -87,7 +88,7 @@
 			packageProductDependencies = (
 				89D64A772F50C505006FCBCD /* Board */,
 				89D64A792F50C505006FCBCD /* BoardUI */,
-				89D64A7B2F50C505006FCBCD /* Engine */,
+				89D64A7B2F50C505006FCBCD /* Problems */,
 				89D64A7E2F50C505006FCBCD /* Game */,
 			);
 			productName = Queens;
@@ -135,7 +136,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89D6C6D92F509671006FCBCD /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,9 +369,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = BoardUI;
 		};
-		89D64A7B2F50C505006FCBCD /* Engine */ = {
+		89D64A7B2F50C505006FCBCD /* Problems */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Engine;
+			productName = Problems;
 		};
 		89D64A7E2F50C505006FCBCD /* Game */ = {
 			isa = XCSwiftPackageProductDependency;

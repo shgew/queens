@@ -1,5 +1,5 @@
 import Board
-import Engine
+import Problems
 import Foundation
 
 /// A playable game session that pairs a ``Board`` with a ``Problem`` to solve.
