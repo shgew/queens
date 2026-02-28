@@ -43,11 +43,7 @@ public struct Game<P: Problem>: Sendable {
     }
 
     private mutating func execute(move: Move) {
-        switch move {
-        case .placed(let occupant, at: let position),
-             .removed(let occupant, from: let position):
-            board.toggle(occupant, at: position)
-        }
+        board.apply(move: move)
     }
 
     /// Clears the board, move history, and resets the start time.

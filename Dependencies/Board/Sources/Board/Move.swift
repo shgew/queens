@@ -3,16 +3,16 @@
 /// Each case explicitly describes what happened, allowing move history
 /// to be recorded and undone without diffing.
 public enum Move: Sendable, Equatable {
-    case placed(Occupant, at: Position)
-    case removed(Occupant, from: Position)
+    case place(Occupant, at: Position)
+    case remove(Occupant, from: Position)
 
     /// The move that reverses the effect of this one.
     public var opposite: Move {
         switch self {
-        case .placed(let occupant, at: let position):
-            .removed(occupant, from: position)
-        case .removed(let occupant, from: let position):
-            .placed(occupant, at: position)
+        case .place(let occupant, at: let position):
+            .remove(occupant, from: position)
+        case .remove(let occupant, from: let position):
+            .place(occupant, at: position)
         }
     }
 }

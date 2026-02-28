@@ -1,19 +1,22 @@
 import Board
-import Problems
+import Foundation
 import Game
 import Observation
+import Problems
 
 @MainActor
 @Observable
-final class BoardViewModel {
+final class ContentViewModel {
     static let maximumBoardSize = 32
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
     private(set) var game: Game<NQueensProblem>
+    var isWinScreenPresented = false
+    private(set) var solvedAt: Date?
 
     private let occupant = Occupant(piece: .queen, side: .white)
 
-    init(size: Int = 8) {
+    init(size: Int = 4) {
         self.game = Game(size: size, problem: NQueensProblem())
     }
 
@@ -22,6 +25,8 @@ final class BoardViewModel {
         set {
             guard newValue != game.board.size else { return }
             game = Game(size: newValue, problem: NQueensProblem())
+            isWinScreenPresented = false
+            solvedAt = nil
         }
     }
 
@@ -37,6 +42,10 @@ final class BoardViewModel {
         game.isSolved
     }
 
+    var moveCount: Int {
+        game.moves.count
+    }
+
     var canUndo: Bool {
         !game.moves.isEmpty
     }
@@ -48,11 +57,24 @@ final class BoardViewModel {
         return []
     }
 
+    func elapsedTime(now: Date) -> String {
+        let elapsed = max(0, now.timeIntervalSince(game.startedAt))
+        let duration = Duration.seconds(elapsed)
+        if elapsed >= 3600 {
+            return duration.formatted(.time(pattern: .hourMinuteSecond))
+        }
+        return duration.formatted(.time(pattern: .minuteSecond))
+    }
+
     func squareTapped(_ position: Position) {
         if game.board.occupiedSquares[position] == occupant {
-            game.apply(move: .removed(occupant, from: position))
+            game.apply(move: .remove(occupant, from: position))
         } else {
-            game.apply(move: .placed(occupant, at: position))
+            game.apply(move: .place(occupant, at: position))
+        }
+        if game.isSolved {
+            solvedAt = .now
+            isWinScreenPresented = true
         }
     }
 
@@ -62,5 +84,7 @@ final class BoardViewModel {
 
     func resetButtonTapped() {
         game.reset()
+        isWinScreenPresented = false
+        solvedAt = nil
     }
 }

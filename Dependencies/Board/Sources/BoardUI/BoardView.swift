@@ -174,7 +174,7 @@ extension Board {
     {
         var board = Board(size: size)
         for (position, occupant) in occupants {
-            board.toggle(occupant, at: position)
+            board.apply(move: .place(occupant, at: position))
         }
         return board
     }

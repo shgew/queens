@@ -7,7 +7,7 @@ final class NQueensProblemBenchmarks: XCTestCase {
         var board = Board(size: 8)
         let queen = Occupant(piece: .queen, side: .white)
         for col in 0..<8 {
-            board.toggle(queen, at: Position(row: col, column: col))
+            board.apply(move: .place(queen, at: Position(row: col, column: col)))
         }
         let problem = NQueensProblem()
         measure { _ = problem.evaluate(on: board, moves: []) }
@@ -17,7 +17,7 @@ final class NQueensProblemBenchmarks: XCTestCase {
         var board = Board(size: 16)
         let queen = Occupant(piece: .queen, side: .white)
         for col in 0..<16 {
-            board.toggle(queen, at: Position(row: col, column: col))
+            board.apply(move: .place(queen, at: Position(row: col, column: col)))
         }
         let problem = NQueensProblem()
         measure { _ = problem.evaluate(on: board, moves: []) }
@@ -27,7 +27,7 @@ final class NQueensProblemBenchmarks: XCTestCase {
         var board = Board(size: 32)
         let queen = Occupant(piece: .queen, side: .white)
         for col in 0..<32 {
-            board.toggle(queen, at: Position(row: col, column: col))
+            board.apply(move: .place(queen, at: Position(row: col, column: col)))
         }
         let problem = NQueensProblem()
         measure { _ = problem.evaluate(on: board, moves: []) }

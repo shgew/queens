@@ -24,13 +24,21 @@ public struct Board: Sendable {
         self.occupiedSquares = [:]
     }
 
-    /// Places or removes an occupant at the given position.
+    /// Applies a move to the board.
     ///
-    /// If the square already contains the same occupant, it is removed.
-    /// Otherwise the occupant is placed (replacing any existing occupant).
-    ///
-    /// - Precondition: `position` must be within bounds.
-    public mutating func toggle(_ occupant: Occupant, at position: Position) {
+    /// - Precondition: The move's position must be within bounds.
+    public mutating func apply(move: Move) {
+        switch move {
+        case .place(let occupant, at: let position):
+            boundsCheck(position)
+            occupiedSquares[position] = occupant
+        case .remove(_, from: let position):
+            boundsCheck(position)
+            occupiedSquares[position] = nil
+        }
+    }
+
+    private func boundsCheck(_ position: Position) {
         precondition(
             position.row >= 0
                 && position.row < size
@@ -38,12 +46,6 @@ public struct Board: Sendable {
                 && position.column < size,
             "Position out of bounds"
         )
-
-        if occupiedSquares[position] == occupant {
-            occupiedSquares.removeValue(forKey: position)
-        } else {
-            occupiedSquares[position] = occupant
-        }
     }
 
     /// Removes all occupants from the board.
