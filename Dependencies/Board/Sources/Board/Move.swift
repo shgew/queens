@@ -5,7 +5,6 @@
 public enum Move: Sendable, Equatable {
     case placed(Occupant, at: Position)
     case removed(Occupant, from: Position)
-    case moved(Occupant, from: Position, to: Position)
 
     /// The move that reverses the effect of this one.
     public var opposite: Move {
@@ -14,8 +13,6 @@ public enum Move: Sendable, Equatable {
             .removed(occupant, from: position)
         case .removed(let occupant, from: let position):
             .placed(occupant, at: position)
-        case .moved(let occupant, from: let origin, to: let destination):
-            .moved(occupant, from: destination, to: origin)
         }
     }
 }

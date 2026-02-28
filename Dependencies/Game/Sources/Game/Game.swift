@@ -47,9 +47,6 @@ public struct Game<P: Problem>: Sendable {
         case .placed(let occupant, at: let position),
              .removed(let occupant, from: let position):
             board.toggle(occupant, at: position)
-        case .moved(let occupant, from: let origin, to: let destination):
-            board.toggle(occupant, at: origin)
-            board.toggle(occupant, at: destination)
         }
     }
 

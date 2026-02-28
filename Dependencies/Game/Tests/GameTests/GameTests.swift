@@ -127,19 +127,4 @@ struct GameTests {
         #expect(game.board.occupiedSquares.isEmpty)
     }
 
-    // MARK: - Moved
-
-    @Test func undoReversesMove() {
-        var game = Game(size: 4, problem: problem)
-        let from = Position(row: 0, column: 0)
-        let to = Position(row: 2, column: 3)
-        game.apply(move: .placed(queen, at: from))
-        game.apply(move: .moved(queen, from: from, to: to))
-
-        game.undo()
-
-        #expect(game.board.occupiedSquares[from] == queen)
-        #expect(game.board.occupiedSquares[to] == nil)
-        #expect(game.moves == [.placed(queen, at: from)])
-    }
 }
