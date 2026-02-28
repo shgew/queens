@@ -6,9 +6,12 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 16) {
-                topBar
+            VStack(spacing: 18) {
+                statsRow
+                    .padding(.horizontal)
                 board
+                controlsRow
+                    .padding(.horizontal)
             }
 
             if model.isWinScreenPresented {
@@ -25,20 +28,13 @@ struct ContentView: View {
         )
     }
 
-    private var topBar: some View {
-        VStack(spacing: 16) {
-            statsRow
-            controlsRow
-        }
-        .padding(.horizontal)
-    }
-
     private var statsRow: some View {
         HStack(spacing: 12) {
             StatPill(
                 systemImage: "crown",
                 value: "\(model.piecesRemaining)"
             )
+
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 StatPill(
                     systemImage: "clock",
@@ -51,10 +47,10 @@ struct ContentView: View {
     }
 
     private var controlsRow: some View {
-        HStack {
-            boardSizePicker
-            Spacer()
+        HStack(spacing: 12) {
             resetButton
+            Spacer(minLength: 0)
+            boardSizePicker
         }
     }
 
@@ -65,13 +61,17 @@ struct ContentView: View {
                     .tag(size)
             }
         } label: {
-            Image(systemName: "square.grid.3x3")
-                .foregroundStyle(.secondary)
+            Label(
+                "\(model.selectedBoardSize)×\(model.selectedBoardSize)",
+                systemImage: "square.grid.3x3"
+            )
         }
+        .buttonStyle(.glass)
     }
 
     private var resetButton: some View {
-        Button("Reset", action: model.resetButtonTapped)
+        Button("Reset", role: .destructive, action: model.resetButtonTapped)
+            .buttonStyle(.glass)
     }
 
     private var board: some View {
@@ -82,7 +82,7 @@ struct ContentView: View {
 
     private var winOverlay: some View {
         ZStack {
-            Color.black.opacity(0.2)
+            Color.black.opacity(0.24)
                 .ignoresSafeArea()
 
             WinScreen(
@@ -94,7 +94,7 @@ struct ContentView: View {
                 onReset: model.resetButtonTapped
             )
             .padding(24)
-            .transition(.scale(0.9).combined(with: .opacity))
+            .transition(.scale(0.92).combined(with: .opacity))
         }
         .zIndex(1)
     }

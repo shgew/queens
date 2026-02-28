@@ -5,15 +5,18 @@ struct StatPill: View {
     var value: String
 
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: systemImage)
-                .foregroundStyle(.secondary)
+        Label {
             Text(value)
-                .font(.title2.bold().monospaced())
+                .font(.title3.bold())
+                .monospacedDigit()
+        } icon: {
+            Image(systemName: systemImage)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .glassEffect(.regular, in: .rect(cornerRadius: 14.0))
     }
 }
 

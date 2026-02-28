@@ -7,25 +7,10 @@ struct WinScreen: View {
     var onReset: () -> Void
 
     var body: some View {
-        GlassEffectContainer {
+        GlassEffectContainer(spacing: 16) {
             VStack(spacing: 20) {
-                VStack(spacing: 10) {
-                    Image(systemName: "party.popper.fill")
-                        .font(.system(size: 42))
-                        .foregroundStyle(.orange)
-
-                    Text("Congratulations!")
-                        .font(.title2.bold())
-
-                    Text("You solved \(boardSize)×\(boardSize).")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                VStack(spacing: 10) {
-                    metricRow(systemImage: "figure.walk", title: "Moves", value: "\(moveCount)")
-                    metricRow(systemImage: "clock", title: "Time", value: elapsedTime)
-                }
+                header
+                metrics
 
                 Button {
                     onReset()
@@ -38,20 +23,55 @@ struct WinScreen: View {
                 .buttonStyle(.glassProminent)
             }
             .padding(24)
-            .frame(width: 300, height: 300)
+            .frame(width: 320)
             .glassEffect(.regular, in: .rect(cornerRadius: 24.0))
         }
     }
 
-    private func metricRow(systemImage: String, title: String, value: String) -> some View {
-        HStack {
-            Label(title, systemImage: systemImage)
+    private var header: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "party.popper.fill")
+                .font(.system(size: 42))
+                .foregroundStyle(.orange)
+
+            Text("Congratulations!")
+                .font(.title2.bold())
+
+            Text("You solved \(boardSize)×\(boardSize).")
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Spacer()
-            Text(value)
-                .font(.headline.monospacedDigit())
         }
-        .font(.subheadline)
+    }
+
+    private var metrics: some View {
+        VStack(spacing: 10) {
+            metricRow(
+                systemImage: "figure.walk",
+                title: "Moves",
+                value: "\(moveCount)"
+            )
+            metricRow(
+                systemImage: "clock",
+                title: "Time",
+                value: elapsedTime
+            )
+        }
+    }
+
+    private func metricRow(
+        systemImage: String,
+        title: String,
+        value: String
+    ) -> some View {
+        LabeledContent {
+            Text(value)
+                .font(.headline)
+                .monospacedDigit()
+        } label: {
+            Label(title, systemImage: systemImage)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
     }
 }
 
