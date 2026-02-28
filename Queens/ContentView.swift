@@ -81,6 +81,9 @@ struct ContentView: View {
                 }
             }
         }
+        .task {
+            model.prepare()
+        }
     }
 
     private func formattedElapsedTime(now: Date) -> String {

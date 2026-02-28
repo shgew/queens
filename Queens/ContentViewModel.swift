@@ -13,6 +13,7 @@ final class ContentViewModel {
     private var game: Game<NQueensProblem>
     var isWinScreenPresented = false
     private(set) var solvedAt: Date?
+    private let haptics: any GameHaptics
 
     var board: Board {
         game.board
@@ -24,7 +25,11 @@ final class ContentViewModel {
 
     private let occupant = Occupant(piece: .queen, side: .white)
 
-    init(size: Int = 4) {
+    init(
+        size: Int = 4,
+        haptics: any GameHaptics = SystemGameHaptics()
+    ) {
+        self.haptics = haptics
         self.game = Game(size: size, problem: NQueensProblem())
     }
 
@@ -61,11 +66,17 @@ final class ContentViewModel {
         return []
     }
 
+    func prepare() {
+        haptics.prepare()
+    }
+
     func squareTapped(_ position: Position) {
         if game.board.occupiedSquares[position] == occupant {
             game.apply(move: .remove(occupant, from: position))
+            haptics.playRemovePiece()
         } else {
             game.apply(move: .place(occupant, at: position))
+            haptics.playPlacePiece()
         }
         if game.isSolved {
             solvedAt = .now
