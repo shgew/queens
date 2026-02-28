@@ -6,7 +6,7 @@
 - [x] Render an interactive n×n chessboard
 - [x] Tap to place/remove queens
 - [x] Real-time conflict validation and highlighting
-- [ ] Display a win screen on successful solve
+- [x] Display a win screen on successful solve
 
 ## UI
 
