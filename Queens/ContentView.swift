@@ -81,9 +81,14 @@ struct ContentView: View {
                 }
             }
         }
-        .task {
-            model.prepare()
-        }
+        .sensoryFeedback(
+            .impact(weight: .heavy, intensity: 0.9),
+            trigger: model.placeFeedbackTrigger
+        )
+        .sensoryFeedback(
+            .impact(weight: .light, intensity: 0.6),
+            trigger: model.removeFeedbackTrigger
+        )
     }
 
     private func formattedElapsedTime(now: Date) -> String {
