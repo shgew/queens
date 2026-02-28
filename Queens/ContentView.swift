@@ -42,7 +42,7 @@ struct ContentView: View {
                 StatPill(
                     systemImage: "clock",
                     value: formattedElapsedTime(
-                        now: model.solvedAt ?? context.date
+                        till: model.solvedAt ?? context.date
                     )
                 )
             }
@@ -92,7 +92,7 @@ struct ContentView: View {
                 boardSize: model.selectedBoardSize,
                 moveCount: model.moveCount,
                 elapsedTime: formattedElapsedTime(
-                    now: model.solvedAt ?? .now
+                    till: model.solvedAt ?? .now
                 ),
                 onReset: model.resetButtonTapped
             )
@@ -102,9 +102,9 @@ struct ContentView: View {
         .zIndex(1)
     }
 
-    private func formattedElapsedTime(now: Date) -> String {
+    private func formattedElapsedTime(till date: Date) -> String {
         let elapsed = Duration.seconds(
-            max(0, now.timeIntervalSince(model.startedAt))
+            max(0, date.timeIntervalSince(model.startedAt))
         )
         let pattern: Duration.TimeFormatStyle.Pattern
         if elapsed >= .seconds(3600) {
