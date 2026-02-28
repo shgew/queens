@@ -10,9 +10,17 @@ final class ContentViewModel {
     static let maximumBoardSize = 32
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
-    private(set) var game: Game<NQueensProblem>
+    private var game: Game<NQueensProblem>
     var isWinScreenPresented = false
     private(set) var solvedAt: Date?
+
+    var board: Board {
+        game.board
+    }
+
+    var startedAt: Date {
+        game.startedAt
+    }
 
     private let occupant = Occupant(piece: .queen, side: .white)
 
@@ -28,10 +36,6 @@ final class ContentViewModel {
             isWinScreenPresented = false
             solvedAt = nil
         }
-    }
-
-    var piecesPlaced: Int {
-        game.board.occupiedSquares.count
     }
 
     var piecesRemaining: Int {
@@ -55,15 +59,6 @@ final class ContentViewModel {
             return diagnostic.conflicts
         }
         return []
-    }
-
-    func elapsedTime(now: Date) -> String {
-        let elapsed = max(0, now.timeIntervalSince(game.startedAt))
-        let duration = Duration.seconds(elapsed)
-        if elapsed >= 3600 {
-            return duration.formatted(.time(pattern: .hourMinuteSecond))
-        }
-        return duration.formatted(.time(pattern: .minuteSecond))
     }
 
     func squareTapped(_ position: Position) {

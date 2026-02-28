@@ -28,7 +28,6 @@
 - [x] Board model tests
 - [x] Solver tests
 - [ ] App-level tests (BoardViewModel, integration)
-- [ ] Testing strategy documented in README
 
 ## Submission
 
