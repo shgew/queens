@@ -75,8 +75,8 @@
 				89FD60D92F5088400085AC95 /* Queens */,
 				89D6C6D82F509671006FCBCD /* README.md */,
 				89275EF32F534633001A9796 /* TODO.md */,
-				89C800232F520A20004C2087 /* Queens.app */,
 				89A6C2202F539B7D008DF053 /* Dependencies */,
+				89C800232F520A20004C2087 /* Queens.app */,
 			);
 			sourceTree = "<group>";
 		};
