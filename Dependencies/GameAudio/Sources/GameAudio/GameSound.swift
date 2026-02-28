@@ -1,4 +1,4 @@
-enum GameSound: CaseIterable {
+public enum GameSound: CaseIterable {
     case place
     case remove
     case boardSizeChanged

@@ -1,6 +1,7 @@
 import Board
 import Foundation
 import Game
+import GameAudio
 import Observation
 import Problems
 import SwiftUI

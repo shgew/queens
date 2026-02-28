@@ -1,22 +1,21 @@
 import AVFAudio
 import Foundation
 
-@MainActor
-final class GameSoundPlayer: GameSoundPlaying {
+public final class GameSoundPlayer: GameSoundPlaying {
     private let bundle: Bundle
     private var players: [GameSound: AVAudioPlayer] = [:]
 
-    init(bundle: Bundle = .main) {
-        self.bundle = bundle
+    public init() {
+        self.bundle = .module
     }
 
-    func preload(_ sounds: [GameSound]) {
+    public func preload(_ sounds: [GameSound]) {
         for sound in sounds {
             _ = player(for: sound)
         }
     }
 
-    func play(_ sound: GameSound) {
+    public func play(_ sound: GameSound) {
         guard let player = player(for: sound) else { return }
 
         if player.isPlaying {
