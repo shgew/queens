@@ -1,11 +1,10 @@
 import Foundation
+import ResourceStorage
 import Testing
-
-@testable import ResourceStorage
 
 struct InMemoryResourceStorageTests {
   let storage = InMemoryResourceStorage()
-  let resource = TestResource()
+  let resource = Resource(id: "test", defaultValue: [Int: TimeInterval]())
 
   @Test func `returns default for missing resource`() async throws {
     let value = try await storage.load(resource)

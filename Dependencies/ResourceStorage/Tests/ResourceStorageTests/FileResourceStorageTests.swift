@@ -1,11 +1,10 @@
 import Foundation
+import ResourceStorage
 import Testing
-
-@testable import ResourceStorage
 
 struct FileResourceStorageTests {
   let storage: FileResourceStorage
-  let resource = TestResource()
+  let resource = Resource(id: "test", defaultValue: [Int: TimeInterval]())
 
   init() {
     let fm = MockFileManager()

@@ -29,16 +29,16 @@ public actor FileResourceStorage: ResourceStorage {
     self.decoder = decoder
   }
 
-  public func load<R: Resource>(_ resource: R) async throws -> R.Value {
+  public func load<Value>(_ resource: Resource<Value>) async throws -> Value {
     let fileURL = fileURL(for: resource)
     guard let data = fileManager.contents(atPath: fileURL.path()) else {
       return resource.defaultValue
     }
 
-    return try decoder.decode(R.Value.self, from: data)
+    return try decoder.decode(Value.self, from: data)
   }
 
-  public func save<R: Resource>(_ value: R.Value, for resource: R) async throws {
+  public func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {
     try ensureDirectoryExists()
     let data = try encoder.encode(value)
     fileManager.createFile(atPath: fileURL(for: resource).path(), contents: data)
@@ -50,7 +50,7 @@ extension FileResourceStorage {
     try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
   }
 
-  private func fileURL<R: Resource>(for resource: R) -> URL {
+  private func fileURL<Value>(for resource: Resource<Value>) -> URL {
     directory.appendingPathComponent("\(resource.id).json")
   }
 }

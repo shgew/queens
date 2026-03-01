@@ -105,14 +105,14 @@ private actor FailingResourceStorage: ResourceStorage {
     self.values = values
   }
 
-  func load<R: Resource>(_ resource: R) async throws -> R.Value {
+  func load<Value>(_ resource: Resource<Value>) async throws -> Value {
     if shouldFailLoad {
       throw Failure.load
     }
-    return (values as? R.Value) ?? resource.defaultValue
+    return (values as? Value) ?? resource.defaultValue
   }
 
-  func save<R: Resource>(_ value: R.Value, for resource: R) async throws {
+  func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {
     if shouldFailSave {
       throw Failure.save
     }

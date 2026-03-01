@@ -4,8 +4,8 @@ import Foundation
 public protocol ResourceStorage: Sendable {
   /// Loads the value for `resource`, returning its ``Resource/defaultValue`` when
   /// no saved value exists.
-  func load<R: Resource>(_ resource: R) async throws -> R.Value
+  func load<Value>(_ resource: Resource<Value>) async throws -> Value
 
   /// Persists `value` for `resource`, overwriting any previously saved value.
-  func save<R: Resource>(_ value: R.Value, for resource: R) async throws
+  func save<Value>(_ value: Value, for resource: Resource<Value>) async throws
 }

@@ -11,11 +11,11 @@ public actor InMemoryResourceStorage: ResourceStorage {
     self.values = values
   }
 
-  public func load<R: Resource>(_ resource: R) async throws -> R.Value {
-    (values[resource.id] as? R.Value) ?? resource.defaultValue
+  public func load<Value>(_ resource: Resource<Value>) async throws -> Value {
+    (values[resource.id] as? Value) ?? resource.defaultValue
   }
 
-  public func save<R: Resource>(_ value: R.Value, for resource: R) async throws {
+  public func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {
     values[resource.id] = value
   }
 }

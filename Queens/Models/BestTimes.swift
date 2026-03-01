@@ -7,19 +7,20 @@ protocol BestTimesStoring {
   func record(time: TimeInterval, forSize size: Int) async -> Bool
 }
 
-struct BestTimesResource: Resource {
-  let id = "best-times"
-  let defaultValue: [Int: TimeInterval] = [:]
+extension Resource where Value == [Int: TimeInterval] {
+  static var bestTimes: Self {
+    Resource(id: "best-times", defaultValue: [:])
+  }
 }
 
 actor BestTimesStore: BestTimesStoring {
   private let storage: any ResourceStorage
-  private let resource: BestTimesResource
+  private let resource: Resource<[Int: TimeInterval]>
   private var times: [Int: TimeInterval]?
 
   init(
     storage: (any ResourceStorage)? = nil,
-    resource: BestTimesResource = BestTimesResource()
+    resource: Resource<[Int: TimeInterval]> = .bestTimes
   ) {
     self.storage = storage ?? Self.makeDefaultStorage()
     self.resource = resource
