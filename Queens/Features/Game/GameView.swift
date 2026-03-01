@@ -19,7 +19,7 @@ struct GameView: View {
             }
         }
         .task {
-            model.preload()
+            model.load()
         }
         .sensoryFeedback(
             .impact(weight: .heavy, intensity: 0.9),

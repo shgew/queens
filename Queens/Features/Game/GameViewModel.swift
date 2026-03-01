@@ -37,7 +37,7 @@ final class GameViewModel {
         self.soundPlayer = soundPlayer
     }
 
-    func preload() {
+    func load() {
         guard !areSoundsPreloaded else { return }
         soundPlayer.preload(GameSound.allCases)
         areSoundsPreloaded = true
