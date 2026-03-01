@@ -36,6 +36,16 @@ extension GameViewModel {
     game.board
   }
 
+  var selectedBoardSize: Int {
+    get { game.board.size }
+    set {
+      guard newValue != game.board.size else { return }
+      game = Game(size: newValue, problem: NQueensProblem())
+      winViewModel = nil
+      soundPlayer.play(.boardSizeChanged)
+    }
+  }
+
   var startedAt: Date {
     game.startedAt
   }
@@ -48,6 +58,12 @@ extension GameViewModel {
     game.moves.count
   }
 
+  func load() {
+    guard !areSoundsPreloaded else { return }
+    soundPlayer.preload(GameSound.allCases)
+    areSoundsPreloaded = true
+  }
+
   func playTime(at date: Date) -> String {
     let endDate = winViewModel?.solvedAt ?? date
     return startedAt.formattedElapsedTime(to: endDate)
@@ -55,22 +71,6 @@ extension GameViewModel {
 
   func cellState(for position: Position) -> BoardView.CellState {
     conflicts.contains(position) ? .conflicting : .normal
-  }
-
-  func load() {
-    guard !areSoundsPreloaded else { return }
-    soundPlayer.preload(GameSound.allCases)
-    areSoundsPreloaded = true
-  }
-
-  var selectedBoardSize: Int {
-    get { game.board.size }
-    set {
-      guard newValue != game.board.size else { return }
-      game = Game(size: newValue, problem: NQueensProblem())
-      winViewModel = nil
-      soundPlayer.play(.boardSizeChanged)
-    }
   }
 
   func squareTapped(_ position: Position) {
