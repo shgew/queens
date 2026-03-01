@@ -30,6 +30,10 @@ struct GameView: View {
             .impact(weight: .light, intensity: 0.6),
             trigger: model.removeFeedbackTrigger
         )
+        .sensoryFeedback(
+            .warning,
+            trigger: model.invalidPlaceFeedbackTrigger
+        )
     }
 
     private var statsRow: some View {

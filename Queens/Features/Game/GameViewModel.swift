@@ -17,6 +17,7 @@ final class GameViewModel {
     private(set) var winViewModel: WinViewModel?
     private(set) var placeFeedbackTrigger = 0
     private(set) var removeFeedbackTrigger = 0
+    private(set) var invalidPlaceFeedbackTrigger = 0
     private var areSoundsPreloaded = false
 
     var board: Board {
@@ -85,6 +86,7 @@ final class GameViewModel {
         }
 
         guard piecesRemaining > 0 else {
+            invalidPlaceFeedbackTrigger += 1
             soundPlayer.play(.invalidMove)
             return
         }
