@@ -1,9 +1,16 @@
+/// Enumerates all sound effects used by the game.
 public enum GameSound: CaseIterable {
+  /// Sound for placing a piece.
   case place
+  /// Sound for removing a piece.
   case remove
+  /// Sound for changing the board size.
   case boardSizeChanged
+  /// Sound for an invalid action.
   case invalidMove
+  /// Sound for a solved board.
   case win
+  /// Sound for resetting the game.
   case reset
 }
 

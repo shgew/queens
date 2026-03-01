@@ -3,7 +3,9 @@
 /// Each case explicitly describes what happened, allowing move history
 /// to be recorded and undone without diffing.
 public enum Move: Sendable, Equatable {
+  /// Places an occupant at a position.
   case place(Occupant, at: Position)
+  /// Removes an occupant from a position.
   case remove(Occupant, from: Position)
 
   /// The move that reverses the effect of this one.

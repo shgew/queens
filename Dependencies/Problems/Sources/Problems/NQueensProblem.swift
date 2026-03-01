@@ -16,6 +16,7 @@ public struct NQueensProblem: Problem {
     public let conflicts: Set<Position>
   }
 
+  /// Creates an N-Queens problem evaluator.
   public init() {}
 
   /// Evaluates whether the board is a valid N-Queens solution.

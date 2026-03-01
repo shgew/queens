@@ -12,12 +12,22 @@ private let logger = Logger.queens(category: .game)
 /// puzzle-specific knowledge. It tracks the board state, a cached evaluation,
 /// and the time the current attempt was started.
 public struct Game<P: Problem>: Sendable {
+  /// The puzzle definition this game evaluates against.
   public let problem: P
+  /// The current board state.
   public private(set) var board: Board
+  /// The chronological move history.
   public private(set) var moves: [Move] = []
+  /// Cached evaluation of the current board and moves.
   public private(set) var evaluation: Evaluation<P.Diagnostic>
+  /// The timestamp when the current attempt started.
   public private(set) var startedAt: Date
 
+  /// Creates a new game session for a problem and board size.
+  ///
+  /// - Parameters:
+  ///   - size: The square board dimension.
+  ///   - problem: The problem used to evaluate board state.
   public init(size: Int = 8, problem: P) {
     self.problem = problem
     let board = Board(size: size)

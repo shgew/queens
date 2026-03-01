@@ -6,7 +6,9 @@ import Board
 /// - ``unsolved(_:)``: The board violates one or more constraints,
 ///   with a diagnostic describing what went wrong.
 public enum Evaluation<Diagnostic: Sendable>: Sendable {
+  /// The board satisfies all constraints.
   case solved
+  /// The board is not solved and includes diagnostic details.
   case unsolved(Diagnostic)
 }
 
@@ -17,6 +19,7 @@ extension Evaluation: Equatable where Diagnostic: Equatable {}
 /// Conforming types define what it means for a board to be solved and produce
 /// a `Diagnostic` describing any violations when it is not.
 public protocol Problem<Diagnostic>: Sendable {
+  /// Diagnostic details produced when evaluation is unsolved.
   associatedtype Diagnostic: Sendable
 
   /// Evaluates the board and returns whether it is solved.

@@ -40,6 +40,9 @@ public struct BoardView: View {
   private var squareTapHandler: (Position) -> Void = { _ in }
   private var cellStateProvider: (Position) -> CellState = { _ in .normal }
 
+  /// Creates a board view for the provided board state.
+  ///
+  /// - Parameter board: The board to render.
   public init(board: Board) {
     precondition(
       board.size <= Self.columnLabels.count,
@@ -48,18 +51,27 @@ public struct BoardView: View {
     self.board = board
   }
 
+  /// Returns a copy that invokes the action when a square is tapped.
+  ///
+  /// - Parameter action: A handler receiving the tapped position.
+  /// - Returns: A configured board view.
   public func onSquareTapped(_ action: @escaping (Position) -> Void) -> Self {
     var copy = self
     copy.squareTapHandler = action
     return copy
   }
 
+  /// Returns a copy that derives per-cell visual state.
+  ///
+  /// - Parameter state: A closure mapping positions to cell states.
+  /// - Returns: A configured board view.
   public func cellState(_ state: @escaping (Position) -> CellState) -> Self {
     var copy = self
     copy.cellStateProvider = state
     return copy
   }
 
+  /// The rendered board layout.
   public var body: some View {
     GeometryReader { proxy in
       let cellSide = proxy.size.width / CGFloat(board.size)

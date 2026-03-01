@@ -5,14 +5,19 @@ import Logging
 
 private let logger = Logger.queens(category: .audio)
 
+/// Default `GameSoundPlaying` implementation backed by `AVAudioPlayer`.
 public final class GameSoundPlayer: GameSoundPlaying {
   private let bundle: Bundle
   private var players: [GameSound: AVAudioPlayer] = [:]
 
+  /// Creates a sound player using this module's bundled resources.
   public init() {
     self.bundle = .module
   }
 
+  /// Preloads the given sounds into audio players.
+  ///
+  /// - Parameter sounds: Sounds that should be loaded eagerly.
   public func preload(_ sounds: [GameSound]) {
     logger.debug("Preloading \(sounds.count) sounds")
     for sound in sounds {
@@ -20,6 +25,9 @@ public final class GameSoundPlayer: GameSoundPlaying {
     }
   }
 
+  /// Plays a sound effect.
+  ///
+  /// - Parameter sound: The sound to play.
   public func play(_ sound: GameSound) {
     guard let player = player(for: sound) else {
       logger.error(
