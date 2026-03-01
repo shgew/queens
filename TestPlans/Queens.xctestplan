@@ -40,14 +40,6 @@
         "identifier" : "BoardTests",
         "name" : "BoardTests"
       }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:Dependencies\/ResourceStorage",
-        "identifier" : "ResourceStorageTests",
-        "name" : "ResourceStorageTests"
-      }
     }
   ],
   "version" : 1
