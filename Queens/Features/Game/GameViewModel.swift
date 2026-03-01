@@ -13,12 +13,15 @@ final class GameViewModel {
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
     private var game: Game<NQueensProblem>
+
+    private var areSoundsPreloaded = false
     private let soundPlayer: any GameSoundPlaying
+
     private(set) var winViewModel: WinViewModel?
+
     private(set) var placeFeedbackTrigger = 0
     private(set) var removeFeedbackTrigger = 0
     private(set) var invalidPlaceFeedbackTrigger = 0
-    private var areSoundsPreloaded = false
 
     var board: Board {
         game.board
@@ -126,6 +129,6 @@ final class GameViewModel {
     }
 }
 
-private extension GameViewModel {
+extension GameViewModel {
     private static let animation = Animation.default.speed(2)
 }
