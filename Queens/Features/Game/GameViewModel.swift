@@ -102,7 +102,7 @@ final class GameViewModel {
                     startedAt: game.startedAt,
                     solvedAt: solvedAt,
                     onPlayAgain: { [weak self] in
-                        self?.resetButtonTapped()
+                        self?.resetGame()
                     }
                 )
             }
@@ -111,12 +111,12 @@ final class GameViewModel {
         }
     }
 
-    func undoButtonTapped() {
-        game.undo()
-    }
-
     func resetButtonTapped() {
         soundPlayer.play(.reset)
+        resetGame()
+    }
+
+    private func resetGame() {
         withAnimation(Self.animation) {
             winScreenViewModel = nil
         }
