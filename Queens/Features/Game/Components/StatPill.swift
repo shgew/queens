@@ -9,6 +9,9 @@ struct StatPill: View {
 			Text(value)
 				.font(.title3.bold())
 				.monospacedDigit()
+				.lineLimit(1)
+				.minimumScaleFactor(0.7)
+				.allowsTightening(true)
 		} icon: {
 			Image(systemName: systemImage)
 				.font(.subheadline.weight(.semibold))
