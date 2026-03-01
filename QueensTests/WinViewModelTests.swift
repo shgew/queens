@@ -3,8 +3,9 @@ import Testing
 
 @testable import Queens
 
+@MainActor
 struct WinViewModelTests {
-  @Test func storedPropertiesMatchInitArguments() {
+  @Test func `stored properties match init arguments`() {
     let startedAt = Date.now
     let solvedAt = startedAt.addingTimeInterval(42)
 
@@ -22,7 +23,7 @@ struct WinViewModelTests {
     #expect(vm.solvedAt == solvedAt)
   }
 
-  @Test func playAgainButtonTappedInvokesClosure() {
+  @Test func `play again button tapped invokes closure`() {
     var called = false
     let vm = WinViewModel(
       boardSize: 4,

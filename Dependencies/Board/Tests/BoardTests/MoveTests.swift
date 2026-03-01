@@ -6,17 +6,17 @@ struct MoveTests {
 
   // MARK: - Opposite
 
-  @Test func oppositeOfPlaceIsRemove() {
+  @Test func `opposite of place is remove`() {
     let move = Move.place(queen, at: Position(row: 0, column: 0))
     #expect(move.opposite == .remove(queen, from: Position(row: 0, column: 0)))
   }
 
-  @Test func oppositeOfRemoveIsPlace() {
+  @Test func `opposite of remove is place`() {
     let move = Move.remove(queen, from: Position(row: 1, column: 2))
     #expect(move.opposite == .place(queen, at: Position(row: 1, column: 2)))
   }
 
-  @Test func oppositeIsItsOwnInverse() {
+  @Test func `opposite is its own inverse`() {
     let moves: [Move] = [
       .place(queen, at: Position(row: 0, column: 0)),
       .remove(queen, from: Position(row: 1, column: 1)),

@@ -16,36 +16,36 @@ struct GameViewModelTests {
 
   // MARK: - Initial State
 
-  @Test func initialBoardSize() {
+  @Test func `initial board size`() {
     #expect(vm.board.size == 4)
   }
 
-  @Test func initialPiecesRemaining() {
+  @Test func `initial pieces remaining`() {
     #expect(vm.piecesRemaining == 4)
   }
 
-  @Test func initialMoveCount() {
+  @Test func `initial move count`() {
     #expect(vm.moveCount == 0)
   }
 
-  @Test func initialBoardIsEmpty() {
+  @Test func `initial board is empty`() {
     #expect(vm.board.occupiedSquares.isEmpty)
   }
 
-  @Test func initialWinViewModelIsNil() {
+  @Test func `initial win view model is nil`() {
     #expect(vm.winViewModel == nil)
   }
 
   // MARK: - selectedBoardSize
 
-  @Test func settingBoardSizeCreatesNewGame() {
+  @Test func `setting board size creates new game`() {
     vm.selectedBoardSize = 5
     #expect(vm.board.size == 5)
     #expect(vm.piecesRemaining == 5)
     #expect(spy.playedSounds == [.boardSizeChanged])
   }
 
-  @Test func settingBoardSizeNilsWinViewModel() {
+  @Test func `setting board size nils win view model`() {
     // Solve the board first
     solve4Queens()
     #expect(vm.winViewModel != nil)
@@ -54,20 +54,20 @@ struct GameViewModelTests {
     #expect(vm.winViewModel == nil)
   }
 
-  @Test func settingSameBoardSizeIsNoOp() {
+  @Test func `setting same board size is no-op`() {
     vm.selectedBoardSize = 4
     #expect(spy.playedSounds.isEmpty)
   }
 
   // MARK: - load()
 
-  @Test func loadPreloadsSounds() {
+  @Test func `load preloads sounds`() {
     vm.load()
     #expect(spy.preloadedSounds.count == 1)
     #expect(spy.preloadedSounds[0] == GameSound.allCases)
   }
 
-  @Test func loadIsIdempotent() {
+  @Test func `load is idempotent`() {
     vm.load()
     vm.load()
     #expect(spy.preloadedSounds.count == 1)
@@ -75,12 +75,12 @@ struct GameViewModelTests {
 
   // MARK: - playTime(at:)
 
-  @Test func playTimeFormatsElapsedTime() {
+  @Test func `play time formats elapsed time`() {
     let time = vm.playTime(at: vm.startedAt.addingTimeInterval(125))
     #expect(time == "02:05")
   }
 
-  @Test func playTimeUsesSolvedAtWhenPresent() {
+  @Test func `play time uses solved at when present`() {
     solve4Queens()
     let solvedAt = vm.winViewModel!.solvedAt
 
@@ -92,12 +92,12 @@ struct GameViewModelTests {
 
   // MARK: - cellState(for:)
 
-  @Test func cellStateNormalForEmptyBoard() {
+  @Test func `cell state normal for empty board`() {
     let state = vm.cellState(for: Position(row: 0, column: 0))
     #expect(state == .normal)
   }
 
-  @Test func cellStateConflictingForConflictingQueens() {
+  @Test func `cell state conflicting for conflicting queens`() {
     // Place two queens that conflict (same row)
     vm.squareTapped(Position(row: 0, column: 0))
     vm.squareTapped(Position(row: 0, column: 1))
@@ -108,7 +108,7 @@ struct GameViewModelTests {
 
   // MARK: - squareTapped — place
 
-  @Test func placingQueenUpdatesBoardState() {
+  @Test func `placing queen updates board state`() {
     let pos = Position(row: 0, column: 0)
     vm.squareTapped(pos)
 
@@ -121,7 +121,7 @@ struct GameViewModelTests {
 
   // MARK: - squareTapped — remove
 
-  @Test func tappingOccupiedSquareRemovesIt() {
+  @Test func `tapping occupied square removes it`() {
     let pos = Position(row: 0, column: 0)
     vm.squareTapped(pos)  // place
     vm.squareTapped(pos)  // remove
@@ -135,7 +135,7 @@ struct GameViewModelTests {
 
   // MARK: - squareTapped — invalid
 
-  @Test func placingWhenNoPiecesRemainingPlaysInvalidMove() {
+  @Test func `placing when no pieces remaining plays invalid move`() {
     // Fill with 4 non-conflicting queens so piecesRemaining == 0
     solve4Queens()
     spy.resetPlayedSounds()
@@ -146,7 +146,7 @@ struct GameViewModelTests {
     #expect(vm.invalidPlaceFeedbackTrigger == 1)
   }
 
-  @Test func placingWhenBoardFullButUnsolvedPlaysInvalidMove() {
+  @Test func `placing when board full but unsolved plays invalid move`() {
     // Place 4 queens that conflict so board is full but unsolved
     vm.squareTapped(Position(row: 0, column: 0))
     vm.squareTapped(Position(row: 1, column: 1))
@@ -164,7 +164,7 @@ struct GameViewModelTests {
 
   // MARK: - squareTapped — solve
 
-  @Test func solvingBoardSetsWinViewModel() {
+  @Test func `solving board sets win view model`() {
     solve4Queens()
 
     #expect(vm.winViewModel != nil)
@@ -173,7 +173,7 @@ struct GameViewModelTests {
 
   // MARK: - resetButtonTapped
 
-  @Test func resetClearsBoardAndState() {
+  @Test func `reset clears board and state`() {
     vm.squareTapped(Position(row: 0, column: 0))
     spy.resetPlayedSounds()
 
@@ -187,7 +187,7 @@ struct GameViewModelTests {
 
   // MARK: - WinViewModel.playAgain integration
 
-  @Test func playAgainResetsGame() {
+  @Test func `play again resets game`() {
     solve4Queens()
     let win = vm.winViewModel!
 

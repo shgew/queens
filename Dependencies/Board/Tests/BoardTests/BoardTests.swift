@@ -5,19 +5,19 @@ import Testing
 struct BoardTests {
   let queen = Occupant(piece: .queen, side: .white)
 
-  @Test func newBoardIsEmpty() {
+  @Test func `new board is empty`() {
     let board = Board(size: 4)
     #expect(board.occupiedSquares.isEmpty)
   }
 
-  @Test func applyPlacesOccupant() {
+  @Test func `apply places occupant`() {
     var board = Board(size: 4)
     let pos = Position(row: 0, column: 0)
     board.apply(move: .place(queen, at: pos))
     #expect(board.occupiedSquares[pos] == queen)
   }
 
-  @Test func applyRemovesOccupant() {
+  @Test func `apply removes occupant`() {
     var board = Board(size: 4)
     let pos = Position(row: 0, column: 0)
     board.apply(move: .place(queen, at: pos))
@@ -25,7 +25,7 @@ struct BoardTests {
     #expect(board.occupiedSquares[pos] == nil)
   }
 
-  @Test func resetClearsBoard() {
+  @Test func `reset clears board`() {
     var board = Board(size: 4)
     board.apply(move: .place(queen, at: Position(row: 0, column: 1)))
     board.apply(move: .place(queen, at: Position(row: 1, column: 3)))

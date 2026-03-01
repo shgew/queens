@@ -21,18 +21,18 @@ struct GameTests {
   let problem = StubProblem()
   let queen = Occupant(piece: .queen, side: .white)
 
-  @Test func newGameIsSolved() {
+  @Test func `new game is solved`() {
     let game = Game(size: 4, problem: problem)
     #expect(game.isSolved)
   }
 
-  @Test func isSolvedIsFalseAfterApply() {
+  @Test func `is solved is false after apply`() {
     var game = Game(size: 4, problem: problem)
     game.apply(move: .place(Occupant(piece: .queen, side: .white), at: Position(row: 0, column: 0)))
     #expect(!game.isSolved)
   }
 
-  @Test func applyMutatesBoardAndReEvaluates() {
+  @Test func `apply mutates board and re-evaluates`() {
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 1, column: 2)
     game.apply(move: .place(queen, at: pos))
@@ -41,7 +41,7 @@ struct GameTests {
     #expect(game.evaluation == .unsolved(Set([pos])))
   }
 
-  @Test func resetClearsBoardAndReEvaluates() {
+  @Test func `reset clears board and re-evaluates`() {
     var game = Game(size: 4, problem: problem)
     game.apply(move: .place(queen, at: Position(row: 0, column: 0)))
     #expect(!game.isSolved)
@@ -51,7 +51,7 @@ struct GameTests {
     #expect(game.isSolved)
   }
 
-  @Test func resetUpdatesStartedAt() async throws {
+  @Test func `reset updates started at`() async throws {
     var game = Game(size: 4, problem: problem)
     let originalStartedAt = game.startedAt
 
@@ -63,7 +63,7 @@ struct GameTests {
 
   // MARK: - Move tracking
 
-  @Test func applyRecordsMove() {
+  @Test func `apply records move`() {
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 0, column: 0)
     game.apply(move: .place(queen, at: pos))
@@ -71,7 +71,7 @@ struct GameTests {
     #expect(game.moves == [.place(queen, at: pos)])
   }
 
-  @Test func removeMoveRecorded() {
+  @Test func `remove move recorded`() {
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 0, column: 0)
     game.apply(move: .place(queen, at: pos))
@@ -83,7 +83,7 @@ struct GameTests {
 
   // MARK: - Undo
 
-  @Test func undoReversesPlace() {
+  @Test func `undo reverses place`() {
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 1, column: 2)
     game.apply(move: .place(queen, at: pos))
@@ -95,7 +95,7 @@ struct GameTests {
     #expect(game.isSolved)
   }
 
-  @Test func undoReversesRemove() {
+  @Test func `undo reverses remove`() {
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 1, column: 2)
     game.apply(move: .place(queen, at: pos))
@@ -107,7 +107,7 @@ struct GameTests {
     #expect(game.moves == [.place(queen, at: pos)])
   }
 
-  @Test func undoOnEmptyMovesIsNoOp() {
+  @Test func `undo on empty moves is no-op`() {
     var game = Game(size: 4, problem: problem)
     game.undo()
 
@@ -116,7 +116,7 @@ struct GameTests {
     #expect(game.isSolved)
   }
 
-  @Test func resetClearsMoves() {
+  @Test func `reset clears moves`() {
     var game = Game(size: 4, problem: problem)
     game.apply(move: .place(queen, at: Position(row: 0, column: 0)))
     game.apply(move: .place(queen, at: Position(row: 1, column: 1)))
@@ -126,5 +126,4 @@ struct GameTests {
     #expect(game.moves.isEmpty)
     #expect(game.board.occupiedSquares.isEmpty)
   }
-
 }
