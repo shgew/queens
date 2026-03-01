@@ -2,12 +2,13 @@ import AVFAudio
 import Foundation
 import OSLog
 
+private let logger = Logger(
+  subsystem: Bundle.main.bundleIdentifier ?? "Queens",
+  category: "AppAudioSession"
+)
+
 final class AppAudioSession {
   private let audioSession: AVAudioSession
-  private let logger = Logger(
-    subsystem: Bundle.main.bundleIdentifier ?? "Queens",
-    category: "AppAudioSession"
-  )
 
   init(audioSession: AVAudioSession) {
     self.audioSession = audioSession
@@ -19,7 +20,7 @@ final class AppAudioSession {
       try audioSession.setActive(true)
     } catch {
       logger.error(
-        "Failed to configure audio session: \(error.localizedDescription, privacy: .public)"
+        "Failed to configure audio session: \(error.localizedDescription)"
       )
     }
   }

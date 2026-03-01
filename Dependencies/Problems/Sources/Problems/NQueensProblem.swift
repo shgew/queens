@@ -1,4 +1,10 @@
 import Board
+import OSLog
+
+private let logger = Logger(
+  subsystem: "Queens.Problems",
+  category: "NQueensProblem"
+)
 
 /// The N-Queens problem: place *N* queens on an *N*×*N* board so that no two
 /// queens share the same row, column, or diagonal.
@@ -28,11 +34,24 @@ public struct NQueensProblem: Problem {
   ) -> Evaluation<Diagnostic> {
     let conflicts = computeConflicts(on: board)
     if conflicts.isEmpty && board.occupiedSquares.count == board.size {
+      logger.info(
+        "Solved N-Queens for board size \(board.size) after \(moves.count) moves"
+      )
       return .solved
+    }
+    logger.debug(
+      "Evaluated board size \(board.size): queens \(board.occupiedSquares.count), conflicts \(conflicts.count)"
+    )
+    if !conflicts.isEmpty {
+      logger.debug(
+        "Conflict positions: \(conflictPositionsDescription(conflicts))"
+      )
     }
     return .unsolved(Diagnostic(conflicts: conflicts))
   }
+}
 
+extension NQueensProblem {
   /// Returns the set of queen positions involved in at least one conflict.
   ///
   /// Uses bitmask tracking across rows, columns, diagonals, and
@@ -110,5 +129,20 @@ public struct NQueensProblem: Problem {
     }
 
     return result
+  }
+}
+
+// MARK: - Logging
+extension NQueensProblem {
+  private func conflictPositionsDescription(_ conflicts: Set<Position>) -> String {
+    conflicts
+      .sorted {
+        if $0.row == $1.row {
+          return $0.column < $1.column
+        }
+        return $0.row < $1.row
+      }
+      .map { "(\($0.row),\($0.column))" }
+      .joined(separator: ", ")
   }
 }

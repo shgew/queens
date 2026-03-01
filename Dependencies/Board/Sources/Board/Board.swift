@@ -1,3 +1,10 @@
+import OSLog
+
+private let logger = Logger(
+  subsystem: "Queens.Board",
+  category: "Board"
+)
+
 /// A square grid that maps positions to occupants.
 ///
 /// `Board` is a general-purpose grid with no game-specific rules.
@@ -22,6 +29,7 @@ public struct Board: Sendable {
     )
     self.size = size
     self.occupiedSquares = [:]
+    logger.debug("Initialized board with size \(size)")
   }
 
   /// Applies a move to the board.
@@ -32,9 +40,15 @@ public struct Board: Sendable {
     case .place(let occupant, at: let position):
       boundsCheck(position)
       occupiedSquares[position] = occupant
+      logger.debug(
+        "Placed occupant at row \(position.row), column \(position.column)"
+      )
     case .remove(_, from: let position):
       boundsCheck(position)
       occupiedSquares[position] = nil
+      logger.debug(
+        "Removed occupant at row \(position.row), column \(position.column)"
+      )
     }
   }
 
@@ -51,5 +65,6 @@ public struct Board: Sendable {
   /// Removes all occupants from the board.
   public mutating func reset() {
     occupiedSquares = [:]
+    logger.info("Board reset")
   }
 }

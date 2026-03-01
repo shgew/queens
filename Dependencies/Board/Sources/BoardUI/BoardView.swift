@@ -1,5 +1,11 @@
 import Board
+import OSLog
 import SwiftUI
+
+private let logger = Logger(
+  subsystem: "Queens.BoardUI",
+  category: "BoardView"
+)
 
 /// A chess-style board that displays pieces on an alternating grid.
 ///
@@ -90,6 +96,9 @@ public struct BoardView: View {
       .conflicting(cellStateProvider(position) == .conflicting)
       .contentShape(Rectangle())
       .onTapGesture {
+        logger.debug(
+          "Tapped square row \(position.row), column \(position.column)"
+        )
         squareTapHandler(position)
       }
   }
