@@ -1,0 +1,44 @@
+{
+  "configurations" : [
+    {
+      "id" : "3EFE9EBE-2934-479E-A42D-7C825F47C9CF",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Queens.xcodeproj",
+      "identifier" : "89FD60D62F5088400085AC95",
+      "name" : "Queens"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Queens.xcodeproj",
+        "identifier" : "897EBF942F54821000EB6CAA",
+        "name" : "QueensTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Dependencies\/Game",
+        "identifier" : "GameTests",
+        "name" : "GameTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Dependencies\/Board",
+        "identifier" : "BoardTests",
+        "name" : "BoardTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -42,6 +42,16 @@
 		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		897EBFB22F54865400EB6CAA /* Exceptions for "TestPlans" folder in "QueensTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Queens.xctestplan,
+			);
+			target = 897EBF942F54821000EB6CAA /* QueensTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		897EBF6B2F547D0F00EB6CAA /* Dependencies */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -51,6 +61,14 @@
 		897EBF962F54821000EB6CAA /* QueensTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = QueensTests;
+			sourceTree = "<group>";
+		};
+		897EBFB12F54865400EB6CAA /* TestPlans */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				897EBFB22F54865400EB6CAA /* Exceptions for "TestPlans" folder in "QueensTests" target */,
+			);
+			path = TestPlans;
 			sourceTree = "<group>";
 		};
 		89FD60D92F5088400085AC95 /* Queens */ = {
@@ -118,6 +136,7 @@
 				89D6C6D82F509671006FCBCD /* README.md */,
 				89275EF32F534633001A9796 /* TODO.md */,
 				897EBF962F54821000EB6CAA /* QueensTests */,
+				897EBFB12F54865400EB6CAA /* TestPlans */,
 				89ED1CBC2F547CA3001ADFA4 /* Products */,
 				897EBF6C2F547D5200EB6CAA /* Frameworks */,
 			);
@@ -141,6 +160,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				897EBF962F54821000EB6CAA /* QueensTests */,
+				897EBFB12F54865400EB6CAA /* TestPlans */,
 			);
 			name = QueensTests;
 			packageProductDependencies = (
@@ -448,6 +468,7 @@
 				DEVELOPMENT_TEAM = 77QGNK2MDF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.puzzle-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -480,6 +501,7 @@
 				DEVELOPMENT_TEAM = 77QGNK2MDF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.puzzle-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
