@@ -7,7 +7,6 @@ import Observation
 import Problems
 import SwiftUI
 
-@MainActor
 @Observable
 final class GameViewModel {
   static let supportedBoardSizes = Array(Board.minimumSize...32)

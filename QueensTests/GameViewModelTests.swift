@@ -1,0 +1,210 @@
+import Board
+import BoardUI
+import Foundation
+import GameAudio
+import Testing
+
+@testable import Queens
+
+struct GameViewModelTests {
+  let spy = SpyGameSoundPlayer()
+  let vm: GameViewModel
+
+  init() {
+    vm = GameViewModel(size: 4, soundPlayer: spy)
+  }
+
+  // MARK: - Initial State
+
+  @Test func initialBoardSize() {
+    #expect(vm.board.size == 4)
+  }
+
+  @Test func initialPiecesRemaining() {
+    #expect(vm.piecesRemaining == 4)
+  }
+
+  @Test func initialMoveCount() {
+    #expect(vm.moveCount == 0)
+  }
+
+  @Test func initialBoardIsEmpty() {
+    #expect(vm.board.occupiedSquares.isEmpty)
+  }
+
+  @Test func initialWinViewModelIsNil() {
+    #expect(vm.winViewModel == nil)
+  }
+
+  // MARK: - selectedBoardSize
+
+  @Test func settingBoardSizeCreatesNewGame() {
+    vm.selectedBoardSize = 5
+    #expect(vm.board.size == 5)
+    #expect(vm.piecesRemaining == 5)
+    #expect(spy.playedSounds == [.boardSizeChanged])
+  }
+
+  @Test func settingBoardSizeNilsWinViewModel() {
+    // Solve the board first
+    solve4Queens()
+    #expect(vm.winViewModel != nil)
+
+    vm.selectedBoardSize = 5
+    #expect(vm.winViewModel == nil)
+  }
+
+  @Test func settingSameBoardSizeIsNoOp() {
+    vm.selectedBoardSize = 4
+    #expect(spy.playedSounds.isEmpty)
+  }
+
+  // MARK: - load()
+
+  @Test func loadPreloadsSounds() {
+    vm.load()
+    #expect(spy.preloadedSounds.count == 1)
+    #expect(spy.preloadedSounds[0] == GameSound.allCases)
+  }
+
+  @Test func loadIsIdempotent() {
+    vm.load()
+    vm.load()
+    #expect(spy.preloadedSounds.count == 1)
+  }
+
+  // MARK: - playTime(at:)
+
+  @Test func playTimeFormatsElapsedTime() {
+    let time = vm.playTime(at: vm.startedAt.addingTimeInterval(125))
+    #expect(time == "02:05")
+  }
+
+  @Test func playTimeUsesSolvedAtWhenPresent() {
+    solve4Queens()
+    let solvedAt = vm.winViewModel!.solvedAt
+
+    // Even with a far-future date, should use solvedAt
+    let time = vm.playTime(at: solvedAt.addingTimeInterval(9999))
+    let expected = vm.startedAt.formattedElapsedTime(to: solvedAt)
+    #expect(time == expected)
+  }
+
+  // MARK: - cellState(for:)
+
+  @Test func cellStateNormalForEmptyBoard() {
+    let state = vm.cellState(for: Position(row: 0, column: 0))
+    #expect(state == .normal)
+  }
+
+  @Test func cellStateConflictingForConflictingQueens() {
+    // Place two queens that conflict (same row)
+    vm.squareTapped(Position(row: 0, column: 0))
+    vm.squareTapped(Position(row: 0, column: 1))
+
+    let state = vm.cellState(for: Position(row: 0, column: 0))
+    #expect(state == .conflicting)
+  }
+
+  // MARK: - squareTapped — place
+
+  @Test func placingQueenUpdatesBoardState() {
+    let pos = Position(row: 0, column: 0)
+    vm.squareTapped(pos)
+
+    #expect(vm.piecesRemaining == 3)
+    #expect(vm.moveCount == 1)
+    #expect(!vm.board.occupiedSquares.isEmpty)
+    #expect(spy.playedSounds == [.place])
+    #expect(vm.placeFeedbackTrigger == 1)
+  }
+
+  // MARK: - squareTapped — remove
+
+  @Test func tappingOccupiedSquareRemovesIt() {
+    let pos = Position(row: 0, column: 0)
+    vm.squareTapped(pos)  // place
+    vm.squareTapped(pos)  // remove
+
+    #expect(vm.piecesRemaining == 4)
+    #expect(vm.moveCount == 2)
+    #expect(vm.board.occupiedSquares.isEmpty)
+    #expect(spy.playedSounds == [.place, .remove])
+    #expect(vm.removeFeedbackTrigger == 1)
+  }
+
+  // MARK: - squareTapped — invalid
+
+  @Test func placingWhenNoPiecesRemainingPlaysInvalidMove() {
+    // Fill with 4 non-conflicting queens so piecesRemaining == 0
+    solve4Queens()
+    spy.resetPlayedSounds()
+
+    // Try placing on an unoccupied square — no pieces remaining
+    vm.squareTapped(Position(row: 3, column: 3))
+    #expect(spy.playedSounds == [.invalidMove])
+    #expect(vm.invalidPlaceFeedbackTrigger == 1)
+  }
+
+  @Test func placingWhenBoardFullButUnsolvedPlaysInvalidMove() {
+    // Place 4 queens that conflict so board is full but unsolved
+    vm.squareTapped(Position(row: 0, column: 0))
+    vm.squareTapped(Position(row: 1, column: 1))
+    vm.squareTapped(Position(row: 2, column: 2))
+    vm.squareTapped(Position(row: 3, column: 3))
+    spy.resetPlayedSounds()
+
+    #expect(vm.piecesRemaining == 0)
+
+    vm.squareTapped(Position(row: 0, column: 3))  // can't place — no pieces remaining
+    // Tapping occupied removes, tapping unoccupied triggers invalidMove
+    #expect(spy.playedSounds == [.invalidMove])
+    #expect(vm.invalidPlaceFeedbackTrigger == 1)
+  }
+
+  // MARK: - squareTapped — solve
+
+  @Test func solvingBoardSetsWinViewModel() {
+    solve4Queens()
+
+    #expect(vm.winViewModel != nil)
+    #expect(spy.playedSounds.contains(.win))
+  }
+
+  // MARK: - resetButtonTapped
+
+  @Test func resetClearsBoardAndState() {
+    vm.squareTapped(Position(row: 0, column: 0))
+    spy.resetPlayedSounds()
+
+    vm.resetButtonTapped()
+
+    #expect(vm.board.occupiedSquares.isEmpty)
+    #expect(vm.moveCount == 0)
+    #expect(vm.winViewModel == nil)
+    #expect(spy.playedSounds == [.reset])
+  }
+
+  // MARK: - WinViewModel.playAgain integration
+
+  @Test func playAgainResetsGame() {
+    solve4Queens()
+    let win = vm.winViewModel!
+
+    win.playAgainButtonTapped()
+
+    #expect(vm.board.occupiedSquares.isEmpty)
+    #expect(vm.moveCount == 0)
+    #expect(vm.winViewModel == nil)
+  }
+
+  // MARK: - Helpers
+
+  /// Places queens at (0,1), (1,3), (2,0), (3,2) — a valid 4-queens solution.
+  private func solve4Queens() {
+    vm.squareTapped(Position(row: 0, column: 1))
+    vm.squareTapped(Position(row: 1, column: 3))
+    vm.squareTapped(Position(row: 2, column: 0))
+    vm.squareTapped(Position(row: 3, column: 2))
+  }
+}
