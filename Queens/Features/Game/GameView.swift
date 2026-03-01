@@ -1,8 +1,8 @@
 import BoardUI
 import SwiftUI
 
-struct ContentView: View {
-    @State private var model = ContentViewModel()
+struct GameView: View {
+    @State private var model = GameViewModel()
 
     var body: some View {
         ZStack {
@@ -14,8 +14,8 @@ struct ContentView: View {
                     .padding(.horizontal)
             }
 
-            if model.isWinScreenPresented {
-                winOverlay
+            if let winScreenViewModel = model.winScreenViewModel {
+                winOverlay(for: winScreenViewModel)
             }
         }
         .task {
@@ -42,7 +42,7 @@ struct ContentView: View {
                 StatPill(
                     systemImage: "clock",
                     value: formattedElapsedTime(
-                        till: model.solvedAt ?? context.date
+                        till: model.winScreenViewModel?.solvedAt ?? context.date
                     )
                 )
             }
@@ -59,7 +59,7 @@ struct ContentView: View {
 
     private var boardSizePicker: some View {
         Picker(selection: $model.selectedBoardSize) {
-            ForEach(ContentViewModel.supportedBoardSizes, id: \.self) { size in
+            ForEach(GameViewModel.supportedBoardSizes, id: \.self) { size in
                 Text("\(size)×\(size)")
                     .tag(size)
             }
@@ -83,16 +83,17 @@ struct ContentView: View {
             .cellState { model.conflicts.contains($0) ? .conflicting : .normal }
     }
 
-    private var winOverlay: some View {
-        ZStack {
+    private func winOverlay(for viewModel: WinScreenViewModel) -> some View {
+        return ZStack {
             Color.black.opacity(0.2)
                 .ignoresSafeArea()
 
             WinScreen(
-                boardSize: model.selectedBoardSize,
-                moveCount: model.moveCount,
+                boardSize: viewModel.boardSize,
+                moveCount: viewModel.moveCount,
                 elapsedTime: formattedElapsedTime(
-                    till: model.solvedAt ?? .now
+                    from: viewModel.startedAt,
+                    to: viewModel.solvedAt
                 ),
                 onReset: model.resetButtonTapped
             )
@@ -103,8 +104,12 @@ struct ContentView: View {
     }
 
     private func formattedElapsedTime(till date: Date) -> String {
+        formattedElapsedTime(from: model.startedAt, to: date)
+    }
+
+    private func formattedElapsedTime(from start: Date, to end: Date) -> String {
         let elapsed = Duration.seconds(
-            max(0, date.timeIntervalSince(model.startedAt))
+            max(0, end.timeIntervalSince(start))
         )
         let pattern: Duration.TimeFormatStyle.Pattern
         if elapsed >= .seconds(3600) {
@@ -117,5 +122,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    GameView()
 }

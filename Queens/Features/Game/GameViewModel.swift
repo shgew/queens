@@ -8,15 +8,13 @@ import SwiftUI
 
 @MainActor
 @Observable
-final class ContentViewModel {
+final class GameViewModel {
     static let maximumBoardSize = 32
     static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
 
     private var game: Game<NQueensProblem>
     private let soundPlayer: any GameSoundPlaying
-    // TODO: Separate view model for the win screen?
-    private(set) var isWinScreenPresented = false
-    private(set) var solvedAt: Date?
+    private(set) var winScreenViewModel: WinScreenViewModel?
     private(set) var placeFeedbackTrigger = 0
     private(set) var removeFeedbackTrigger = 0
     private var areSoundsPreloaded = false
@@ -50,8 +48,7 @@ final class ContentViewModel {
         set {
             guard newValue != game.board.size else { return }
             game = Game(size: newValue, problem: NQueensProblem())
-            isWinScreenPresented = false
-            solvedAt = nil
+            winScreenViewModel = nil
             soundPlayer.play(.boardSizeChanged)
         }
     }
@@ -96,10 +93,15 @@ final class ContentViewModel {
         placeFeedbackTrigger += 1
 
         if game.isSolved {
-            solvedAt = .now
+            let solvedAt = Date.now
             soundPlayer.play(.win)
             withAnimation(Self.animation) {
-                isWinScreenPresented = true
+                winScreenViewModel = WinScreenViewModel(
+                    boardSize: game.board.size,
+                    moveCount: game.moves.count,
+                    startedAt: game.startedAt,
+                    solvedAt: solvedAt
+                )
             }
         } else {
             soundPlayer.play(.place)
@@ -113,13 +115,12 @@ final class ContentViewModel {
     func resetButtonTapped() {
         soundPlayer.play(.reset)
         withAnimation(Self.animation) {
-            isWinScreenPresented = false
+            winScreenViewModel = nil
         }
         game.reset()
-        solvedAt = nil
     }
 }
 
-private extension ContentViewModel {
+private extension GameViewModel {
     private static let animation = Animation.default.speed(2)
 }
