@@ -1,4 +1,5 @@
 import Foundation
+import ResourceStorage
 
 protocol BestTimesStoring {
   func bestTime(forSize size: Int) -> TimeInterval?
@@ -6,36 +7,50 @@ protocol BestTimesStoring {
   func record(time: TimeInterval, forSize size: Int) -> Bool
 }
 
-protocol Storage<Value> {
-  associatedtype Value
-  func load() -> Value
-  func save(_ value: Value)
+struct BestTimesResource: StorageResource {
+  static let resourceID = "best-times"
+
+  let id = Self.resourceID
+  let defaultValue: [Int: TimeInterval] = [:]
 }
 
 final class BestTimesStore: BestTimesStoring {
-  private let storage: any Storage<[Int: TimeInterval]>
+  private let storage: any ResourceStorage
+  private let resource: BestTimesResource
   private var times: [Int: TimeInterval]?
+  private let lock = NSLock()
 
   init(
-    storage: any Storage<[Int: TimeInterval]> = FileStorage<[Int: TimeInterval]>.bestTimesStorage()
+    storage: any ResourceStorage = Self.makeDefaultStorage(),
+    resource: BestTimesResource = BestTimesResource()
   ) {
     self.storage = storage
+    self.resource = resource
   }
 
   func bestTime(forSize size: Int) -> TimeInterval? {
-    let loadedTimes = loadTimesIfNeeded()
-    return loadedTimes[size]
+    lock.lock()
+    defer { lock.unlock() }
+    return loadTimesIfNeeded()[size]
   }
 
   @discardableResult
   func record(time: TimeInterval, forSize size: Int) -> Bool {
+    lock.lock()
+    defer { lock.unlock() }
+
     var loadedTimes = loadTimesIfNeeded()
     if let existing = loadedTimes[size], existing <= time {
       return false
     }
+
     loadedTimes[size] = time
     times = loadedTimes
-    storage.save(loadedTimes)
+    do {
+      try storage.save(loadedTimes, for: resource)
+    } catch {
+      print("BestTimesStore failed to save: \(error)")
+    }
     return true
   }
 }
@@ -45,68 +60,20 @@ extension BestTimesStore {
     if let times {
       return times
     }
-    let loadedTimes = storage.load()
+    let loadedTimes: [Int: TimeInterval]
+    do {
+      loadedTimes = try storage.load(resource)
+    } catch {
+      print("BestTimesStore failed to load: \(error)")
+      loadedTimes = resource.defaultValue
+    }
     times = loadedTimes
     return loadedTimes
   }
-}
 
-final class FileStorage<Value: Codable>: Storage {
-  private let fileURL: URL
-  private let defaultValue: Value
-
-  init(
-    directory: URL,
-    fileName: String,
-    defaultValue: Value
-  ) {
-    fileURL = directory.appendingPathComponent(fileName)
-    self.defaultValue = defaultValue
-  }
-
-  func load() -> Value {
-    do {
-      let data = try Data(contentsOf: fileURL)
-      return try JSONDecoder().decode(Value.self, from: data)
-    } catch let error as CocoaError where error.code == .fileReadNoSuchFile {
-      return defaultValue
-    } catch {
-      print("FileStorage failed to load best times: \(error)")
-      return defaultValue
-    }
-  }
-
-  func save(_ value: Value) {
-    do {
-      let data = try JSONEncoder().encode(value)
-      try data.write(to: fileURL, options: .atomic)
-    } catch {
-      print("FileStorage failed to save best times: \(error)")
-    }
-  }
-}
-
-extension FileStorage where Value == [Int: TimeInterval] {
-  static func bestTimesStorage(
-    directory: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0],
-    fileName: String = "best-times.json"
-  ) -> FileStorage {
-    FileStorage(directory: directory, fileName: fileName, defaultValue: [:])
-  }
-}
-
-final class InMemoryStorage<Value>: Storage {
-  private var value: Value
-
-  init(initialValue: Value) {
-    value = initialValue
-  }
-
-  func load() -> Value {
-    value
-  }
-
-  func save(_ value: Value) {
-    self.value = value
+  private static func makeDefaultStorage(fileManager: FileManager = .default) -> FileResourceStorage {
+    let directory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+      .appendingPathComponent("Queens", isDirectory: true)
+    return FileResourceStorage(directory: directory, fileManager: fileManager)
   }
 }

@@ -2,6 +2,7 @@ import Board
 import BoardUI
 import Foundation
 import GameAudio
+import ResourceStorage
 import Testing
 
 @testable import Queens
@@ -14,7 +15,7 @@ struct NQueensPuzzleViewModelTests {
     vm = NQueensPuzzleViewModel(
       size: 4,
       soundPlayer: spy,
-      bestTimes: BestTimesStore(storage: InMemoryStorage(initialValue: [:]))
+      bestTimes: BestTimesStore(storage: InMemoryResourceStorage())
     )
   }
 
