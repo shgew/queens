@@ -18,12 +18,28 @@ actor BestTimesStore: BestTimesStoring {
       )
       self.init(modelContainer: container)
     } catch {
-      fatalError("Failed to create SwiftData container (isStoredInMemoryOnly: \(isStoredInMemoryOnly)): \(error)")
+      fatalError(
+        "Failed to create SwiftData container (isStoredInMemoryOnly: \(isStoredInMemoryOnly)): \(error)"
+      )
     }
   }
 
   func bestTime(for boardSize: Int) async -> TimeInterval? {
     fetchTopRecords(for: boardSize, limit: 1).first?.time
+  }
+
+  func topTimesByBoardSize() async -> [LeaderboardSection] {
+    let records = fetchAllRecordsSorted()
+    let grouped = Dictionary(grouping: records, by: \.boardSize)
+    return grouped.compactMap { entry in
+      guard !entry.value.isEmpty else {
+        return nil
+      }
+      return LeaderboardSection(
+        boardSize: entry.key,
+        times: entry.value.map(\.time)
+      )
+    }
   }
 
   @discardableResult
@@ -61,6 +77,22 @@ actor BestTimesStore: BestTimesStoring {
 }
 
 extension BestTimesStore {
+  private func fetchAllRecordsSorted() -> [BestTimeRecord] {
+    let descriptor = FetchDescriptor<BestTimeRecord>(
+      sortBy: [
+        SortDescriptor(\.boardSize, order: .forward),
+        SortDescriptor(\.time, order: .forward),
+      ]
+    )
+
+    do {
+      return try modelContext.fetch(descriptor)
+    } catch {
+      logger.error("Failed to fetch leaderboard records: \(error)")
+      return []
+    }
+  }
+
   private func fetchTopRecords(
     for boardSize: Int,
     limit: Int? = nil
@@ -96,11 +128,6 @@ extension BestTimesStore {
 }
 
 extension BestTimesStore {
-  static var live: BestTimesStore {
-    BestTimesStore(isStoredInMemoryOnly: false)
-  }
-
-  static var preview: BestTimesStore {
-    BestTimesStore(isStoredInMemoryOnly: true)
-  }
+  static let live = BestTimesStore(isStoredInMemoryOnly: false)
+  static let preview = BestTimesStore(isStoredInMemoryOnly: true)
 }

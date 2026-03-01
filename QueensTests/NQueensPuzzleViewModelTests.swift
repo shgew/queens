@@ -36,6 +36,10 @@ struct NQueensPuzzleViewModelTests {
     #expect(vm.winViewModel == nil)
   }
 
+  @Test func `initial leaderboard view model is nil`() {
+    #expect(vm.leaderboardViewModel == nil)
+  }
+
   // MARK: - selectedBoardSize
 
   @Test func `setting board size creates new game`() {
@@ -204,6 +208,13 @@ struct NQueensPuzzleViewModelTests {
     #expect(vm.board.occupiedSquares.isEmpty)
     #expect(vm.moveCount == 0)
     #expect(vm.winViewModel == nil)
+  }
+
+  // MARK: - leaderboard
+
+  @Test func `leaderboard button creates leaderboard view model`() {
+    vm.leaderboardButtonTapped()
+    #expect(vm.leaderboardViewModel != nil)
   }
 
   // MARK: - Helpers
