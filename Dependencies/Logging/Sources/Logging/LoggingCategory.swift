@@ -10,4 +10,6 @@ public enum LoggingCategory: String, Sendable {
   case game
   /// Problem evaluation events.
   case problems
+  /// Resource storage events.
+  case storage
 }

@@ -14,9 +14,13 @@ let package = Package(
       targets: ["ResourceStorage"]
     )
   ],
+  dependencies: [
+    .package(path: "../Logging"),
+  ],
   targets: [
     .target(
-      name: "ResourceStorage"
+      name: "ResourceStorage",
+      dependencies: ["Logging"]
     ),
     .testTarget(
       name: "ResourceStorageTests",

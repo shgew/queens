@@ -1,4 +1,6 @@
 import Foundation
+import Logging
+import OSLog
 
 /// A ``ResourceStorage`` that persists values as JSON files in a directory on disk.
 ///
@@ -6,6 +8,8 @@ import Foundation
 /// automatically on the first save if it doesn't already exist.
 ///
 /// Loaded values are cached in memory to avoid redundant disk reads.
+private let logger = Logger.queens(category: .storage)
+
 public actor FileResourceStorage: ResourceStorage {
   let directory: URL
   let fileManager: FileManager
@@ -37,24 +41,38 @@ public actor FileResourceStorage: ResourceStorage {
 
   public func load<Value>(_ resource: Resource<Value>) async throws -> Value {
     if let cached: Value = await cache.value(forKey: resource.id) {
+      logger.debug("Cache hit for \(resource.id)")
       return cached
     }
 
     let fileURL = fileURL(for: resource)
     guard let data = fileManager.contents(atPath: fileURL.path()) else {
+      logger.debug("No file for \(resource.id), returning default")
       return resource.defaultValue
     }
 
-    let value = try decoder.decode(Value.self, from: data)
-    await cache.setValue(value, forKey: resource.id)
-    return value
+    do {
+      let value = try decoder.decode(Value.self, from: data)
+      await cache.setValue(value, forKey: resource.id)
+      logger.debug("Loaded \(resource.id) from disk")
+      return value
+    } catch {
+      logger.error("Failed to decode \(resource.id): \(error)")
+      throw error
+    }
   }
 
   public func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {
     try ensureDirectoryExists()
-    let data = try encoder.encode(value)
-    fileManager.createFile(atPath: fileURL(for: resource).path(), contents: data)
-    await cache.setValue(value, forKey: resource.id)
+    do {
+      let data = try encoder.encode(value)
+      fileManager.createFile(atPath: fileURL(for: resource).path(), contents: data)
+      await cache.setValue(value, forKey: resource.id)
+      logger.debug("Saved \(resource.id)")
+    } catch {
+      logger.error("Failed to encode \(resource.id): \(error)")
+      throw error
+    }
   }
 }
 
