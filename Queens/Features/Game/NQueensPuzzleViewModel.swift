@@ -8,7 +8,7 @@ import Problems
 import SwiftUI
 
 @Observable
-final class GameViewModel {
+final class NQueensPuzzleViewModel {
   static let supportedBoardSizes = Array(Board.minimumSize...32)
 
   private var game: Game<NQueensProblem>
@@ -30,7 +30,7 @@ final class GameViewModel {
 }
 
 // MARK: - View Exposed
-extension GameViewModel {
+extension NQueensPuzzleViewModel {
   var board: Board {
     game.board
   }
@@ -97,7 +97,7 @@ extension GameViewModel {
 }
 
 // MARK: - Helpers
-extension GameViewModel {
+extension NQueensPuzzleViewModel {
   private static let animation = Animation.default.speed(2)
 
   private var conflicts: Set<Position> {

@@ -6,12 +6,12 @@ import Testing
 
 @testable import Queens
 
-struct GameViewModelTests {
+struct NQueensPuzzleViewModelTests {
   let spy = SpyGameSoundPlayer()
-  let vm: GameViewModel
+  let vm: NQueensPuzzleViewModel
 
   init() {
-    vm = GameViewModel(size: 4, soundPlayer: spy)
+    vm = NQueensPuzzleViewModel(size: 4, soundPlayer: spy)
   }
 
   // MARK: - Initial State

@@ -1,8 +1,8 @@
 import BoardUI
 import SwiftUI
 
-struct GameView: View {
-  @State private var model = GameViewModel()
+struct NQueensPuzzleView: View {
+  @State private var model = NQueensPuzzleViewModel()
 
   var body: some View {
     ZStack {
@@ -65,7 +65,7 @@ struct GameView: View {
 
   private var boardSizePicker: some View {
     Picker(selection: $model.selectedBoardSize) {
-      ForEach(GameViewModel.supportedBoardSizes, id: \.self) { size in
+      ForEach(NQueensPuzzleViewModel.supportedBoardSizes, id: \.self) { size in
         Text("\(size)×\(size)")
           .tag(size)
       }
@@ -103,5 +103,5 @@ struct GameView: View {
 }
 
 #Preview {
-  GameView()
+  NQueensPuzzleView()
 }
