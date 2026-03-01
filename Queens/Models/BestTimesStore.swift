@@ -9,6 +9,19 @@ private let logger = Logger.queens(category: .storage)
 actor BestTimesStore: BestTimesStoring {
   private static let maxRecordsPerSize = 10
 
+  init(isStoredInMemoryOnly: Bool) {
+    do {
+      let configuration = ModelConfiguration(isStoredInMemoryOnly: isStoredInMemoryOnly)
+      let container = try ModelContainer(
+        for: BestTimeRecord.self,
+        configurations: configuration
+      )
+      self.init(modelContainer: container)
+    } catch {
+      fatalError("Failed to create SwiftData container (isStoredInMemoryOnly: \(isStoredInMemoryOnly)): \(error)")
+    }
+  }
+
   func bestTime(for boardSize: Int) async -> TimeInterval? {
     fetchTopRecords(for: boardSize, limit: 1).first?.time
   }
@@ -19,11 +32,12 @@ actor BestTimesStore: BestTimesStoring {
       for: boardSize,
       limit: Self.maxRecordsPerSize
     )
-    let isNewBest = if let fastestRecord = topRecords.first {
-      time < fastestRecord.time
-    } else {
-      true
-    }
+    let isNewBest =
+      if let fastestRecord = topRecords.first {
+        time < fastestRecord.time
+      } else {
+        true
+      }
 
     if topRecords.count == Self.maxRecordsPerSize,
       let slowest = topRecords.last,
@@ -79,28 +93,14 @@ extension BestTimesStore {
       modelContext.delete(record)
     }
   }
-
 }
 
 extension BestTimesStore {
   static var live: BestTimesStore {
-    makeStore(inMemory: false)
+    BestTimesStore(isStoredInMemoryOnly: false)
   }
 
   static var preview: BestTimesStore {
-    makeStore(inMemory: true)
-  }
-
-  private static func makeStore(inMemory: Bool) -> BestTimesStore {
-    do {
-      let configuration = ModelConfiguration(isStoredInMemoryOnly: inMemory)
-      let container = try ModelContainer(
-        for: BestTimeRecord.self,
-        configurations: configuration
-      )
-      return BestTimesStore(modelContainer: container)
-    } catch {
-      fatalError("Failed to create SwiftData container (inMemory: \(inMemory)): \(error)")
-    }
+    BestTimesStore(isStoredInMemoryOnly: true)
   }
 }
