@@ -45,10 +45,10 @@ struct GameViewModelTests {
     #expect(spy.playedSounds == [.boardSizeChanged])
   }
 
-  @Test func `setting board size nils win view model`() {
+  @Test func `setting board size nils win view model`() throws {
     // Solve the board first
     solve4Queens()
-    #expect(vm.winViewModel != nil)
+    try #require(vm.winViewModel)
 
     vm.selectedBoardSize = 5
     #expect(vm.winViewModel == nil)
@@ -80,9 +80,9 @@ struct GameViewModelTests {
     #expect(time == "02:05")
   }
 
-  @Test func `play time uses solved at when present`() {
+  @Test func `play time uses solved at when present`() throws {
     solve4Queens()
-    let solvedAt = vm.winViewModel!.solvedAt
+    let solvedAt = try #require(vm.winViewModel).solvedAt
 
     // Even with a far-future date, should use solvedAt
     let time = vm.playTime(at: solvedAt.addingTimeInterval(9999))
@@ -164,10 +164,10 @@ struct GameViewModelTests {
 
   // MARK: - squareTapped — solve
 
-  @Test func `solving board sets win view model`() {
+  @Test func `solving board sets win view model`() throws {
     solve4Queens()
 
-    #expect(vm.winViewModel != nil)
+    try #require(vm.winViewModel)
     #expect(spy.playedSounds.contains(.win))
   }
 
@@ -187,9 +187,9 @@ struct GameViewModelTests {
 
   // MARK: - WinViewModel.playAgain integration
 
-  @Test func `play again resets game`() {
+  @Test func `play again resets game`() throws {
     solve4Queens()
-    let win = vm.winViewModel!
+    let win = try #require(vm.winViewModel)
 
     win.playAgainButtonTapped()
 
