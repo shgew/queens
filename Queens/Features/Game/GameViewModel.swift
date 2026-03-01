@@ -100,7 +100,10 @@ final class GameViewModel {
                     boardSize: game.board.size,
                     moveCount: game.moves.count,
                     startedAt: game.startedAt,
-                    solvedAt: solvedAt
+                    solvedAt: solvedAt,
+                    onPlayAgain: { [weak self] in
+                        self?.resetButtonTapped()
+                    }
                 )
             }
         } else {

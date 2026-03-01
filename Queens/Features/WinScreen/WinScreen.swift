@@ -1,10 +1,7 @@
 import SwiftUI
 
 struct WinScreen: View {
-    var boardSize: Int
-    var moveCount: Int
-    var elapsedTime: String
-    var onReset: () -> Void
+    let viewModel: WinScreenViewModel
 
     var body: some View {
         GlassEffectContainer(spacing: 16) {
@@ -13,7 +10,7 @@ struct WinScreen: View {
                 metrics
 
                 Button {
-                    onReset()
+                    viewModel.playAgainButtonTapped()
                 } label: {
                     Label("Play Again", systemImage: "arrow.counterclockwise")
                         .font(.headline)
@@ -37,7 +34,7 @@ struct WinScreen: View {
             Text("Congratulations!")
                 .font(.title2.bold())
 
-            Text("You solved \(boardSize)×\(boardSize).")
+            Text("You solved \(viewModel.boardSize)×\(viewModel.boardSize).")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -48,12 +45,12 @@ struct WinScreen: View {
             metricRow(
                 systemImage: "figure.walk",
                 title: "Moves",
-                value: "\(moveCount)"
+                value: "\(viewModel.moveCount)"
             )
             metricRow(
                 systemImage: "clock",
                 title: "Time",
-                value: elapsedTime
+                value: viewModel.startedAt.formattedElapsedTime(to: viewModel.solvedAt)
             )
         }
     }
@@ -77,9 +74,12 @@ struct WinScreen: View {
 
 #Preview {
     WinScreen(
-        boardSize: 8,
-        moveCount: 12,
-        elapsedTime: "02:45",
-        onReset: {}
+        viewModel: WinScreenViewModel(
+            boardSize: 8,
+            moveCount: 12,
+            startedAt: .now.addingTimeInterval(-165),
+            solvedAt: .now,
+            onPlayAgain: {}
+        )
     )
 }

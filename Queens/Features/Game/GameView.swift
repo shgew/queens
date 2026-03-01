@@ -13,6 +13,7 @@ struct GameView: View {
                 controlsRow
                     .padding(.horizontal)
             }
+            .padding(.vertical)
 
             if let winScreenViewModel = model.winScreenViewModel {
                 winOverlay(for: winScreenViewModel)
@@ -37,12 +38,15 @@ struct GameView: View {
                 systemImage: "crown",
                 value: "\(model.piecesRemaining)"
             )
-
+            StatPill(
+                systemImage: "figure.walk",
+                value: "\(model.moveCount)"
+            )
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 StatPill(
                     systemImage: "clock",
-                    value: formattedElapsedTime(
-                        till: model.winScreenViewModel?.solvedAt ?? context.date
+                    value: model.startedAt.formattedElapsedTime(
+                        to: model.winScreenViewModel?.solvedAt ?? context.date
                     )
                 )
             }
@@ -88,36 +92,11 @@ struct GameView: View {
             Color.black.opacity(0.2)
                 .ignoresSafeArea()
 
-            WinScreen(
-                boardSize: viewModel.boardSize,
-                moveCount: viewModel.moveCount,
-                elapsedTime: formattedElapsedTime(
-                    from: viewModel.startedAt,
-                    to: viewModel.solvedAt
-                ),
-                onReset: model.resetButtonTapped
-            )
-            .padding(24)
-            .transition(.scale(0.9).combined(with: .opacity))
+            WinScreen(viewModel: viewModel)
+                .padding(24)
+                .transition(.scale(0.9).combined(with: .opacity))
         }
         .zIndex(1)
-    }
-
-    private func formattedElapsedTime(till date: Date) -> String {
-        formattedElapsedTime(from: model.startedAt, to: date)
-    }
-
-    private func formattedElapsedTime(from start: Date, to end: Date) -> String {
-        let elapsed = Duration.seconds(
-            max(0, end.timeIntervalSince(start))
-        )
-        let pattern: Duration.TimeFormatStyle.Pattern
-        if elapsed >= .seconds(3600) {
-            pattern = .hourMinuteSecond
-        } else {
-            pattern = .minuteSecond(padMinuteToLength: 2)
-        }
-        return elapsed.formatted(.time(pattern: pattern))
     }
 }
 
