@@ -7,6 +7,9 @@ private let logger = Logger.queens(category: .problems)
 /// The N-Queens problem: place *N* queens on an *N*×*N* board so that no two
 /// queens share the same row, column, or diagonal.
 public struct NQueensProblem: Problem {
+  /// The inclusive range of board sizes supported by this implementation.
+  public static let supportedBoardSizes = 4...32
+
   /// Describes the violations found during evaluation.
   public struct Diagnostic: Sendable, Equatable {
     /// Positions whose queens participate in at least one conflict.
@@ -14,6 +17,10 @@ public struct NQueensProblem: Problem {
     /// An empty set in the ``Evaluation/unsolved(_:)`` case means
     /// there are no conflicts yet but not enough queens have been placed.
     public let conflicts: Set<Position>
+
+    public init(conflicts: Set<Position>) {
+      self.conflicts = conflicts
+    }
   }
 
   /// Creates an N-Queens problem evaluator.
@@ -31,6 +38,8 @@ public struct NQueensProblem: Problem {
     on board: Board,
     moves: [Move]
   ) -> Evaluation<Diagnostic> {
+    precondition(Self.supportedBoardSizes.contains(board.size), "Unsupported board size")
+
     let conflicts = computeConflicts(on: board)
     if conflicts.isEmpty && board.occupiedSquares.count == board.size {
       logger.info(
@@ -56,8 +65,6 @@ extension NQueensProblem {
   /// Uses bitmask tracking across rows, columns, diagonals, and
   /// anti-diagonals for O(*n*) detection where *n* is the number of queens.
   private func computeConflicts(on board: Board) -> Set<Position> {
-    precondition(board.size <= 32, "Board size must be at most 32")
-
     var queens: [Position] = []
     queens.reserveCapacity(board.occupiedSquares.count)
     for (position, occupant) in board.occupiedSquares where occupant.piece == .queen {

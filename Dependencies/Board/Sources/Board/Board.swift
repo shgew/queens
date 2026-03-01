@@ -9,9 +9,6 @@ private let logger = Logger.queens(category: .board)
 /// `Board` is a general-purpose grid with no game-specific rules.
 /// Conflict detection and win conditions live in higher-level modules.
 public struct Board: Sendable {
-  /// The smallest supported board dimension.
-  public static let minimumSize = 4
-
   /// The number of rows (and columns) on this board.
   public let size: Int
 
@@ -23,8 +20,8 @@ public struct Board: Sendable {
   /// - Precondition: `size` must be at least ``minimumSize``.
   public init(size: Int) {
     precondition(
-      size >= Self.minimumSize,
-      "Board size must be at least \(Self.minimumSize)"
+      size >= 1,
+      "Board size must be at least 1"
     )
     self.size = size
     self.occupiedSquares = [:]

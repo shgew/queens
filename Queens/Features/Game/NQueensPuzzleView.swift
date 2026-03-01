@@ -103,7 +103,9 @@ struct NQueensPuzzleView: View {
   private var board: some View {
     BoardView(board: model.board)
       .onSquareTapped { position in
-        Task { await model.squareTapped(at: position) }
+        Task { @MainActor in
+          await model.squareTapped(at: position)
+        }
       }
       .cellState(model.cellState(for:))
   }
