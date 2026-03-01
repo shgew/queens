@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		891F16552F539BB600F2710A /* GameAudio in Frameworks */ = {isa = PBXBuildFile; productRef = 891F16542F539BB600F2710A /* GameAudio */; };
-		897EBF6E2F547D5200EB6CAA /* QueensLogging in Frameworks */ = {isa = PBXBuildFile; productRef = 897EBF6D2F547D5200EB6CAA /* QueensLogging */; };
+		897EBF702F547E5400EB6CAA /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 897EBF6F2F547E5400EB6CAA /* Logging */; };
 		89A6B7272F539AFE008DF053 /* Problems in Frameworks */ = {isa = PBXBuildFile; productRef = 89A6B7262F539AFE008DF053 /* Problems */; };
 		89A6B72A2F539B0C008DF053 /* Board in Frameworks */ = {isa = PBXBuildFile; productRef = 89A6B7292F539B0C008DF053 /* Board */; };
 		89A6B72C2F539B0C008DF053 /* BoardUI in Frameworks */ = {isa = PBXBuildFile; productRef = 89A6B72B2F539B0C008DF053 /* BoardUI */; };
@@ -54,7 +54,6 @@
 				89ED1CB42F547C5F001ADFA4 /* Game in Frameworks */,
 				89A6B72C2F539B0C008DF053 /* BoardUI in Frameworks */,
 				89A6B7272F539AFE008DF053 /* Problems in Frameworks */,
-				897EBF6E2F547D5200EB6CAA /* QueensLogging in Frameworks */,
 				89D64A7A2F50C505006FCBCD /* BoardUI in Frameworks */,
 				89A6B72A2F539B0C008DF053 /* Board in Frameworks */,
 				89A6B72F2F539B16008DF053 /* GameAudio in Frameworks */,
@@ -64,6 +63,7 @@
 				89D64A7F2F50C505006FCBCD /* Game in Frameworks */,
 				89ED1CBA2F547C6A001ADFA4 /* Problems in Frameworks */,
 				891F16552F539BB600F2710A /* GameAudio in Frameworks */,
+				897EBF702F547E5400EB6CAA /* Logging in Frameworks */,
 				89ED1CB72F547C65001ADFA4 /* GameAudio in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,7 +133,7 @@
 				89ED1CB32F547C5F001ADFA4 /* Game */,
 				89ED1CB62F547C65001ADFA4 /* GameAudio */,
 				89ED1CB92F547C6A001ADFA4 /* Problems */,
-				897EBF6D2F547D5200EB6CAA /* QueensLogging */,
+				897EBF6F2F547E5400EB6CAA /* Logging */,
 			);
 			productName = Queens;
 			productReference = 89C800232F520A20004C2087 /* Queens.app */;
@@ -411,9 +411,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = GameAudio;
 		};
-		897EBF6D2F547D5200EB6CAA /* QueensLogging */ = {
+		897EBF6F2F547E5400EB6CAA /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = QueensLogging;
+			productName = Logging;
 		};
 		89A6B7262F539AFE008DF053 /* Problems */ = {
 			isa = XCSwiftPackageProductDependency;

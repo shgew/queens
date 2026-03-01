@@ -23,7 +23,7 @@ let package = Package(
       name: "Problems",
       dependencies: [
         .product(name: "Board", package: "Board"),
-        .product(name: "QueensLogging", package: "Logging"),
+        .product(name: "Logging", package: "Logging"),
       ]
     ),
 

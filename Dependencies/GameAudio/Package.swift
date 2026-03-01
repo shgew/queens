@@ -21,7 +21,7 @@ let package = Package(
     .target(
       name: "GameAudio",
       dependencies: [
-        .product(name: "QueensLogging", package: "Logging")
+        .product(name: "Logging", package: "Logging")
       ],
       resources: [.process("Resources")]
     )

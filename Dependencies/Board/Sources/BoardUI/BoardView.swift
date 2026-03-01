@@ -1,6 +1,6 @@
 import Board
 import OSLog
-import QueensLogging
+import Logging
 import SwiftUI
 
 private let logger = Logger.queens(category: .ui)

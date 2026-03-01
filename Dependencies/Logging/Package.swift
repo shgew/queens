@@ -10,13 +10,13 @@ let package = Package(
   ],
   products: [
     .library(
-      name: "QueensLogging",
-      targets: ["QueensLogging"]
+      name: "Logging",
+      targets: ["Logging"]
     )
   ],
   targets: [
     .target(
-      name: "QueensLogging"
+      name: "Logging"
     )
   ]
 )

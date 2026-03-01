@@ -2,7 +2,7 @@ import Board
 import Foundation
 import OSLog
 import Problems
-import QueensLogging
+import Logging
 
 private let logger = Logger.queens(category: .game)
 
