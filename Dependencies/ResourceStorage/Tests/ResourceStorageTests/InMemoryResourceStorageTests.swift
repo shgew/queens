@@ -4,7 +4,7 @@ import Testing
 @testable import ResourceStorage
 
 struct InMemoryResourceStorageTests {
-  let storage = InMemoryResourceStorage<TestResource>()
+  let storage = InMemoryResourceStorage()
   let resource = TestResource()
 
   @Test func `returns default for missing resource`() async throws {

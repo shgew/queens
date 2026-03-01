@@ -4,7 +4,7 @@ import Testing
 @testable import ResourceStorage
 
 struct FileResourceStorageTests {
-  let storage: FileResourceStorage<TestResource>
+  let storage: FileResourceStorage
   let resource = TestResource()
 
   init() {

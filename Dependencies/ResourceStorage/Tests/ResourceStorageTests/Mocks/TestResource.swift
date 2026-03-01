@@ -1,7 +1,7 @@
 import Foundation
 import ResourceStorage
 
-struct TestResource: StorageResource {
+struct TestResource: Resource {
   let id = "test-resource"
   let defaultValue: [Int: TimeInterval] = [:]
 }

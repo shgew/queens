@@ -5,7 +5,7 @@ import Testing
 @testable import Queens
 
 struct BestTimesTests {
-  let bestTimes = BestTimesStore(storage: InMemoryResourceStorage<BestTimesResource>())
+  let bestTimes = BestTimesStore(storage: InMemoryResourceStorage())
 
   @Test func `returns nil for unseen size`() async {
     let result = await bestTimes.bestTime(forSize: 4)
@@ -52,11 +52,11 @@ struct BestTimesTests {
 
   @Test func `persists across store instances with file storage`() async throws {
     let directory = try makeTempDirectory()
-    let storage = FileResourceStorage<BestTimesResource>(directory: directory)
+    let storage = FileResourceStorage(directory: directory)
     let bestTimes = BestTimesStore(storage: storage)
     await bestTimes.record(time: 10.0, forSize: 4)
 
-    let reloadedStorage = FileResourceStorage<BestTimesResource>(directory: directory)
+    let reloadedStorage = FileResourceStorage(directory: directory)
     let reloaded = BestTimesStore(storage: reloadedStorage)
     #expect(await reloaded.bestTime(forSize: 4) == 10.0)
   }
@@ -86,8 +86,6 @@ struct BestTimesTests {
 }
 
 private actor FailingResourceStorage: ResourceStorage {
-  typealias Resource = BestTimesResource
-
   enum Failure: Error {
     case load
     case save
@@ -107,17 +105,19 @@ private actor FailingResourceStorage: ResourceStorage {
     self.values = values
   }
 
-  func load(_ resource: BestTimesResource) async throws -> [Int: TimeInterval] {
+  func load<R: Resource>(_ resource: R) async throws -> R.Value {
     if shouldFailLoad {
       throw Failure.load
     }
-    return values
+    return (values as? R.Value) ?? resource.defaultValue
   }
 
-  func save(_ value: [Int: TimeInterval], for resource: BestTimesResource) async throws {
+  func save<R: Resource>(_ value: R.Value, for resource: R) async throws {
     if shouldFailSave {
       throw Failure.save
     }
-    values = value
+    if let typedValue = value as? [Int: TimeInterval] {
+      values = typedValue
+    }
   }
 }

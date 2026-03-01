@@ -7,20 +7,18 @@ protocol BestTimesStoring {
   func record(time: TimeInterval, forSize size: Int) async -> Bool
 }
 
-struct BestTimesResource: StorageResource {
-  static let resourceID = "best-times"
-
-  let id = Self.resourceID
+struct BestTimesResource: Resource {
+  let id = "best-times"
   let defaultValue: [Int: TimeInterval] = [:]
 }
 
 actor BestTimesStore: BestTimesStoring {
-  private let storage: any ResourceStorage<BestTimesResource>
+  private let storage: any ResourceStorage
   private let resource: BestTimesResource
   private var times: [Int: TimeInterval]?
 
   init(
-    storage: (any ResourceStorage<BestTimesResource>)? = nil,
+    storage: (any ResourceStorage)? = nil,
     resource: BestTimesResource = BestTimesResource()
   ) {
     self.storage = storage ?? Self.makeDefaultStorage()
@@ -66,7 +64,7 @@ extension BestTimesStore {
     return loadedTimes
   }
 
-  private static func makeDefaultStorage() -> FileResourceStorage<BestTimesResource> {
+  private static func makeDefaultStorage() -> FileResourceStorage {
     let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("Queens", isDirectory: true)
     return FileResourceStorage(directory: directory)
