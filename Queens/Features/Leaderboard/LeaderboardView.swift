@@ -18,7 +18,10 @@ struct LeaderboardView: View {
         } else {
           ForEach(model.sections, id: \.boardSize) { section in
             Section("\(section.boardSize)×\(section.boardSize)") {
-              ForEach(section.times.enumerated(), id: \.element) { index, time in
+              ForEach(
+                section.times.enumerated(),
+                id: \.offset
+              ) { index, time in
                 HStack {
                   Text("#\(index + 1)")
                     .foregroundStyle(.secondary)
