@@ -13,7 +13,7 @@
 - [x] Dynamic chessboard supporting different sizes
 - [x] Visually clear queens (piece images)
 - [x] Conflicting placements clearly marked
-- [ ] Simple, extensible, and clean design (polish pass)
+- [x] Simple, extensible, and clean design (polish pass)
 
 ## Nice-to-haves
 
@@ -26,8 +26,7 @@
 
 - [x] Clear separation of UI and logic (Board, Engine, BoardUI packages)
 - [x] Board model tests
-- [x] Solver tests
-- [ ] App-level tests (BoardViewModel, integration)
+- [x] App-level tests (BoardViewModel, integration)
 
 ## Submission
 

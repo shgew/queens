@@ -40,6 +40,9 @@ actor BestTimesStore: BestTimesStoring {
         times: entry.value.map(\.time)
       )
     }
+    .sorted { lhs, rhs in
+      lhs.boardSize < rhs.boardSize
+    }
   }
 
   @discardableResult
