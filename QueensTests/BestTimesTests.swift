@@ -10,7 +10,7 @@ struct BestTimesTests {
 
   init() {
     container = Self.makeInMemoryContainer()
-    store = BestTimesStore(container: container)
+    store = BestTimesStore(modelContainer: container)
   }
 
   @Test func `returns nil for unseen size`() async {
@@ -96,18 +96,14 @@ extension BestTimesTests {
     let descriptor = FetchDescriptor<BestTimeRecord>(
       predicate: #Predicate { record in
         record.size == size
-      }
+      },
+      sortBy: [
+        SortDescriptor(\.time, order: .forward)
+      ]
     )
 
     do {
-      return try context.fetch(descriptor)
-        .sorted {
-          if $0.time == $1.time {
-            return $0.recordedAt < $1.recordedAt
-          }
-          return $0.time < $1.time
-        }
-        .map(\.time)
+      return try context.fetch(descriptor).map(\.time)
     } catch {
       Issue.record("Failed to fetch top times for test: \(error)")
       return []

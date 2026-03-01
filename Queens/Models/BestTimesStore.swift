@@ -9,36 +9,27 @@ private let logger = Logger.queens(category: .storage)
 final class BestTimeRecord {
   var size: Int
   var time: TimeInterval
-  var recordedAt: Date
 
-  init(size: Int, time: TimeInterval, recordedAt: Date = .now) {
+  init(size: Int, time: TimeInterval) {
     self.size = size
     self.time = time
-    self.recordedAt = recordedAt
   }
 }
 
+@ModelActor
 actor BestTimesStore: BestTimesStoring {
-  private let container: ModelContainer
   private static let maxRecordsPerSize = 10
-
-  init(container: ModelContainer) {
-    self.container = container
-  }
 }
 
 extension BestTimesStore {
   func bestTime(forSize size: Int) async -> TimeInterval? {
-    let context = ModelContext(container)
-    return fetchTopRecords(forSize: size, context: context, limit: 1).first?.time
+    fetchTopRecords(forSize: size, limit: 1).first?.time
   }
 
   @discardableResult
   func record(time: TimeInterval, forSize size: Int) async -> Bool {
-    let context = ModelContext(container)
     let topRecords = fetchTopRecords(
       forSize: size,
-      context: context,
       limit: Self.maxRecordsPerSize
     )
     let isNewBest = topRecords.first.map { time < $0.time } ?? true
@@ -50,11 +41,11 @@ extension BestTimesStore {
       return false
     }
 
-    context.insert(BestTimeRecord(size: size, time: time))
-    trimOverflowRecords(forSize: size, context: context)
+    modelContext.insert(BestTimeRecord(size: size, time: time))
+    trimOverflowRecords(forSize: size)
 
     do {
-      try context.save()
+      try modelContext.save()
     } catch {
       logger.error("Failed to save top times for size \(size): \(error)")
       return false
@@ -66,22 +57,23 @@ extension BestTimesStore {
 
 extension BestTimesStore {
   static var live: BestTimesStore {
-    do {
-      let container = try ModelContainer(for: BestTimeRecord.self)
-      return BestTimesStore(container: container)
-    } catch {
-      logger.error("Failed to create SwiftData container, falling back to in-memory: \(error)")
-      return preview
-    }
+    makeStore(inMemory: false)
   }
 
   static var preview: BestTimesStore {
+    makeStore(inMemory: true)
+  }
+
+  private static func makeStore(inMemory: Bool) -> BestTimesStore {
     do {
-      let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
-      let container = try ModelContainer(for: BestTimeRecord.self, configurations: configuration)
-      return BestTimesStore(container: container)
+      let configuration = ModelConfiguration(isStoredInMemoryOnly: inMemory)
+      let container = try ModelContainer(
+        for: BestTimeRecord.self,
+        configurations: configuration
+      )
+      return BestTimesStore(modelContainer: container)
     } catch {
-      fatalError("Failed to create in-memory SwiftData container: \(error)")
+      fatalError("Failed to create SwiftData container (inMemory: \(inMemory)): \(error)")
     }
   }
 }
@@ -89,38 +81,34 @@ extension BestTimesStore {
 extension BestTimesStore {
   private func fetchTopRecords(
     forSize size: Int,
-    context: ModelContext,
     limit: Int? = nil
   ) -> [BestTimeRecord] {
-    let descriptor = FetchDescriptor<BestTimeRecord>(
+    var descriptor = FetchDescriptor<BestTimeRecord>(
       predicate: #Predicate { record in
         record.size == size
-      }
+      },
+      sortBy: [
+        SortDescriptor(\.time, order: .forward)
+      ]
     )
+    if let limit {
+      descriptor.fetchLimit = limit
+    }
 
     do {
-      let sorted = try context.fetch(descriptor).sorted {
-        if $0.time == $1.time {
-          return $0.recordedAt < $1.recordedAt
-        }
-        return $0.time < $1.time
-      }
-      if let limit {
-        return Array(sorted.prefix(limit))
-      }
-      return sorted
+      return try modelContext.fetch(descriptor)
     } catch {
       logger.error("Failed to fetch top times for size \(size): \(error)")
       return []
     }
   }
 
-  private func trimOverflowRecords(forSize size: Int, context: ModelContext) {
-    let allRecords = fetchTopRecords(forSize: size, context: context)
+  private func trimOverflowRecords(forSize size: Int) {
+    let allRecords = fetchTopRecords(forSize: size)
     guard allRecords.count > Self.maxRecordsPerSize else { return }
 
     for record in allRecords.dropFirst(Self.maxRecordsPerSize) {
-      context.delete(record)
+      modelContext.delete(record)
     }
   }
 }

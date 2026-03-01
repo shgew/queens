@@ -223,7 +223,7 @@ extension NQueensPuzzleViewModelTests {
     do {
       let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
       let container = try ModelContainer(for: BestTimeRecord.self, configurations: configuration)
-      return BestTimesStore(container: container)
+      return BestTimesStore(modelContainer: container)
     } catch {
       fatalError("Failed to create in-memory SwiftData container for tests: \(error)")
     }
