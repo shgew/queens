@@ -1,11 +1,9 @@
 import AVFAudio
 import Foundation
 import OSLog
+import QueensLogging
 
-private let logger = Logger(
-  subsystem: Bundle.module.bundleIdentifier ?? "Queens.GameAudio",
-  category: "GameSoundPlayer"
-)
+private let logger = Logger.queens(category: .audio)
 
 public final class GameSoundPlayer: GameSoundPlaying {
   private let bundle: Bundle

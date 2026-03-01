@@ -18,13 +18,22 @@ let package = Package(
       targets: ["BoardUI"]
     ),
   ],
+  dependencies: [
+    .package(path: "../Logging"),
+  ],
   targets: [
     .target(
-      name: "Board"
+      name: "Board",
+      dependencies: [
+        .product(name: "QueensLogging", package: "Logging")
+      ]
     ),
     .target(
       name: "BoardUI",
-      dependencies: ["Board"],
+      dependencies: [
+        "Board",
+        .product(name: "QueensLogging", package: "Logging"),
+      ],
       resources: [.process("Resources")]
     ),
 

@@ -1,10 +1,8 @@
 import Board
 import OSLog
+import QueensLogging
 
-private let logger = Logger(
-  subsystem: "Queens.Problems",
-  category: "NQueensProblem"
-)
+private let logger = Logger.queens(category: .problems)
 
 /// The N-Queens problem: place *N* queens on an *N*×*N* board so that no two
 /// queens share the same row, column, or diagonal.

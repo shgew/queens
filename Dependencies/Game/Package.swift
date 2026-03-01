@@ -17,6 +17,7 @@ let package = Package(
   dependencies: [
     .package(path: "../Board"),
     .package(path: "../Problems"),
+    .package(path: "../Logging"),
   ],
   targets: [
     .target(
@@ -24,6 +25,7 @@ let package = Package(
       dependencies: [
         .product(name: "Board", package: "Board"),
         .product(name: "Problems", package: "Problems"),
+        .product(name: "QueensLogging", package: "Logging"),
       ]
     ),
     .testTarget(

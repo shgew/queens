@@ -1,11 +1,9 @@
 import Board
 import OSLog
+import QueensLogging
 import SwiftUI
 
-private let logger = Logger(
-  subsystem: "Queens.BoardUI",
-  category: "BoardView"
-)
+private let logger = Logger.queens(category: .ui)
 
 /// A chess-style board that displays pieces on an alternating grid.
 ///

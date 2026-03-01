@@ -15,13 +15,15 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(path: "../Board")
+    .package(path: "../Board"),
+    .package(path: "../Logging"),
   ],
   targets: [
     .target(
       name: "Problems",
       dependencies: [
-        .product(name: "Board", package: "Board")
+        .product(name: "Board", package: "Board"),
+        .product(name: "QueensLogging", package: "Logging"),
       ]
     ),
 

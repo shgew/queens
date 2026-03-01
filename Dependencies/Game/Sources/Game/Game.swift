@@ -2,11 +2,9 @@ import Board
 import Foundation
 import OSLog
 import Problems
+import QueensLogging
 
-private let logger = Logger(
-  subsystem: "Queens.Game",
-  category: "Game"
-)
+private let logger = Logger.queens(category: .game)
 
 /// A playable game session that pairs a ``Board`` with a ``Problem`` to solve.
 ///

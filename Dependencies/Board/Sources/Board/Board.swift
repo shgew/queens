@@ -1,9 +1,8 @@
+import Foundation
 import OSLog
+import QueensLogging
 
-private let logger = Logger(
-  subsystem: "Queens.Board",
-  category: "Board"
-)
+private let logger = Logger.queens(category: .board)
 
 /// A square grid that maps positions to occupants.
 ///
