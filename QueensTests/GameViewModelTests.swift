@@ -45,10 +45,10 @@ struct GameViewModelTests {
     #expect(spy.playedSounds == [.boardSizeChanged])
   }
 
-  @Test func `setting board size nils win view model`() throws {
+  @Test func `setting board size nils win view model`() {
     // Solve the board first
     solve4Queens()
-    try #require(vm.winViewModel)
+    #expect(vm.winViewModel != nil)
 
     vm.selectedBoardSize = 5
     #expect(vm.winViewModel == nil)
@@ -164,10 +164,10 @@ struct GameViewModelTests {
 
   // MARK: - squareTapped — solve
 
-  @Test func `solving board sets win view model`() throws {
+  @Test func `solving board sets win view model`() {
     solve4Queens()
 
-    try #require(vm.winViewModel)
+    #expect(vm.winViewModel != nil)
     #expect(spy.playedSounds.contains(.win))
   }
 
