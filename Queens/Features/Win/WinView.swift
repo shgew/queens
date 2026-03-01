@@ -42,33 +42,51 @@ struct WinView: View {
 
   private var metrics: some View {
     VStack(spacing: 10) {
-      metricRow(
-        systemImage: "figure.walk",
-        title: "Moves",
-        value: "\(viewModel.moveCount)"
-      )
-      metricRow(
-        systemImage: "clock",
-        title: "Time",
-        value: viewModel.startedAt.formattedElapsedTime(to: viewModel.solvedAt)
-      )
+      metricRow(systemImage: "figure.walk", title: "Moves") {
+        metricValueText("\(viewModel.moveCount)")
+      }
+      metricRow(systemImage: "clock", title: "Time") {
+        metricValueText(viewModel.startedAt.formattedElapsedTime(to: viewModel.solvedAt))
+      }
+      if let bestTime = viewModel.bestTime {
+        metricRow(systemImage: "trophy", title: "Best") {
+          HStack(spacing: 6) {
+            if viewModel.isNewBest {
+              newBestBadge
+            }
+            metricValueText(bestTime.formattedElapsedTime())
+          }
+        }
+      }
     }
   }
 
   private func metricRow(
     systemImage: String,
     title: String,
-    value: String
+    @ViewBuilder value: () -> some View
   ) -> some View {
     LabeledContent {
-      Text(value)
-        .font(.headline)
-        .monospacedDigit()
+      value()
     } label: {
       Label(title, systemImage: systemImage)
         .font(.subheadline)
         .foregroundStyle(.secondary)
     }
+  }
+
+  private func metricValueText(_ value: String) -> some View {
+    Text(value)
+      .font(.headline)
+      .monospacedDigit()
+  }
+
+  private var newBestBadge: some View {
+    Text("New!")
+      .font(.caption.bold())
+      .padding(.horizontal, 6)
+      .padding(.vertical, 2)
+      .glassEffect(.regular.tint(.orange))
   }
 }
 
@@ -79,6 +97,20 @@ struct WinView: View {
       moveCount: 12,
       startedAt: .now.addingTimeInterval(-165),
       solvedAt: .now,
+      onPlayAgain: {}
+    )
+  )
+}
+
+#Preview("New Best") {
+  WinView(
+    viewModel: WinViewModel(
+      boardSize: 8,
+      moveCount: 12,
+      startedAt: .now.addingTimeInterval(-165),
+      solvedAt: .now,
+      bestTime: 165,
+      isNewBest: true,
       onPlayAgain: {}
     )
   )

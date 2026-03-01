@@ -15,6 +15,7 @@ final class NQueensPuzzleViewModel {
   private var areSoundsPreloaded = false
   private let soundPlayer: any GameSoundPlaying
   private let occupant = Occupant(piece: .queen, side: .white)
+  private let bestTimes: any BestTimesStoring
   private(set) var winViewModel: WinViewModel?
   private(set) var placeFeedbackTrigger = 0
   private(set) var removeFeedbackTrigger = 0
@@ -22,10 +23,12 @@ final class NQueensPuzzleViewModel {
 
   init(
     size: Int = 4,
-    soundPlayer: any GameSoundPlaying = GameSoundPlayer()
+    soundPlayer: any GameSoundPlaying = GameSoundPlayer(),
+    bestTimes: any BestTimesStoring = BestTimesStore()
   ) {
     self.game = Game(size: size, problem: NQueensProblem())
     self.soundPlayer = soundPlayer
+    self.bestTimes = bestTimes
   }
 }
 
@@ -72,7 +75,7 @@ extension NQueensPuzzleViewModel {
     conflicts.contains(position) ? .conflicting : .normal
   }
 
-  func squareTapped(_ position: Position) {
+  func squareTapped(at position: Position) async {
     if game.board.occupiedSquares[position] == occupant {
       removePiece(at: position)
       return
@@ -137,18 +140,31 @@ extension NQueensPuzzleViewModel {
 
   private func presentWinView() {
     let solvedAt = Date.now
+    let elapsed = solvedAt.timeIntervalSince(game.startedAt)
+    let isNewBest = bestTimes.record(time: elapsed, forSize: game.board.size)
+    let bestTime = bestTimes.bestTime(forSize: game.board.size)
     soundPlayer.play(.win)
     withAnimation(Self.animation) {
-      winViewModel = makeWinViewModel(solvedAt: solvedAt)
+      winViewModel = makeWinViewModel(
+        solvedAt: solvedAt,
+        bestTime: bestTime,
+        isNewBest: isNewBest
+      )
     }
   }
 
-  private func makeWinViewModel(solvedAt: Date) -> WinViewModel {
+  private func makeWinViewModel(
+    solvedAt: Date,
+    bestTime: TimeInterval?,
+    isNewBest: Bool
+  ) -> WinViewModel {
     WinViewModel(
       boardSize: game.board.size,
       moveCount: game.moves.count,
       startedAt: game.startedAt,
       solvedAt: solvedAt,
+      bestTime: bestTime,
+      isNewBest: isNewBest,
       onPlayAgain: { [weak self] in
         self?.resetGame()
       }

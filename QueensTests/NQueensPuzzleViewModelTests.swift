@@ -11,7 +11,11 @@ struct NQueensPuzzleViewModelTests {
   let vm: NQueensPuzzleViewModel
 
   init() {
-    vm = NQueensPuzzleViewModel(size: 4, soundPlayer: spy)
+    vm = NQueensPuzzleViewModel(
+      size: 4,
+      soundPlayer: spy,
+      bestTimes: BestTimesStore(storage: InMemoryStorage(initialValue: [:]))
+    )
   }
 
   // MARK: - Initial State
@@ -41,9 +45,9 @@ struct NQueensPuzzleViewModelTests {
     #expect(spy.playedSounds == [.boardSizeChanged])
   }
 
-  @Test func `setting board size nils win view model`() {
+  @Test func `setting board size nils win view model`() async {
     // Solve the board first
-    solve4Queens()
+    await solve4Queens()
     #expect(vm.winViewModel != nil)
 
     vm.selectedBoardSize = 5
@@ -76,8 +80,8 @@ struct NQueensPuzzleViewModelTests {
     #expect(time == "02:05")
   }
 
-  @Test func `play time uses solved at when present`() throws {
-    solve4Queens()
+  @Test func `play time uses solved at when present`() async throws {
+    await solve4Queens()
     let solvedAt = try #require(vm.winViewModel).solvedAt
 
     // Even with a far-future date, should use solvedAt
@@ -93,10 +97,10 @@ struct NQueensPuzzleViewModelTests {
     #expect(state == .normal)
   }
 
-  @Test func `cell state conflicting for conflicting queens`() {
+  @Test func `cell state conflicting for conflicting queens`() async {
     // Place two queens that conflict (same row)
-    vm.squareTapped(Position(row: 0, column: 0))
-    vm.squareTapped(Position(row: 0, column: 1))
+    await vm.squareTapped(at: Position(row: 0, column: 0))
+    await vm.squareTapped(at: Position(row: 0, column: 1))
 
     let state = vm.cellState(for: Position(row: 0, column: 0))
     #expect(state == .conflicting)
@@ -104,9 +108,9 @@ struct NQueensPuzzleViewModelTests {
 
   // MARK: - squareTapped — place
 
-  @Test func `placing queen updates board state`() {
+  @Test func `placing queen updates board state`() async {
     let pos = Position(row: 0, column: 0)
-    vm.squareTapped(pos)
+    await vm.squareTapped(at: pos)
 
     #expect(vm.piecesRemaining == 3)
     #expect(vm.moveCount == 1)
@@ -117,10 +121,10 @@ struct NQueensPuzzleViewModelTests {
 
   // MARK: - squareTapped — remove
 
-  @Test func `tapping occupied square removes it`() {
+  @Test func `tapping occupied square removes it`() async {
     let pos = Position(row: 0, column: 0)
-    vm.squareTapped(pos)  // place
-    vm.squareTapped(pos)  // remove
+    await vm.squareTapped(at: pos)  // place
+    await vm.squareTapped(at: pos)  // remove
 
     #expect(vm.piecesRemaining == 4)
     #expect(vm.moveCount == 2)
@@ -131,28 +135,28 @@ struct NQueensPuzzleViewModelTests {
 
   // MARK: - squareTapped — invalid
 
-  @Test func `placing when no pieces remaining plays invalid move`() {
+  @Test func `placing when no pieces remaining plays invalid move`() async {
     // Fill with 4 non-conflicting queens so piecesRemaining == 0
-    solve4Queens()
+    await solve4Queens()
     spy.resetPlayedSounds()
 
     // Try placing on an unoccupied square — no pieces remaining
-    vm.squareTapped(Position(row: 3, column: 3))
+    await vm.squareTapped(at: Position(row: 3, column: 3))
     #expect(spy.playedSounds == [.invalidMove])
     #expect(vm.invalidPlaceFeedbackTrigger == 1)
   }
 
-  @Test func `placing when board full but unsolved plays invalid move`() {
+  @Test func `placing when board full but unsolved plays invalid move`() async {
     // Place 4 queens that conflict so board is full but unsolved
-    vm.squareTapped(Position(row: 0, column: 0))
-    vm.squareTapped(Position(row: 1, column: 1))
-    vm.squareTapped(Position(row: 2, column: 2))
-    vm.squareTapped(Position(row: 3, column: 3))
+    await vm.squareTapped(at: Position(row: 0, column: 0))
+    await vm.squareTapped(at: Position(row: 1, column: 1))
+    await vm.squareTapped(at: Position(row: 2, column: 2))
+    await vm.squareTapped(at: Position(row: 3, column: 3))
     spy.resetPlayedSounds()
 
     #expect(vm.piecesRemaining == 0)
 
-    vm.squareTapped(Position(row: 0, column: 3))  // can't place — no pieces remaining
+    await vm.squareTapped(at: Position(row: 0, column: 3))  // can't place — no pieces remaining
     // Tapping occupied removes, tapping unoccupied triggers invalidMove
     #expect(spy.playedSounds == [.invalidMove])
     #expect(vm.invalidPlaceFeedbackTrigger == 1)
@@ -160,17 +164,25 @@ struct NQueensPuzzleViewModelTests {
 
   // MARK: - squareTapped — solve
 
-  @Test func `solving board sets win view model`() {
-    solve4Queens()
+  @Test func `solving board sets win view model`() async {
+    await solve4Queens()
 
     #expect(vm.winViewModel != nil)
     #expect(spy.playedSounds.contains(.win))
   }
 
+  @Test func `solving board records best time`() async throws {
+    await solve4Queens()
+    let win = try #require(vm.winViewModel)
+
+    #expect(win.bestTime != nil)
+    #expect(win.isNewBest)
+  }
+
   // MARK: - resetButtonTapped
 
-  @Test func `reset clears board and state`() {
-    vm.squareTapped(Position(row: 0, column: 0))
+  @Test func `reset clears board and state`() async {
+    await vm.squareTapped(at: Position(row: 0, column: 0))
     spy.resetPlayedSounds()
 
     vm.resetButtonTapped()
@@ -183,8 +195,8 @@ struct NQueensPuzzleViewModelTests {
 
   // MARK: - WinViewModel.playAgain integration
 
-  @Test func `play again resets game`() throws {
-    solve4Queens()
+  @Test func `play again resets game`() async throws {
+    await solve4Queens()
     let win = try #require(vm.winViewModel)
 
     win.playAgainButtonTapped()
@@ -197,10 +209,10 @@ struct NQueensPuzzleViewModelTests {
   // MARK: - Helpers
 
   /// Places queens at (0,1), (1,3), (2,0), (3,2) — a valid 4-queens solution.
-  private func solve4Queens() {
-    vm.squareTapped(Position(row: 0, column: 1))
-    vm.squareTapped(Position(row: 1, column: 3))
-    vm.squareTapped(Position(row: 2, column: 0))
-    vm.squareTapped(Position(row: 3, column: 2))
+  private func solve4Queens() async {
+    await vm.squareTapped(at: Position(row: 0, column: 1))
+    await vm.squareTapped(at: Position(row: 1, column: 3))
+    await vm.squareTapped(at: Position(row: 2, column: 0))
+    await vm.squareTapped(at: Position(row: 3, column: 2))
   }
 }

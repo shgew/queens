@@ -2,9 +2,13 @@ import Foundation
 
 extension Date {
   func formattedElapsedTime(to endDate: Date) -> String {
-    let elapsed = Duration.seconds(
-      max(0, endDate.timeIntervalSince(self))
-    )
+    endDate.timeIntervalSince(self).formattedElapsedTime()
+  }
+}
+
+extension TimeInterval {
+  func formattedElapsedTime() -> String {
+    let elapsed = Duration.seconds(max(0, self))
     let pattern: Duration.TimeFormatStyle.Pattern
     if elapsed >= .seconds(3600) {
       pattern = .hourMinuteSecond

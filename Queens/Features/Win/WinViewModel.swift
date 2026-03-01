@@ -5,6 +5,8 @@ struct WinViewModel {
   let moveCount: Int
   let startedAt: Date
   let solvedAt: Date
+  let bestTime: TimeInterval?
+  let isNewBest: Bool
   private let onPlayAgain: () -> Void
 
   init(
@@ -12,12 +14,16 @@ struct WinViewModel {
     moveCount: Int,
     startedAt: Date,
     solvedAt: Date,
+    bestTime: TimeInterval? = nil,
+    isNewBest: Bool = false,
     onPlayAgain: @escaping () -> Void
   ) {
     self.boardSize = boardSize
     self.moveCount = moveCount
     self.startedAt = startedAt
     self.solvedAt = solvedAt
+    self.bestTime = bestTime
+    self.isNewBest = isNewBest
     self.onPlayAgain = onPlayAgain
   }
 
