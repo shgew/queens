@@ -5,34 +5,25 @@ import SwiftData
 
 private let logger = Logger.queens(category: .storage)
 
-@Model
-final class BestTimeRecord {
-  var size: Int
-  var time: TimeInterval
-
-  init(size: Int, time: TimeInterval) {
-    self.size = size
-    self.time = time
-  }
-}
-
 @ModelActor
 actor BestTimesStore: BestTimesStoring {
   private static let maxRecordsPerSize = 10
-}
 
-extension BestTimesStore {
-  func bestTime(forSize size: Int) async -> TimeInterval? {
-    fetchTopRecords(forSize: size, limit: 1).first?.time
+  func bestTime(for boardSize: Int) async -> TimeInterval? {
+    fetchTopRecords(for: boardSize, limit: 1).first?.time
   }
 
   @discardableResult
-  func record(time: TimeInterval, forSize size: Int) async -> Bool {
+  func record(time: TimeInterval, for boardSize: Int) async -> Bool {
     let topRecords = fetchTopRecords(
-      forSize: size,
+      for: boardSize,
       limit: Self.maxRecordsPerSize
     )
-    let isNewBest = topRecords.first.map { time < $0.time } ?? true
+    let isNewBest = if let fastestRecord = topRecords.first {
+      time < fastestRecord.time
+    } else {
+      true
+    }
 
     if topRecords.count == Self.maxRecordsPerSize,
       let slowest = topRecords.last,
@@ -41,18 +32,54 @@ extension BestTimesStore {
       return false
     }
 
-    modelContext.insert(BestTimeRecord(size: size, time: time))
-    trimOverflowRecords(forSize: size)
+    modelContext.insert(BestTimeRecord(boardSize: boardSize, time: time))
+    trimOverflowRecords(forSize: boardSize)
 
     do {
       try modelContext.save()
     } catch {
-      logger.error("Failed to save top times for size \(size): \(error)")
+      logger.error("Failed to save top times for board size \(boardSize): \(error)")
       return false
     }
 
     return isNewBest
   }
+}
+
+extension BestTimesStore {
+  private func fetchTopRecords(
+    for boardSize: Int,
+    limit: Int? = nil
+  ) -> [BestTimeRecord] {
+    var descriptor = FetchDescriptor<BestTimeRecord>(
+      predicate: #Predicate { record in
+        record.boardSize == boardSize
+      },
+      sortBy: [
+        SortDescriptor(\.time, order: .forward)
+      ]
+    )
+    if let limit {
+      descriptor.fetchLimit = limit
+    }
+
+    do {
+      return try modelContext.fetch(descriptor)
+    } catch {
+      logger.error("Failed to fetch top times for board size \(boardSize): \(error)")
+      return []
+    }
+  }
+
+  private func trimOverflowRecords(forSize boardSize: Int) {
+    let allRecords = fetchTopRecords(for: boardSize)
+    guard allRecords.count > Self.maxRecordsPerSize else { return }
+
+    for record in allRecords.dropFirst(Self.maxRecordsPerSize) {
+      modelContext.delete(record)
+    }
+  }
+
 }
 
 extension BestTimesStore {
@@ -74,41 +101,6 @@ extension BestTimesStore {
       return BestTimesStore(modelContainer: container)
     } catch {
       fatalError("Failed to create SwiftData container (inMemory: \(inMemory)): \(error)")
-    }
-  }
-}
-
-extension BestTimesStore {
-  private func fetchTopRecords(
-    forSize size: Int,
-    limit: Int? = nil
-  ) -> [BestTimeRecord] {
-    var descriptor = FetchDescriptor<BestTimeRecord>(
-      predicate: #Predicate { record in
-        record.size == size
-      },
-      sortBy: [
-        SortDescriptor(\.time, order: .forward)
-      ]
-    )
-    if let limit {
-      descriptor.fetchLimit = limit
-    }
-
-    do {
-      return try modelContext.fetch(descriptor)
-    } catch {
-      logger.error("Failed to fetch top times for size \(size): \(error)")
-      return []
-    }
-  }
-
-  private func trimOverflowRecords(forSize size: Int) {
-    let allRecords = fetchTopRecords(forSize: size)
-    guard allRecords.count > Self.maxRecordsPerSize else { return }
-
-    for record in allRecords.dropFirst(Self.maxRecordsPerSize) {
-      modelContext.delete(record)
     }
   }
 }

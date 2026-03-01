@@ -141,8 +141,8 @@ extension NQueensPuzzleViewModel {
   private func handleSolved() async {
     let solvedAt = Date.now
     let elapsed = solvedAt.timeIntervalSince(game.startedAt)
-    let isNewBest = await bestTimesStore.record(time: elapsed, forSize: game.board.size)
-    let bestTime = await bestTimesStore.bestTime(forSize: game.board.size)
+    let isNewBest = await bestTimesStore.record(time: elapsed, for: game.board.size)
+    let bestTime = await bestTimesStore.bestTime(for: game.board.size)
     soundPlayer.play(.win)
     withAnimation(Self.animation) {
       winViewModel = makeWinViewModel(

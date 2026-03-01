@@ -1,7 +1,7 @@
 import Foundation
 
 protocol BestTimesStoring {
-  func bestTime(forSize size: Int) async -> TimeInterval?
+  func bestTime(for boardSize: Int) async -> TimeInterval?
   @discardableResult
-  func record(time: TimeInterval, forSize size: Int) async -> Bool
+  func record(time: TimeInterval, for boardSize: Int) async -> Bool
 }
