@@ -6,7 +6,7 @@ struct QueensApp: App {
 
   var body: some Scene {
     WindowGroup {
-      NQueensPuzzleView()
+      NQueensPuzzleView(viewModel: .live)
     }
   }
 }

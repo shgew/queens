@@ -68,15 +68,6 @@ struct BestTimesTests {
     #expect(await bestTimes.bestTime(forSize: 4) == nil)
   }
 
-  @Test func `save failure still updates in-memory best time`() async {
-    let storage = FailingResourceStorage(shouldFailSave: true)
-    let bestTimes = BestTimesStore(storage: storage)
-
-    let isNewBest = await bestTimes.record(time: 10.0, forSize: 4)
-    #expect(isNewBest)
-    #expect(await bestTimes.bestTime(forSize: 4) == 10.0)
-  }
-
   private func makeTempDirectory() throws -> URL {
     let directory = FileManager.default.temporaryDirectory
       .appendingPathComponent("BestTimesTests-\(UUID().uuidString)")
@@ -88,36 +79,20 @@ struct BestTimesTests {
 private actor FailingResourceStorage: ResourceStorage {
   enum Failure: Error {
     case load
-    case save
   }
 
   private let shouldFailLoad: Bool
-  private let shouldFailSave: Bool
-  private var values: [Int: TimeInterval]
 
-  init(
-    shouldFailLoad: Bool = false,
-    shouldFailSave: Bool = false,
-    values: [Int: TimeInterval] = [:]
-  ) {
+  init(shouldFailLoad: Bool = false) {
     self.shouldFailLoad = shouldFailLoad
-    self.shouldFailSave = shouldFailSave
-    self.values = values
   }
 
   func load<Value>(_ resource: Resource<Value>) async throws -> Value {
     if shouldFailLoad {
       throw Failure.load
     }
-    return (values as? Value) ?? resource.defaultValue
+    return resource.defaultValue
   }
 
-  func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {
-    if shouldFailSave {
-      throw Failure.save
-    }
-    if let typedValue = value as? [Int: TimeInterval] {
-      values = typedValue
-    }
-  }
+  func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {}
 }

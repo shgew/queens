@@ -5,6 +5,7 @@ import Game
 import GameAudio
 import Observation
 import Problems
+import ResourceStorage
 import SwiftUI
 
 @Observable
@@ -24,7 +25,7 @@ final class NQueensPuzzleViewModel {
   init(
     size: Int = 4,
     soundPlayer: any GameSoundPlaying = GameSoundPlayer(),
-    bestTimes: any BestTimesStoring = BestTimesStore()
+    bestTimes: any BestTimesStoring
   ) {
     self.game = Game(size: size, problem: NQueensProblem())
     self.soundPlayer = soundPlayer
@@ -168,6 +169,24 @@ extension NQueensPuzzleViewModel {
       onPlayAgain: { [weak self] in
         self?.resetGame()
       }
+    )
+  }
+}
+
+// MARK: - Factory
+extension NQueensPuzzleViewModel {
+  static var live: NQueensPuzzleViewModel {
+    let directory = FileManager.default
+      .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+      .appendingPathComponent("Queens", isDirectory: true)
+    let storage = FileResourceStorage(directory: directory)
+    return NQueensPuzzleViewModel(bestTimes: BestTimesStore(storage: storage))
+  }
+
+  static var preview: NQueensPuzzleViewModel {
+    NQueensPuzzleViewModel(
+      soundPlayer: SilentGameSoundPlayer(),
+      bestTimes: BestTimesStore(storage: InMemoryResourceStorage())
     )
   }
 }

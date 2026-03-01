@@ -17,10 +17,8 @@ final class BestTimesStore: BestTimesStoring {
   private let storage: any ResourceStorage
   private static let resource = Resource<[Int: TimeInterval]>.bestTimes
 
-  init(
-    storage: (any ResourceStorage)? = nil,
-  ) {
-    self.storage = storage ?? Self.makeDefaultStorage()
+  init(storage: any ResourceStorage) {
+    self.storage = storage
   }
 
   func bestTime(forSize size: Int) async -> TimeInterval? {
@@ -38,13 +36,5 @@ final class BestTimesStore: BestTimesStoring {
     times[size] = time
     try? await storage.save(times, for: Self.resource)
     return true
-  }
-}
-
-extension BestTimesStore {
-  private static func makeDefaultStorage() -> FileResourceStorage {
-    let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-      .appendingPathComponent("Queens", isDirectory: true)
-    return FileResourceStorage(directory: directory)
   }
 }

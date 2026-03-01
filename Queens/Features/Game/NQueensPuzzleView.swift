@@ -2,7 +2,11 @@ import BoardUI
 import SwiftUI
 
 struct NQueensPuzzleView: View {
-  @State private var model = NQueensPuzzleViewModel()
+  @State private var model: NQueensPuzzleViewModel
+
+  init(viewModel: NQueensPuzzleViewModel) {
+    self._model = State(initialValue: viewModel)
+  }
 
   var body: some View {
     ZStack {
@@ -105,5 +109,5 @@ struct NQueensPuzzleView: View {
 }
 
 #Preview {
-  NQueensPuzzleView()
+  NQueensPuzzleView(viewModel: .preview)
 }
