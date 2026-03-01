@@ -1,6 +1,6 @@
 import Foundation
 
-class MockFileManager: FileManager {
+final class MockFileManager: FileManager {
   var files: [String: Data] = [:]
 
   override func contents(atPath path: String) -> Data? {

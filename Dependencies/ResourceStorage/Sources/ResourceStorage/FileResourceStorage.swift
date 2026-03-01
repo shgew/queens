@@ -4,11 +4,14 @@ import Foundation
 ///
 /// Each resource is stored as `<directory>/<resource.id>.json`. The directory is created
 /// automatically on the first save if it doesn't already exist.
+///
+/// Loaded values are cached in memory to avoid redundant disk reads.
 public actor FileResourceStorage: ResourceStorage {
   let directory: URL
   let fileManager: FileManager
   let encoder: JSONEncoder
   let decoder: JSONDecoder
+  private let cache: Cache
 
   /// Creates a file-backed storage.
   ///
@@ -17,31 +20,41 @@ public actor FileResourceStorage: ResourceStorage {
   ///   - fileManager: The file manager used for all file operations.
   ///   - encoder: The JSON encoder used to serialize values.
   ///   - decoder: The JSON decoder used to deserialize values.
+  ///   - cache: The cache used to avoid redundant disk reads.
   public init(
     directory: URL,
     fileManager: FileManager = .default,
     encoder: JSONEncoder = JSONEncoder(),
-    decoder: JSONDecoder = JSONDecoder()
+    decoder: JSONDecoder = JSONDecoder(),
+    cache: Cache = Cache()
   ) {
     self.directory = directory
     self.fileManager = fileManager
     self.encoder = encoder
     self.decoder = decoder
+    self.cache = cache
   }
 
   public func load<Value>(_ resource: Resource<Value>) async throws -> Value {
+    if let cached: Value = await cache.value(forKey: resource.id) {
+      return cached
+    }
+
     let fileURL = fileURL(for: resource)
     guard let data = fileManager.contents(atPath: fileURL.path()) else {
       return resource.defaultValue
     }
 
-    return try decoder.decode(Value.self, from: data)
+    let value = try decoder.decode(Value.self, from: data)
+    await cache.setValue(value, forKey: resource.id)
+    return value
   }
 
   public func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {
     try ensureDirectoryExists()
     let data = try encoder.encode(value)
     fileManager.createFile(atPath: fileURL(for: resource).path(), contents: data)
+    await cache.setValue(value, forKey: resource.id)
   }
 }
 
