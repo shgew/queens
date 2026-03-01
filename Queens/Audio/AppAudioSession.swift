@@ -15,7 +15,6 @@ final class AppAudioSession {
   func configure() {
     do {
       try audioSession.setCategory(.ambient, options: [.mixWithOthers])
-      try audioSession.setActive(true)
     } catch {
       logger.error(
         "Failed to configure audio session: \(error.localizedDescription)"
