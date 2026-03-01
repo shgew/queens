@@ -31,7 +31,7 @@ where Resource.Value: Codable {
   public func save(_ value: Resource.Value, for resource: Resource) async throws {
     try ensureDirectoryExists()
     let data = try encoder.encode(value)
-    try data.write(to: fileURL(for: resource), options: .atomic)
+    fileManager.createFile(atPath: fileURL(for: resource).path(), contents: data)
   }
 }
 
