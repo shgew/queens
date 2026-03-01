@@ -30,8 +30,4 @@ extension LeaderboardViewModel {
   static var live: LeaderboardViewModel {
     LeaderboardViewModel(bestTimesStore: BestTimesStore.live)
   }
-
-  static var preview: LeaderboardViewModel {
-    LeaderboardViewModel(bestTimesStore: BestTimesStore.preview)
-  }
 }

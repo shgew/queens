@@ -129,5 +129,4 @@ extension BestTimesStore {
 
 extension BestTimesStore {
   static let live = BestTimesStore(isStoredInMemoryOnly: false)
-  static let preview = BestTimesStore(isStoredInMemoryOnly: true)
 }

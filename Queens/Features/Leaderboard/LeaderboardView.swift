@@ -41,5 +41,7 @@ struct LeaderboardView: View {
 }
 
 #Preview {
-  LeaderboardView(viewModel: .preview)
+  LeaderboardView(
+    viewModel: LeaderboardViewModel(bestTimesStore: PreviewBestTimesStore())
+  )
 }

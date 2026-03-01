@@ -189,7 +189,7 @@ extension NQueensPuzzleViewModel {
   static var preview: NQueensPuzzleViewModel {
     NQueensPuzzleViewModel(
       soundPlayer: SilentGameSoundPlayer(),
-      bestTimesStore: BestTimesStore.preview
+      bestTimesStore: PreviewBestTimesStore()
     )
   }
 }
