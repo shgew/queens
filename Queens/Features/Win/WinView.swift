@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct WinScreen: View {
-    let viewModel: WinScreenViewModel
+struct WinView: View {
+    let viewModel: WinViewModel
 
     var body: some View {
         GlassEffectContainer(spacing: 16) {
@@ -73,8 +73,8 @@ struct WinScreen: View {
 }
 
 #Preview {
-    WinScreen(
-        viewModel: WinScreenViewModel(
+    WinView(
+        viewModel: WinViewModel(
             boardSize: 8,
             moveCount: 12,
             startedAt: .now.addingTimeInterval(-165),

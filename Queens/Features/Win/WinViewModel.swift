@@ -1,6 +1,6 @@
 import Foundation
 
-struct WinScreenViewModel {
+struct WinViewModel {
     let boardSize: Int
     let moveCount: Int
     let startedAt: Date

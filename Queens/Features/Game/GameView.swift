@@ -15,8 +15,8 @@ struct GameView: View {
             }
             .padding(.vertical)
 
-            if let winScreenViewModel = model.winScreenViewModel {
-                winOverlay(for: winScreenViewModel)
+            if let winViewModel = model.winViewModel {
+                winOverlay(for: winViewModel)
             }
         }
         .task {
@@ -46,7 +46,7 @@ struct GameView: View {
                 StatPill(
                     systemImage: "clock",
                     value: model.startedAt.formattedElapsedTime(
-                        to: model.winScreenViewModel?.solvedAt ?? context.date
+                        to: model.winViewModel?.solvedAt ?? context.date
                     )
                 )
             }
@@ -87,12 +87,12 @@ struct GameView: View {
             .cellState { model.conflicts.contains($0) ? .conflicting : .normal }
     }
 
-    private func winOverlay(for viewModel: WinScreenViewModel) -> some View {
+    private func winOverlay(for viewModel: WinViewModel) -> some View {
         return ZStack {
             Color.black.opacity(0.2)
                 .ignoresSafeArea()
 
-            WinScreen(viewModel: viewModel)
+            WinView(viewModel: viewModel)
                 .padding(24)
                 .transition(.scale(0.9).combined(with: .opacity))
         }

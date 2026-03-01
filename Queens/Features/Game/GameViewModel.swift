@@ -14,7 +14,7 @@ final class GameViewModel {
 
     private var game: Game<NQueensProblem>
     private let soundPlayer: any GameSoundPlaying
-    private(set) var winScreenViewModel: WinScreenViewModel?
+    private(set) var winViewModel: WinViewModel?
     private(set) var placeFeedbackTrigger = 0
     private(set) var removeFeedbackTrigger = 0
     private var areSoundsPreloaded = false
@@ -48,7 +48,7 @@ final class GameViewModel {
         set {
             guard newValue != game.board.size else { return }
             game = Game(size: newValue, problem: NQueensProblem())
-            winScreenViewModel = nil
+            winViewModel = nil
             soundPlayer.play(.boardSizeChanged)
         }
     }
@@ -96,7 +96,7 @@ final class GameViewModel {
             let solvedAt = Date.now
             soundPlayer.play(.win)
             withAnimation(Self.animation) {
-                winScreenViewModel = WinScreenViewModel(
+                winViewModel = WinViewModel(
                     boardSize: game.board.size,
                     moveCount: game.moves.count,
                     startedAt: game.startedAt,
@@ -118,7 +118,7 @@ final class GameViewModel {
 
     private func resetGame() {
         withAnimation(Self.animation) {
-            winScreenViewModel = nil
+            winViewModel = nil
         }
         game.reset()
     }
