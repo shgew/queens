@@ -2,9 +2,9 @@ import Foundation
 import ResourceStorage
 
 protocol BestTimesStoring {
-  func bestTime(forSize size: Int) -> TimeInterval?
+  func bestTime(forSize size: Int) async -> TimeInterval?
   @discardableResult
-  func record(time: TimeInterval, forSize size: Int) -> Bool
+  func record(time: TimeInterval, forSize size: Int) async -> Bool
 }
 
 struct BestTimesResource: StorageResource {
@@ -14,32 +14,27 @@ struct BestTimesResource: StorageResource {
   let defaultValue: [Int: TimeInterval] = [:]
 }
 
-final class BestTimesStore: BestTimesStoring {
-  private let storage: any ResourceStorage
+actor BestTimesStore: BestTimesStoring {
+  private let storage: any ResourceStorage<BestTimesResource>
   private let resource: BestTimesResource
   private var times: [Int: TimeInterval]?
-  private let lock = NSLock()
 
   init(
-    storage: any ResourceStorage = Self.makeDefaultStorage(),
+    storage: (any ResourceStorage<BestTimesResource>)? = nil,
     resource: BestTimesResource = BestTimesResource()
   ) {
-    self.storage = storage
+    self.storage = storage ?? Self.makeDefaultStorage()
     self.resource = resource
   }
 
-  func bestTime(forSize size: Int) -> TimeInterval? {
-    lock.lock()
-    defer { lock.unlock() }
-    return loadTimesIfNeeded()[size]
+  func bestTime(forSize size: Int) async -> TimeInterval? {
+    let loadedTimes = await loadTimesIfNeeded()
+    return loadedTimes[size]
   }
 
   @discardableResult
-  func record(time: TimeInterval, forSize size: Int) -> Bool {
-    lock.lock()
-    defer { lock.unlock() }
-
-    var loadedTimes = loadTimesIfNeeded()
+  func record(time: TimeInterval, forSize size: Int) async -> Bool {
+    var loadedTimes = await loadTimesIfNeeded()
     if let existing = loadedTimes[size], existing <= time {
       return false
     }
@@ -47,7 +42,7 @@ final class BestTimesStore: BestTimesStoring {
     loadedTimes[size] = time
     times = loadedTimes
     do {
-      try storage.save(loadedTimes, for: resource)
+      try await storage.save(loadedTimes, for: resource)
     } catch {
       print("BestTimesStore failed to save: \(error)")
     }
@@ -56,13 +51,13 @@ final class BestTimesStore: BestTimesStoring {
 }
 
 extension BestTimesStore {
-  private func loadTimesIfNeeded() -> [Int: TimeInterval] {
+  private func loadTimesIfNeeded() async -> [Int: TimeInterval] {
     if let times {
       return times
     }
     let loadedTimes: [Int: TimeInterval]
     do {
-      loadedTimes = try storage.load(resource)
+      loadedTimes = try await storage.load(resource)
     } catch {
       print("BestTimesStore failed to load: \(error)")
       loadedTimes = resource.defaultValue
@@ -71,9 +66,9 @@ extension BestTimesStore {
     return loadedTimes
   }
 
-  private static func makeDefaultStorage(fileManager: FileManager = .default) -> FileResourceStorage {
-    let directory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+  private static func makeDefaultStorage() -> FileResourceStorage<BestTimesResource> {
+    let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("Queens", isDirectory: true)
-    return FileResourceStorage(directory: directory, fileManager: fileManager)
+    return FileResourceStorage(directory: directory)
   }
 }

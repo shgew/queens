@@ -5,76 +5,76 @@ import Testing
 @testable import Queens
 
 struct BestTimesTests {
-  let bestTimes = BestTimesStore(storage: InMemoryResourceStorage())
+  let bestTimes = BestTimesStore(storage: InMemoryResourceStorage<BestTimesResource>())
 
-  @Test func `returns nil for unseen size`() {
-    let result = bestTimes.bestTime(forSize: 4)
+  @Test func `returns nil for unseen size`() async {
+    let result = await bestTimes.bestTime(forSize: 4)
     #expect(result == nil)
   }
 
-  @Test func `records first time`() {
-    let isNew = bestTimes.record(time: 10.0, forSize: 4)
+  @Test func `records first time`() async {
+    let isNew = await bestTimes.record(time: 10.0, forSize: 4)
 
     #expect(isNew)
-    #expect(bestTimes.bestTime(forSize: 4) == 10.0)
+    #expect(await bestTimes.bestTime(forSize: 4) == 10.0)
   }
 
-  @Test func `faster time replaces existing`() {
-    bestTimes.record(time: 10.0, forSize: 4)
-    let isNew = bestTimes.record(time: 7.0, forSize: 4)
+  @Test func `faster time replaces existing`() async {
+    await bestTimes.record(time: 10.0, forSize: 4)
+    let isNew = await bestTimes.record(time: 7.0, forSize: 4)
 
     #expect(isNew)
-    #expect(bestTimes.bestTime(forSize: 4) == 7.0)
+    #expect(await bestTimes.bestTime(forSize: 4) == 7.0)
   }
 
-  @Test func `slower time does not replace existing`() {
-    bestTimes.record(time: 10.0, forSize: 4)
-    let isNew = bestTimes.record(time: 15.0, forSize: 4)
+  @Test func `slower time does not replace existing`() async {
+    await bestTimes.record(time: 10.0, forSize: 4)
+    let isNew = await bestTimes.record(time: 15.0, forSize: 4)
 
     #expect(!isNew)
-    #expect(bestTimes.bestTime(forSize: 4) == 10.0)
+    #expect(await bestTimes.bestTime(forSize: 4) == 10.0)
   }
 
-  @Test func `equal time does not replace existing`() {
-    bestTimes.record(time: 10.0, forSize: 4)
-    let isNew = bestTimes.record(time: 10.0, forSize: 4)
+  @Test func `equal time does not replace existing`() async {
+    await bestTimes.record(time: 10.0, forSize: 4)
+    let isNew = await bestTimes.record(time: 10.0, forSize: 4)
 
     #expect(!isNew)
   }
 
-  @Test func `different sizes are independent`() {
-    bestTimes.record(time: 10.0, forSize: 4)
-    bestTimes.record(time: 20.0, forSize: 8)
+  @Test func `different sizes are independent`() async {
+    await bestTimes.record(time: 10.0, forSize: 4)
+    await bestTimes.record(time: 20.0, forSize: 8)
 
-    #expect(bestTimes.bestTime(forSize: 4) == 10.0)
-    #expect(bestTimes.bestTime(forSize: 8) == 20.0)
+    #expect(await bestTimes.bestTime(forSize: 4) == 10.0)
+    #expect(await bestTimes.bestTime(forSize: 8) == 20.0)
   }
 
-  @Test func `persists across store instances with file storage`() throws {
+  @Test func `persists across store instances with file storage`() async throws {
     let directory = try makeTempDirectory()
-    let storage = FileResourceStorage(directory: directory)
+    let storage = FileResourceStorage<BestTimesResource>(directory: directory)
     let bestTimes = BestTimesStore(storage: storage)
-    bestTimes.record(time: 10.0, forSize: 4)
+    await bestTimes.record(time: 10.0, forSize: 4)
 
-    let reloadedStorage = FileResourceStorage(directory: directory)
+    let reloadedStorage = FileResourceStorage<BestTimesResource>(directory: directory)
     let reloaded = BestTimesStore(storage: reloadedStorage)
-    #expect(reloaded.bestTime(forSize: 4) == 10.0)
+    #expect(await reloaded.bestTime(forSize: 4) == 10.0)
   }
 
-  @Test func `load failure falls back to default`() {
+  @Test func `load failure falls back to default`() async {
     let storage = FailingResourceStorage(shouldFailLoad: true)
     let bestTimes = BestTimesStore(storage: storage)
 
-    #expect(bestTimes.bestTime(forSize: 4) == nil)
+    #expect(await bestTimes.bestTime(forSize: 4) == nil)
   }
 
-  @Test func `save failure still updates in-memory best time`() {
+  @Test func `save failure still updates in-memory best time`() async {
     let storage = FailingResourceStorage(shouldFailSave: true)
     let bestTimes = BestTimesStore(storage: storage)
 
-    let isNewBest = bestTimes.record(time: 10.0, forSize: 4)
+    let isNewBest = await bestTimes.record(time: 10.0, forSize: 4)
     #expect(isNewBest)
-    #expect(bestTimes.bestTime(forSize: 4) == 10.0)
+    #expect(await bestTimes.bestTime(forSize: 4) == 10.0)
   }
 
   private func makeTempDirectory() throws -> URL {
@@ -85,7 +85,9 @@ struct BestTimesTests {
   }
 }
 
-private final class FailingResourceStorage: ResourceStorage {
+private actor FailingResourceStorage: ResourceStorage {
+  typealias Resource = BestTimesResource
+
   enum Failure: Error {
     case load
     case save
@@ -105,19 +107,17 @@ private final class FailingResourceStorage: ResourceStorage {
     self.values = values
   }
 
-  func load<R: StorageResource>(_ resource: R) throws -> R.Value {
+  func load(_ resource: BestTimesResource) async throws -> [Int: TimeInterval] {
     if shouldFailLoad {
       throw Failure.load
     }
-    let data = try JSONEncoder().encode(values)
-    return try JSONDecoder().decode(R.Value.self, from: data)
+    return values
   }
 
-  func save<R: StorageResource>(_ value: R.Value, for resource: R) throws {
+  func save(_ value: [Int: TimeInterval], for resource: BestTimesResource) async throws {
     if shouldFailSave {
       throw Failure.save
     }
-    let data = try JSONEncoder().encode(value)
-    values = try JSONDecoder().decode([Int: TimeInterval].self, from: data)
+    values = value
   }
 }

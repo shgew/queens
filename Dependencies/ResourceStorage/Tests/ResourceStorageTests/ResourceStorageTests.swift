@@ -4,29 +4,29 @@ import Testing
 @testable import ResourceStorage
 
 struct ResourceStorageTests {
-  @Test func `in-memory returns default for missing resource`() throws {
-    let storage = InMemoryResourceStorage()
+  @Test func `in-memory returns default for missing resource`() async throws {
+    let storage = InMemoryResourceStorage<TestResource>()
 
-    let value = try storage.load(TestResource())
+    let value = try await storage.load(TestResource())
     #expect(value == [:])
   }
 
-  @Test func `in-memory round trips saved value`() throws {
-    let storage = InMemoryResourceStorage()
+  @Test func `in-memory round trips saved value`() async throws {
+    let storage = InMemoryResourceStorage<TestResource>()
     let resource = TestResource()
 
-    try storage.save([4: 10], for: resource)
-    let value = try storage.load(resource)
+    try await storage.save([4: 10], for: resource)
+    let value = try await storage.load(resource)
     #expect(value == [4: 10])
   }
 
-  @Test func `file storage round trips saved value`() throws {
+  @Test func `file storage round trips saved value`() async throws {
     let directory = try makeTempDirectory()
-    let storage = FileResourceStorage(directory: directory)
+    let storage = FileResourceStorage<TestResource>(directory: directory)
     let resource = TestResource()
 
-    try storage.save([8: 20], for: resource)
-    let value = try storage.load(resource)
+    try await storage.save([8: 20], for: resource)
+    let value = try await storage.load(resource)
     #expect(value == [8: 20])
   }
 }
