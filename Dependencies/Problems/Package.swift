@@ -3,31 +3,31 @@
 import PackageDescription
 
 let package = Package(
-    name: "Problems",
-    platforms: [
-        .iOS(.v26),
-        .macOS(.v26),
-    ],
-    products: [
-        .library(
-            name: "Problems",
-            targets: ["Problems"]
-        ),
-    ],
-    dependencies: [
-        .package(path: "../Board"),
-    ],
-    targets: [
-        .target(
-            name: "Problems",
-            dependencies: [
-                .product(name: "Board", package: "Board"),
-            ]
-        ),
+	name: "Problems",
+	platforms: [
+		.iOS(.v26),
+		.macOS(.v26),
+	],
+	products: [
+		.library(
+			name: "Problems",
+			targets: ["Problems"]
+		)
+	],
+	dependencies: [
+		.package(path: "../Board")
+	],
+	targets: [
+		.target(
+			name: "Problems",
+			dependencies: [
+				.product(name: "Board", package: "Board")
+			]
+		),
 
-        .testTarget(
-            name: "ProblemsBenchmarks",
-            dependencies: ["Problems"]
-        ),
-    ]
+		.testTarget(
+			name: "ProblemsBenchmarks",
+			dependencies: ["Problems"]
+		),
+	]
 )
