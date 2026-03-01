@@ -1,4 +1,5 @@
 import Board
+import BoardUI
 import Foundation
 import Game
 import GameAudio
@@ -9,20 +10,28 @@ import SwiftUI
 @MainActor
 @Observable
 final class GameViewModel {
-	static let maximumBoardSize = 32
-	static let supportedBoardSizes = Array(Board.minimumSize...maximumBoardSize)
+	static let supportedBoardSizes = Array(Board.minimumSize...32)
 
 	private var game: Game<NQueensProblem>
-
 	private var areSoundsPreloaded = false
 	private let soundPlayer: any GameSoundPlaying
-
+	private let occupant = Occupant(piece: .queen, side: .white)
 	private(set) var winViewModel: WinViewModel?
-
 	private(set) var placeFeedbackTrigger = 0
 	private(set) var removeFeedbackTrigger = 0
 	private(set) var invalidPlaceFeedbackTrigger = 0
 
+	init(
+		size: Int = 4,
+		soundPlayer: any GameSoundPlaying = GameSoundPlayer()
+	) {
+		self.game = Game(size: size, problem: NQueensProblem())
+		self.soundPlayer = soundPlayer
+	}
+}
+
+// MARK: - View Exposed
+extension GameViewModel {
 	var board: Board {
 		game.board
 	}
@@ -31,14 +40,21 @@ final class GameViewModel {
 		game.startedAt
 	}
 
-	private let occupant = Occupant(piece: .queen, side: .white)
+	var piecesRemaining: Int {
+		game.board.size - game.board.occupiedSquares.count
+	}
 
-	init(
-		size: Int = 4,
-		soundPlayer: any GameSoundPlaying = GameSoundPlayer()
-	) {
-		self.game = Game(size: size, problem: NQueensProblem())
-		self.soundPlayer = soundPlayer
+	var moveCount: Int {
+		game.moves.count
+	}
+
+	func playTime(at date: Date) -> String {
+		let endDate = winViewModel?.solvedAt ?? date
+		return startedAt.formattedElapsedTime(to: endDate)
+	}
+
+	func cellState(for position: Position) -> BoardView.CellState {
+		conflicts.contains(position) ? .conflicting : .normal
 	}
 
 	func load() {
@@ -57,68 +73,39 @@ final class GameViewModel {
 		}
 	}
 
-	var piecesRemaining: Int {
-		game.board.size - game.board.occupiedSquares.count
-	}
-
-	var isSolved: Bool {
-		game.isSolved
-	}
-
-	var moveCount: Int {
-		game.moves.count
-	}
-
-	var canUndo: Bool {
-		!game.moves.isEmpty
-	}
-
-	var conflicts: Set<Position> {
-		if case .unsolved(let diagnostic) = game.evaluation {
-			return diagnostic.conflicts
-		}
-		return []
-	}
-
 	func squareTapped(_ position: Position) {
 		if game.board.occupiedSquares[position] == occupant {
-			game.apply(move: .remove(occupant, from: position))
-			removeFeedbackTrigger += 1
-			soundPlayer.play(.remove)
+			removePiece(at: position)
 			return
 		}
 
-		guard piecesRemaining > 0 else {
-			invalidPlaceFeedbackTrigger += 1
-			soundPlayer.play(.invalidMove)
+		guard canPlacePiece else {
+			handleInvalidPlacement()
 			return
 		}
 
-		game.apply(move: .place(occupant, at: position))
-		placeFeedbackTrigger += 1
+		placePiece(at: position)
 
 		if game.isSolved {
-			let solvedAt = Date.now
-			soundPlayer.play(.win)
-			withAnimation(Self.animation) {
-				winViewModel = WinViewModel(
-					boardSize: game.board.size,
-					moveCount: game.moves.count,
-					startedAt: game.startedAt,
-					solvedAt: solvedAt,
-					onPlayAgain: { [weak self] in
-						self?.resetGame()
-					}
-				)
-			}
-		} else {
-			soundPlayer.play(.place)
+			presentWinView()
 		}
 	}
 
 	func resetButtonTapped() {
 		soundPlayer.play(.reset)
 		resetGame()
+	}
+}
+
+// MARK: - Helpers
+extension GameViewModel {
+	private static let animation = Animation.default.speed(2)
+
+	private var conflicts: Set<Position> {
+		if case .unsolved(let diagnostic) = game.evaluation {
+			return diagnostic.conflicts
+		}
+		return []
 	}
 
 	private func resetGame() {
@@ -127,8 +114,45 @@ final class GameViewModel {
 		}
 		game.reset()
 	}
-}
 
-extension GameViewModel {
-	private static let animation = Animation.default.speed(2)
+	private var canPlacePiece: Bool {
+		piecesRemaining > 0
+	}
+
+	private func removePiece(at position: Position) {
+		game.apply(move: .remove(occupant, from: position))
+		removeFeedbackTrigger += 1
+		soundPlayer.play(.remove)
+	}
+
+	private func placePiece(at position: Position) {
+		game.apply(move: .place(occupant, at: position))
+		placeFeedbackTrigger += 1
+		soundPlayer.play(.place)
+	}
+
+	private func handleInvalidPlacement() {
+		invalidPlaceFeedbackTrigger += 1
+		soundPlayer.play(.invalidMove)
+	}
+
+	private func presentWinView() {
+		let solvedAt = Date.now
+		soundPlayer.play(.win)
+		withAnimation(Self.animation) {
+			winViewModel = makeWinViewModel(solvedAt: solvedAt)
+		}
+	}
+
+	private func makeWinViewModel(solvedAt: Date) -> WinViewModel {
+		WinViewModel(
+			boardSize: game.board.size,
+			moveCount: game.moves.count,
+			startedAt: game.startedAt,
+			solvedAt: solvedAt,
+			onPlayAgain: { [weak self] in
+				self?.resetGame()
+			}
+		)
+	}
 }

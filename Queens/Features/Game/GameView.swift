@@ -49,9 +49,7 @@ struct GameView: View {
 			TimelineView(.periodic(from: .now, by: 1)) { context in
 				StatPill(
 					systemImage: "clock",
-					value: model.startedAt.formattedElapsedTime(
-						to: model.winViewModel?.solvedAt ?? context.date
-					)
+					value: model.playTime(at: context.date)
 				)
 			}
 		}
@@ -88,7 +86,7 @@ struct GameView: View {
 	private var board: some View {
 		BoardView(board: model.board)
 			.onSquareTapped(model.squareTapped)
-			.cellState { model.conflicts.contains($0) ? .conflicting : .normal }
+			.cellState(model.cellState(for:))
 	}
 
 	private func winOverlay(for viewModel: WinViewModel) -> some View {
