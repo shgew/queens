@@ -15,7 +15,7 @@ struct NQueensPuzzleViewModelTests {
     vm = NQueensPuzzleViewModel(
       size: 4,
       soundPlayer: spy,
-      bestTimes: BestTimesStore(storage: InMemoryResourceStorage())
+      bestTimesStore: BestTimesStore(storage: InMemoryResourceStorage())
     )
   }
 

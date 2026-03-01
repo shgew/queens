@@ -11,12 +11,12 @@ import SwiftUI
 @Observable
 final class NQueensPuzzleViewModel {
   static let supportedBoardSizes = Array(Board.minimumSize...32)
+  private static let occupant = Occupant(piece: .queen, side: .white)
 
   private var game: Game<NQueensProblem>
   private var areSoundsPreloaded = false
   private let soundPlayer: any GameSoundPlaying
-  private let occupant = Occupant(piece: .queen, side: .white)
-  private let bestTimes: any BestTimesStoring
+  private let bestTimesStore: any BestTimesStoring
   private(set) var winViewModel: WinViewModel?
   private(set) var placeFeedbackTrigger = 0
   private(set) var removeFeedbackTrigger = 0
@@ -24,12 +24,12 @@ final class NQueensPuzzleViewModel {
 
   init(
     size: Int = 4,
-    soundPlayer: any GameSoundPlaying = GameSoundPlayer(),
-    bestTimes: any BestTimesStoring
+    soundPlayer: any GameSoundPlaying,
+    bestTimesStore: any BestTimesStoring
   ) {
     self.game = Game(size: size, problem: NQueensProblem())
     self.soundPlayer = soundPlayer
-    self.bestTimes = bestTimes
+    self.bestTimesStore = bestTimesStore
   }
 }
 
@@ -77,7 +77,7 @@ extension NQueensPuzzleViewModel {
   }
 
   func squareTapped(at position: Position) async {
-    if game.board.occupiedSquares[position] == occupant {
+    if game.board.occupiedSquares[position] == Self.occupant {
       removePiece(at: position)
       return
     }
@@ -123,13 +123,13 @@ extension NQueensPuzzleViewModel {
   }
 
   private func removePiece(at position: Position) {
-    game.apply(move: .remove(occupant, from: position))
+    game.apply(move: .remove(Self.occupant, from: position))
     removeFeedbackTrigger += 1
     soundPlayer.play(.remove)
   }
 
   private func placePiece(at position: Position) {
-    game.apply(move: .place(occupant, at: position))
+    game.apply(move: .place(Self.occupant, at: position))
     placeFeedbackTrigger += 1
     soundPlayer.play(.place)
   }
@@ -142,8 +142,8 @@ extension NQueensPuzzleViewModel {
   private func presentWinView() async {
     let solvedAt = Date.now
     let elapsed = solvedAt.timeIntervalSince(game.startedAt)
-    let isNewBest = await bestTimes.record(time: elapsed, forSize: game.board.size)
-    let bestTime = await bestTimes.bestTime(forSize: game.board.size)
+    let isNewBest = await bestTimesStore.record(time: elapsed, forSize: game.board.size)
+    let bestTime = await bestTimesStore.bestTime(forSize: game.board.size)
     soundPlayer.play(.win)
     withAnimation(Self.animation) {
       winViewModel = makeWinViewModel(
@@ -180,13 +180,16 @@ extension NQueensPuzzleViewModel {
       .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("Queens", isDirectory: true)
     let storage = FileResourceStorage(directory: directory)
-    return NQueensPuzzleViewModel(bestTimes: BestTimesStore(storage: storage))
+    return NQueensPuzzleViewModel(
+      soundPlayer: GameSoundPlayer(),
+      bestTimesStore: BestTimesStore(storage: storage)
+    )
   }
 
   static var preview: NQueensPuzzleViewModel {
     NQueensPuzzleViewModel(
       soundPlayer: SilentGameSoundPlayer(),
-      bestTimes: BestTimesStore(storage: InMemoryResourceStorage())
+      bestTimesStore: BestTimesStore(storage: InMemoryResourceStorage())
     )
   }
 }
