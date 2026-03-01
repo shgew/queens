@@ -2,7 +2,7 @@ import Board
 import BoardUI
 import Foundation
 import GameAudio
-import ResourceStorage
+import SwiftData
 import Testing
 
 @testable import Queens
@@ -15,7 +15,7 @@ struct NQueensPuzzleViewModelTests {
     vm = NQueensPuzzleViewModel(
       size: 4,
       soundPlayer: spy,
-      bestTimesStore: BestTimesStore(storage: InMemoryResourceStorage())
+      bestTimesStore: Self.makeInMemoryBestTimesStore()
     )
   }
 
@@ -215,5 +215,17 @@ struct NQueensPuzzleViewModelTests {
     await vm.squareTapped(at: Position(row: 1, column: 3))
     await vm.squareTapped(at: Position(row: 2, column: 0))
     await vm.squareTapped(at: Position(row: 3, column: 2))
+  }
+}
+
+extension NQueensPuzzleViewModelTests {
+  private static func makeInMemoryBestTimesStore() -> BestTimesStore {
+    do {
+      let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+      let container = try ModelContainer(for: BestTimeRecord.self, configurations: configuration)
+      return BestTimesStore(container: container)
+    } catch {
+      fatalError("Failed to create in-memory SwiftData container for tests: \(error)")
+    }
   }
 }

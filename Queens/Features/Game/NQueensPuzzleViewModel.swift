@@ -5,7 +5,6 @@ import Game
 import GameAudio
 import Observation
 import Problems
-import ResourceStorage
 import SwiftUI
 
 @Observable
@@ -176,20 +175,16 @@ extension NQueensPuzzleViewModel {
 // MARK: - Factory
 extension NQueensPuzzleViewModel {
   static var live: NQueensPuzzleViewModel {
-    let directory = FileManager.default
-      .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-      .appendingPathComponent("Queens", isDirectory: true)
-    let storage = FileResourceStorage(directory: directory)
-    return NQueensPuzzleViewModel(
+    NQueensPuzzleViewModel(
       soundPlayer: GameSoundPlayer(),
-      bestTimesStore: BestTimesStore(storage: storage)
+      bestTimesStore: BestTimesStore.live
     )
   }
 
   static var preview: NQueensPuzzleViewModel {
     NQueensPuzzleViewModel(
       soundPlayer: SilentGameSoundPlayer(),
-      bestTimesStore: BestTimesStore(storage: InMemoryResourceStorage())
+      bestTimesStore: BestTimesStore.preview
     )
   }
 }

@@ -1,11 +1,17 @@
 import Foundation
-import ResourceStorage
+import SwiftData
 import Testing
 
 @testable import Queens
 
 struct BestTimesTests {
-  let store = BestTimesStore(storage: InMemoryResourceStorage())
+  let container: ModelContainer
+  let store: BestTimesStore
+
+  init() {
+    container = Self.makeInMemoryContainer()
+    store = BestTimesStore(container: container)
+  }
 
   @Test func `returns nil for unseen size`() async {
     let result = await store.bestTime(forSize: 4)
@@ -19,20 +25,22 @@ struct BestTimesTests {
     #expect(await store.bestTime(forSize: 4) == 10.0)
   }
 
-  @Test func `faster time replaces existing`() async {
+  @Test func `faster time becomes new best`() async {
     await store.record(time: 10.0, forSize: 4)
     let isNew = await store.record(time: 7.0, forSize: 4)
 
     #expect(isNew)
     #expect(await store.bestTime(forSize: 4) == 7.0)
+    #expect(fetchTimes(forSize: 4).count == 2)
   }
 
-  @Test func `slower time does not replace existing`() async {
+  @Test func `slower time is kept when top list has room`() async {
     await store.record(time: 10.0, forSize: 4)
     let isNew = await store.record(time: 15.0, forSize: 4)
 
     #expect(!isNew)
     #expect(await store.bestTime(forSize: 4) == 10.0)
+    #expect(fetchTimes(forSize: 4).count == 2)
   }
 
   @Test func `equal time does not replace existing`() async {
@@ -50,49 +58,59 @@ struct BestTimesTests {
     #expect(await store.bestTime(forSize: 8) == 20.0)
   }
 
-  @Test func `persists across store instances with file storage`() async throws {
-    let directory = try makeTempDirectory()
-    let storage = FileResourceStorage(directory: directory)
-    let store = BestTimesStore(storage: storage)
-    await store.record(time: 10.0, forSize: 4)
+  @Test func `keeps only top ten times per size`() async {
+    for time in stride(from: 20.0, through: 1.0, by: -1.0) {
+      _ = await store.record(time: time, forSize: 4)
+    }
 
-    let reloadedStorage = FileResourceStorage(directory: directory)
-    let reloaded = BestTimesStore(storage: reloadedStorage)
-    #expect(await reloaded.bestTime(forSize: 4) == 10.0)
+    let savedTimes = fetchTimes(forSize: 4)
+    #expect(savedTimes.count == 10)
+    #expect(savedTimes.first == 1.0)
+    #expect(savedTimes.last == 10.0)
   }
 
-  @Test func `load failure falls back to default`() async {
-    let storage = FailingResourceStorage(shouldFailLoad: true)
-    let store = BestTimesStore(storage: storage)
+  @Test func `drops slower non-qualifying time when top ten full`() async {
+    for time in stride(from: 10.0, through: 1.0, by: -1.0) {
+      _ = await store.record(time: time, forSize: 4)
+    }
+    let isNew = await store.record(time: 99.0, forSize: 4)
 
-    #expect(await store.bestTime(forSize: 4) == nil)
-  }
-
-  private func makeTempDirectory() throws -> URL {
-    let directory = FileManager.default.temporaryDirectory
-      .appendingPathComponent("BestTimesTests-\(UUID().uuidString)")
-    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-    return directory
+    #expect(!isNew)
+    #expect(fetchTimes(forSize: 4).count == 10)
+    #expect(fetchTimes(forSize: 4).last == 10.0)
   }
 }
 
-private actor FailingResourceStorage: ResourceStorage {
-  enum Failure: Error {
-    case load
-  }
-
-  private let shouldFailLoad: Bool
-
-  init(shouldFailLoad: Bool = false) {
-    self.shouldFailLoad = shouldFailLoad
-  }
-
-  func load<Value>(_ resource: Resource<Value>) async throws -> Value {
-    if shouldFailLoad {
-      throw Failure.load
+extension BestTimesTests {
+  private static func makeInMemoryContainer() -> ModelContainer {
+    do {
+      let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+      return try ModelContainer(for: BestTimeRecord.self, configurations: configuration)
+    } catch {
+      fatalError("Failed to create in-memory SwiftData container for tests: \(error)")
     }
-    return resource.defaultValue
   }
 
-  func save<Value>(_ value: Value, for resource: Resource<Value>) async throws {}
+  private func fetchTimes(forSize size: Int) -> [TimeInterval] {
+    let context = ModelContext(container)
+    let descriptor = FetchDescriptor<BestTimeRecord>(
+      predicate: #Predicate { record in
+        record.size == size
+      }
+    )
+
+    do {
+      return try context.fetch(descriptor)
+        .sorted {
+          if $0.time == $1.time {
+            return $0.recordedAt < $1.recordedAt
+          }
+          return $0.time < $1.time
+        }
+        .map(\.time)
+    } catch {
+      Issue.record("Failed to fetch top times for test: \(error)")
+      return []
+    }
+  }
 }
