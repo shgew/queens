@@ -19,7 +19,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(path: "../Logging"),
+    .package(path: "../Logging")
   ],
   targets: [
     .target(

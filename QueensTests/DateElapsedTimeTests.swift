@@ -17,13 +17,13 @@ struct DateElapsedTimeTests {
 
   @Test func `sub-hour uses minute second format`() {
     let start = Date.now
-    let end = start.addingTimeInterval(125) // 2 minutes 5 seconds
+    let end = start.addingTimeInterval(125)  // 2 minutes 5 seconds
     #expect(start.formattedElapsedTime(to: end) == "02:05")
   }
 
   @Test func `hour-plus duration uses hour minute second format`() {
     let start = Date.now
-    let end = start.addingTimeInterval(3661) // 1:01:01
+    let end = start.addingTimeInterval(3661)  // 1:01:01
     #expect(start.formattedElapsedTime(to: end) == "1:01:01")
   }
 

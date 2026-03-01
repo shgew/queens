@@ -1,6 +1,6 @@
 import Foundation
-import OSLog
 import Logging
+import OSLog
 
 private let logger = Logger.queens(category: .board)
 

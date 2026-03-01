@@ -1,8 +1,8 @@
 import Board
 import Foundation
+import Logging
 import OSLog
 import Problems
-import Logging
 
 private let logger = Logger.queens(category: .game)
 
