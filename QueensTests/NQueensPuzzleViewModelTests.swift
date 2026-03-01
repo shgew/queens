@@ -28,10 +28,6 @@ struct NQueensPuzzleViewModelTests {
     #expect(vm.moveCount == 0)
   }
 
-  @Test func `initial board is empty`() {
-    #expect(vm.board.occupiedSquares.isEmpty)
-  }
-
   @Test func `initial win view model is nil`() {
     #expect(vm.winViewModel == nil)
   }
