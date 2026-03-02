@@ -1,8 +1,6 @@
 # Queens
 
-An iOS puzzle game based on the N-Queens problem. Place N queens on an N×N chessboard so that no two queens threaten each other — no shared row, column, or diagonal.
-
-> While we don't mind you leverage modern code generation tools, we expect you to fully understand and own 100% of the code and disclose the extent of their use in your workflow.
+An iOS puzzle game based on the N-Queens problem. Place N queens on an N×N chessboard so that no two queens threaten each other, i.e. no shared row, column, or diagonal.
 
 ## Requirements
 
@@ -31,12 +29,6 @@ Xcode:
 2. Select the `Queens` scheme.
 3. Run tests with `Cmd+U`.
 
-Swift Package Manager (package-level tests):
-
-- `swift test --package-path Dependencies/Board`
-- `swift test --package-path Dependencies/Game`
-- `swift test --package-path Dependencies/Problems`
-
 ## Gameplay
 
 - Select board size (`4...32`)
@@ -47,7 +39,7 @@ Swift Package Manager (package-level tests):
 ## UI
 
 - Dynamic chessboard for any board size
-- Queens visually distinct (♛ or icon)
+- Queens visually distinct
 - Conflicting placements clearly marked
 - Simple, clean, extensible design
 
@@ -72,12 +64,11 @@ Swift Package Manager (package-level tests):
 
 ## Testing Strategy
 
-- View-model tests validate gameplay flow, win interactions, and elapsed-time formatting.
+- View-model tests validate gameplay flow and win interactions.
 - Store tests validate best-time persistence rules (new-best replacement and board-size separation).
 - Package tests validate low-level modules (`Board`, `Game`) and N-Queens correctness scenarios.
-- Performance checks for N-Queens conflict evaluation live in benchmark-oriented XCTest cases.
+- Performance checks for N-Queens conflict evaluation live in benchmark XCTest cases.
 
 ## Code Generation Disclosure
 
-- No generated production code is checked into this repository.
-- AI assistance was used during development/review for refactoring suggestions and test authoring, with all final code manually reviewed and owned.
+AI assistance was used during development/review for refactoring suggestions and test generation, with all final code manually reviewed and owned.
