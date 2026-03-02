@@ -10,10 +10,12 @@ import SwiftUI
 @Observable
 final class PuzzleViewModel<P: PuzzleProblem> {
   private var game: Game<P>
-  private var areSoundsPreloaded = false
-  private let soundPlayer: any GameSoundPlaying
   private let bestTimesStore: any BestTimesStoring
   private(set) var winViewModel: WinViewModel?
+
+  private var areSoundsPreloaded = false
+  private let soundPlayer: any GameSoundPlaying
+
   private(set) var placeFeedbackTrigger = 0
   private(set) var removeFeedbackTrigger = 0
   private(set) var invalidPlaceFeedbackTrigger = 0
