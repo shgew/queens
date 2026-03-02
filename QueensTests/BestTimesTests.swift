@@ -80,18 +80,6 @@ struct BestTimesTests {
     #expect(fetchTimes(for: 4).last == 10.0)
   }
 
-  @Test func `top times by board size are grouped and sorted`() async {
-    await store.record(time: 12.0, for: 8)
-    await store.record(time: 9.0, for: 4)
-    await store.record(time: 15.0, for: 4)
-    await store.record(time: 10.0, for: 8)
-
-    let sections = await store.topTimesByBoardSize()
-
-    #expect(sections.map(\.boardSize) == [4, 8])
-    #expect(sections[0].times == [9.0, 15.0])
-    #expect(sections[1].times == [10.0, 12.0])
-  }
 }
 
 extension BestTimesTests {

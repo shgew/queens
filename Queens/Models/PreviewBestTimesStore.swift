@@ -2,14 +2,7 @@ import Foundation
 
 struct PreviewBestTimesStore: BestTimesStoring {
   func bestTime(for boardSize: Int) async -> TimeInterval? {
-    sampleSections
-      .first(where: { $0.boardSize == boardSize })?
-      .times
-      .first
-  }
-
-  func topTimesByBoardSize() async -> [LeaderboardSection] {
-    sampleSections
+    previewBestTimes[boardSize]
   }
 
   @discardableResult
@@ -19,11 +12,11 @@ struct PreviewBestTimesStore: BestTimesStoring {
 }
 
 extension PreviewBestTimesStore {
-  private var sampleSections: [LeaderboardSection] {
+  private var previewBestTimes: [Int: TimeInterval] {
     [
-      LeaderboardSection(boardSize: 4, times: [19.2, 22.8, 27.4]),
-      LeaderboardSection(boardSize: 5, times: [41.7, 47.1, 52.6, 58.2]),
-      LeaderboardSection(boardSize: 6, times: [86.4, 94.9]),
+      4: 19.2,
+      5: 41.7,
+      6: 86.4,
     ]
   }
 }

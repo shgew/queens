@@ -18,7 +18,6 @@ final class NQueensPuzzleViewModel {
   private let soundPlayer: any GameSoundPlaying
   private let bestTimesStore: any BestTimesStoring
   private(set) var winViewModel: WinViewModel?
-  var leaderboardViewModel: LeaderboardViewModel?
   private(set) var placeFeedbackTrigger = 0
   private(set) var removeFeedbackTrigger = 0
   private(set) var invalidPlaceFeedbackTrigger = 0
@@ -98,10 +97,6 @@ extension NQueensPuzzleViewModel {
   func resetButtonTapped() {
     soundPlayer.play(.reset)
     resetGame()
-  }
-
-  func leaderboardButtonTapped() {
-    leaderboardViewModel = LeaderboardViewModel(bestTimesStore: bestTimesStore)
   }
 }
 

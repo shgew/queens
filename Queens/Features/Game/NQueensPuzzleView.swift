@@ -38,10 +38,6 @@ struct NQueensPuzzleView: View {
       .warning,
       trigger: model.invalidPlaceFeedbackTrigger
     )
-    .sheet(item: $model.leaderboardViewModel) { leaderboardViewModel in
-      LeaderboardView(viewModel: leaderboardViewModel)
-        .presentationDetents([.medium, .large])
-    }
   }
 
   private var statsRow: some View {
@@ -67,8 +63,6 @@ struct NQueensPuzzleView: View {
     HStack(spacing: 0) {
       resetButton
       Spacer(minLength: 12)
-      leaderboardButton
-      Spacer(minLength: 12)
       boardSizePicker
     }
   }
@@ -91,13 +85,6 @@ struct NQueensPuzzleView: View {
   private var resetButton: some View {
     Button("Reset", role: .destructive, action: model.resetButtonTapped)
       .buttonStyle(.glass)
-  }
-
-  private var leaderboardButton: some View {
-    Button(action: model.leaderboardButtonTapped) {
-      Label("Leaderboard", systemImage: "list.number")
-    }
-    .buttonStyle(.glass)
   }
 
   private var board: some View {

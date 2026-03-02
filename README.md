@@ -72,7 +72,7 @@ Swift Package Manager (package-level tests):
 
 ## Testing Strategy
 
-- View-model tests validate gameplay flow, leaderboard loading, win interactions, and elapsed-time formatting.
+- View-model tests validate gameplay flow, win interactions, and elapsed-time formatting.
 - Store tests validate best-time persistence rules (top-10 retention, ordering, board-size separation).
 - Package tests validate low-level modules (`Board`, `Game`) and N-Queens correctness scenarios.
 - Performance checks for N-Queens conflict evaluation live in benchmark-oriented XCTest cases.

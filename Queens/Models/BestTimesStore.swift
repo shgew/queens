@@ -28,23 +28,6 @@ actor BestTimesStore: BestTimesStoring {
     fetchTopRecords(for: boardSize, limit: 1).first?.time
   }
 
-  func topTimesByBoardSize() async -> [LeaderboardSection] {
-    let records = fetchAllRecordsSorted()
-    let grouped = Dictionary(grouping: records, by: \.boardSize)
-    return grouped.compactMap { entry in
-      guard !entry.value.isEmpty else {
-        return nil
-      }
-      return LeaderboardSection(
-        boardSize: entry.key,
-        times: entry.value.map(\.time)
-      )
-    }
-    .sorted { lhs, rhs in
-      lhs.boardSize < rhs.boardSize
-    }
-  }
-
   @discardableResult
   func record(time: TimeInterval, for boardSize: Int) async -> Bool {
     let topRecords = fetchTopRecords(
@@ -80,22 +63,6 @@ actor BestTimesStore: BestTimesStoring {
 }
 
 extension BestTimesStore {
-  private func fetchAllRecordsSorted() -> [BestTimeRecord] {
-    let descriptor = FetchDescriptor<BestTimeRecord>(
-      sortBy: [
-        SortDescriptor(\.boardSize, order: .forward),
-        SortDescriptor(\.time, order: .forward),
-      ]
-    )
-
-    do {
-      return try modelContext.fetch(descriptor)
-    } catch {
-      logger.error("Failed to fetch leaderboard records: \(error)")
-      return []
-    }
-  }
-
   private func fetchTopRecords(
     for boardSize: Int,
     limit: Int? = nil
