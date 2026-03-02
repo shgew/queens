@@ -10,7 +10,7 @@ import SwiftUI
 @Observable
 @MainActor
 final class NQueensPuzzleViewModel {
-  static let supportedBoardSizes = Array(NQueensProblem.supportedBoardSizes)
+  static let supportedBoardSizes = NQueensProblem.supportedBoardSizes
   private static let occupant = Occupant(piece: .queen, side: .white)
 
   private var game: Game<NQueensProblem>
@@ -24,7 +24,7 @@ final class NQueensPuzzleViewModel {
   private(set) var invalidPlaceFeedbackTrigger = 0
 
   init(
-    size: Int = NQueensProblem.minimumBoardSize,
+    size: Int = NQueensProblem.supportedBoardSizes.lowerBound,
     soundPlayer: any GameSoundPlaying,
     bestTimesStore: any BestTimesStoring
   ) {
