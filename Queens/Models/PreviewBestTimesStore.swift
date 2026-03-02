@@ -1,22 +1,23 @@
 import Foundation
 
-struct PreviewBestTimesStore: BestTimesStoring {
+final class PreviewBestTimesStore: BestTimesStoring {
+  private var bestTimes: [Int: TimeInterval]
+
+  init(initialBestTimes: [Int: TimeInterval] = [:]) {
+    self.bestTimes = initialBestTimes
+  }
+
   func bestTime(for boardSize: Int) -> TimeInterval? {
-    previewBestTimes[boardSize]
+    bestTimes[boardSize]
   }
 
   @discardableResult
-  func record(time _: TimeInterval, for _: Int) -> Bool {
-    false
-  }
-}
+  func record(time: TimeInterval, for boardSize: Int) -> Bool {
+    if let existing = bestTime(for: boardSize), time >= existing {
+      return false
+    }
 
-extension PreviewBestTimesStore {
-  private var previewBestTimes: [Int: TimeInterval] {
-    [
-      4: 19.2,
-      5: 41.7,
-      6: 86.4,
-    ]
+    bestTimes[boardSize] = time
+    return true
   }
 }
