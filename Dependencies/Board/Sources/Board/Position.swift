@@ -12,3 +12,18 @@ public struct Position: Hashable, Sendable {
     self.column = column
   }
 }
+
+extension Position: Comparable {
+  public static func < (lhs: Position, rhs: Position) -> Bool {
+    if lhs.row == rhs.row {
+      return lhs.column < rhs.column
+    }
+    return lhs.row < rhs.row
+  }
+}
+
+extension Position: CustomStringConvertible {
+  public var description: String {
+    "(\(row),\(column))"
+  }
+}
