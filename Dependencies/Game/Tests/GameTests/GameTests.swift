@@ -22,17 +22,29 @@ struct GameTests {
   let queen = Occupant(piece: .queen, side: .white)
 
   @Test func `new game is solved`() {
+    // . . . .
+    // . . . .
+    // . . . .
+    // . . . .
     let game = Game(size: 4, problem: problem)
     #expect(game.isSolved)
   }
 
   @Test func `is solved is false after apply`() {
+    // Q . . .
+    // . . . .
+    // . . . .
+    // . . . .
     var game = Game(size: 4, problem: problem)
-    game.apply(move: .place(Occupant(piece: .queen, side: .white), at: Position(row: 0, column: 0)))
+    game.apply(move: .place(queen, at: Position(row: 0, column: 0)))
     #expect(!game.isSolved)
   }
 
   @Test func `apply mutates board and re-evaluates`() {
+    // . . . .
+    // . . Q .
+    // . . . .
+    // . . . .
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 1, column: 2)
     game.apply(move: .place(queen, at: pos))
@@ -42,6 +54,10 @@ struct GameTests {
   }
 
   @Test func `reset clears board and re-evaluates`() {
+    // Q . . .    . . . .
+    // . . . .    . . . .
+    // . . . .  → . . . .
+    // . . . .    . . . .
     var game = Game(size: 4, problem: problem)
     game.apply(move: .place(queen, at: Position(row: 0, column: 0)))
     #expect(!game.isSolved)
@@ -64,6 +80,10 @@ struct GameTests {
   // MARK: - Move tracking
 
   @Test func `apply records move`() {
+    // Q . . .
+    // . . . .
+    // . . . .
+    // . . . .
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 0, column: 0)
     game.apply(move: .place(queen, at: pos))
@@ -72,6 +92,10 @@ struct GameTests {
   }
 
   @Test func `remove move recorded`() {
+    // Q . . .    . . . .
+    // . . . .    . . . .
+    // . . . .  → . . . .
+    // . . . .    . . . .
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 0, column: 0)
     game.apply(move: .place(queen, at: pos))
@@ -84,6 +108,10 @@ struct GameTests {
   // MARK: - Undo
 
   @Test func `undo reverses place`() {
+    // . . . .    . . . .
+    // . . Q .    . . . .
+    // . . . .  → . . . .
+    // . . . .    . . . .
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 1, column: 2)
     game.apply(move: .place(queen, at: pos))
@@ -96,6 +124,10 @@ struct GameTests {
   }
 
   @Test func `undo reverses remove`() {
+    // . . . .    . . . .    . . . .
+    // . . Q .  → . . . .  → . . Q .
+    // . . . .    . . . .    . . . .
+    // . . . .    . . . .    . . . .
     var game = Game(size: 4, problem: problem)
     let pos = Position(row: 1, column: 2)
     game.apply(move: .place(queen, at: pos))
@@ -108,6 +140,10 @@ struct GameTests {
   }
 
   @Test func `undo on empty moves is no-op`() {
+    // . . . .
+    // . . . .
+    // . . . .
+    // . . . .
     var game = Game(size: 4, problem: problem)
     game.undo()
 
@@ -117,6 +153,10 @@ struct GameTests {
   }
 
   @Test func `reset clears moves`() {
+    // Q . . .    . . . .
+    // . Q . .    . . . .
+    // . . . .  → . . . .
+    // . . . .    . . . .
     var game = Game(size: 4, problem: problem)
     game.apply(move: .place(queen, at: Position(row: 0, column: 0)))
     game.apply(move: .place(queen, at: Position(row: 1, column: 1)))

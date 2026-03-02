@@ -1,10 +1,11 @@
 import BoardUI
+import Problems
 import SwiftUI
 
-struct NQueensPuzzleView: View {
-  @State private var model: NQueensPuzzleViewModel
+struct PuzzleView<P: PuzzleProblem>: View {
+  @State private var model: PuzzleViewModel<P>
 
-  init(viewModel: NQueensPuzzleViewModel) {
+  init(viewModel: PuzzleViewModel<P>) {
     self._model = State(initialValue: viewModel)
   }
 
@@ -72,7 +73,7 @@ struct NQueensPuzzleView: View {
 
   private var boardSizePicker: some View {
     Picker(selection: $model.selectedBoardSize) {
-      ForEach(NQueensPuzzleViewModel.supportedBoardSizes, id: \.self) { size in
+      ForEach(P.supportedBoardSizes, id: \.self) { size in
         Text("\(size)×\(size)")
           .tag(size)
       }
@@ -112,5 +113,5 @@ struct NQueensPuzzleView: View {
 }
 
 #Preview {
-  NQueensPuzzleView(viewModel: .preview)
+  PuzzleView<NQueensProblem>(viewModel: .preview)
 }

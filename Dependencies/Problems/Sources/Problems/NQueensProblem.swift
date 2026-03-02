@@ -6,12 +6,15 @@ private let logger = Logger.queens(category: .problems)
 
 /// The N-Queens problem: place *N* queens on an *N*×*N* board so that no two
 /// queens share the same row, column, or diagonal.
-public struct NQueensProblem: Problem {
+public struct NQueensProblem: PuzzleProblem {
   /// The inclusive range of board sizes supported by this implementation.
   public static let supportedBoardSizes = 4...32
 
+  /// The piece placed on the board for this puzzle.
+  public static let occupant = Occupant(piece: .queen, side: .white)
+
   /// Describes the violations found during evaluation.
-  public struct Diagnostic: Sendable, Equatable {
+  public struct Diagnostic: ConflictDiagnosing {
     /// Positions whose queens participate in at least one conflict.
     ///
     /// An empty set in the ``Evaluation/unsolved(_:)`` case means

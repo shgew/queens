@@ -8,11 +8,8 @@ import Problems
 import SwiftUI
 
 @Observable
-final class NQueensPuzzleViewModel {
-  static let supportedBoardSizes = NQueensProblem.supportedBoardSizes
-  private static let occupant = Occupant(piece: .queen, side: .white)
-
-  private var game: Game<NQueensProblem>
+final class PuzzleViewModel<P: PuzzleProblem> {
+  private var game: Game<P>
   private var areSoundsPreloaded = false
   private let soundPlayer: any GameSoundPlaying
   private let bestTimesStore: any BestTimesStoring
@@ -22,18 +19,18 @@ final class NQueensPuzzleViewModel {
   private(set) var invalidPlaceFeedbackTrigger = 0
 
   init(
-    size: Int = NQueensProblem.supportedBoardSizes.lowerBound,
+    size: Int = P.supportedBoardSizes.lowerBound,
     soundPlayer: any GameSoundPlaying,
     bestTimesStore: any BestTimesStoring
   ) {
-    self.game = Game(size: size, problem: NQueensProblem())
+    self.game = Game(size: size, problem: P())
     self.soundPlayer = soundPlayer
     self.bestTimesStore = bestTimesStore
   }
 }
 
 // MARK: - View Exposed
-extension NQueensPuzzleViewModel {
+extension PuzzleViewModel {
   var board: Board {
     game.board
   }
@@ -42,7 +39,7 @@ extension NQueensPuzzleViewModel {
     get { game.board.size }
     set {
       guard newValue != game.board.size else { return }
-      game = Game(size: newValue, problem: NQueensProblem())
+      game = Game(size: newValue, problem: P())
       winViewModel = nil
       soundPlayer.play(.boardSizeChanged)
     }
@@ -78,7 +75,7 @@ extension NQueensPuzzleViewModel {
   }
 
   func squareTapped(at position: Position) {
-    if game.board.occupiedSquares[position] == Self.occupant {
+    if game.board.occupiedSquares[position] == P.occupant {
       removePiece(at: position)
       return
     }
@@ -102,8 +99,8 @@ extension NQueensPuzzleViewModel {
 }
 
 // MARK: - Helpers
-extension NQueensPuzzleViewModel {
-  private static let animation = Animation.default.speed(2)
+extension PuzzleViewModel {
+  private static var animation: Animation { Animation.default.speed(2) }
 
   private var conflicts: Set<Position> {
     if case .unsolved(let diagnostic) = game.evaluation {
@@ -124,13 +121,13 @@ extension NQueensPuzzleViewModel {
   }
 
   private func removePiece(at position: Position) {
-    game.apply(move: .remove(Self.occupant, from: position))
+    game.apply(move: .remove(P.occupant, from: position))
     removeFeedbackTrigger += 1
     soundPlayer.play(.remove)
   }
 
   private func placePiece(at position: Position) {
-    game.apply(move: .place(Self.occupant, at: position))
+    game.apply(move: .place(P.occupant, at: position))
     placeFeedbackTrigger += 1
     soundPlayer.play(.place)
   }
@@ -174,16 +171,16 @@ extension NQueensPuzzleViewModel {
 }
 
 // MARK: - Factory
-extension NQueensPuzzleViewModel {
-  static var live: NQueensPuzzleViewModel {
-    NQueensPuzzleViewModel(
+extension PuzzleViewModel where P == NQueensProblem {
+  static var live: PuzzleViewModel {
+    PuzzleViewModel(
       soundPlayer: GameSoundPlayer(),
       bestTimesStore: BestTimesStore()
     )
   }
 
-  static var preview: NQueensPuzzleViewModel {
-    NQueensPuzzleViewModel(
+  static var preview: PuzzleViewModel {
+    PuzzleViewModel(
       soundPlayer: SilentGameSoundPlayer(),
       bestTimesStore: PreviewBestTimesStore()
     )

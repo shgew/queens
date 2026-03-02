@@ -28,6 +28,11 @@ let package = Package(
     ),
 
     .testTarget(
+      name: "ProblemsTests",
+      dependencies: ["Problems"]
+    ),
+
+    .testTarget(
       name: "ProblemsBenchmarks",
       dependencies: ["Problems"]
     ),

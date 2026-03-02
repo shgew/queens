@@ -42,6 +42,14 @@
         "identifier" : "BoardTests",
         "name" : "BoardTests"
       }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Dependencies\/Problems",
+        "identifier" : "ProblemsTests",
+        "name" : "ProblemsTests"
+      }
     }
   ],
   "version" : 1

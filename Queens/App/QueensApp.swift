@@ -1,3 +1,4 @@
+import Problems
 import SwiftUI
 
 @main
@@ -6,7 +7,7 @@ struct QueensApp: App {
 
   var body: some Scene {
     WindowGroup {
-      NQueensPuzzleView(viewModel: .live)
+      PuzzleView<NQueensProblem>(viewModel: .live)
     }
   }
 }
