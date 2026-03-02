@@ -14,6 +14,7 @@ final class AppAudioSession {
 
   func configure() {
     do {
+      // Avoid pausing any playing media when playing game sounds
       try audioSession.setCategory(.ambient, options: [.mixWithOthers])
     } catch {
       logger.error(
