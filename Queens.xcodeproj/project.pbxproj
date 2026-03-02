@@ -36,7 +36,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		89275EF32F534633001A9796 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		897EBF952F54821000EB6CAA /* QueensTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QueensTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C800232F520A20004C2087 /* Queens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Queens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D6C6D82F509671006FCBCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -136,7 +135,6 @@
 				897EBFB12F54865400EB6CAA /* TestPlans */,
 				897EBF6B2F547D0F00EB6CAA /* Dependencies */,
 				89D6C6D82F509671006FCBCD /* README.md */,
-				89275EF32F534633001A9796 /* TODO.md */,
 				89ED1CBC2F547CA3001ADFA4 /* Products */,
 				897EBF6C2F547D5200EB6CAA /* Frameworks */,
 			);
