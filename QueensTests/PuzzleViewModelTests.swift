@@ -87,6 +87,28 @@ struct PuzzleViewModelTests {
     #expect(vm.piecesRemaining == 3)
   }
 
+  // MARK: - Invalid Placement
+
+  @Test func `tapping empty square with no pieces remaining triggers invalid placement feedback`() {
+    // Q Q
+    // . .
+    vm.squareTapped(at: Position(row: 0, column: 0))
+    vm.squareTapped(at: Position(row: 0, column: 1))
+    spy.resetPlayedSounds()
+
+    let invalidPosition = Position(row: 1, column: 0)
+    let moveCount = vm.moveCount
+    let piecesRemaining = vm.piecesRemaining
+
+    vm.squareTapped(at: invalidPosition)
+
+    #expect(vm.invalidPlaceFeedbackTrigger == 1)
+    #expect(spy.playedSounds == [.invalidMove])
+    #expect(vm.board.occupiedSquares[invalidPosition] == nil)
+    #expect(vm.moveCount == moveCount)
+    #expect(vm.piecesRemaining == piecesRemaining)
+  }
+
   // MARK: - Reset
 
   @Test func `reset clears board`() {
