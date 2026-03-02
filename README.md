@@ -1,5 +1,7 @@
 # Queens
 
+https://github.com/user-attachments/assets/ddcb965a-3905-4d89-a3a1-bf19180410e9
+
 An iOS puzzle game based on the N-Queens problem. Place N queens on an N×N chessboard so that no two queens threaten each other, i.e. no shared row, column, or diagonal.
 
 ## Requirements
@@ -53,7 +55,7 @@ An iOS puzzle game based on the N-Queens problem. Place N queens on an N×N ches
 - [x] README includes how to build, run, and test
 - [x] README includes architecture decisions
 - [x] Built with Swift + SwiftUI
-- [ ] Short app demo video
+- [x] Short app demo video
 
 ## Architecture Decisions
 
