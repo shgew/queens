@@ -100,7 +100,7 @@ extension PuzzleViewModel {
 
 // MARK: - Helpers
 extension PuzzleViewModel {
-  private static var animation: Animation { Animation.default.speed(2) }
+  private static var animation: Animation { .default.speed(2) }
 
   private var conflicts: Set<Position> {
     if case .unsolved(let diagnostic) = game.evaluation {
