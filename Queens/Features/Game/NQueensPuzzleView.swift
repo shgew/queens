@@ -50,12 +50,14 @@ struct NQueensPuzzleView: View {
         systemImage: "figure.walk",
         value: "\(model.moveCount)"
       )
-      TimelineView(.periodic(from: .now, by: 1)) { context in
+      TimelineView(.periodic(from: .now, by: 0.01)) { context in
         StatPill(
           systemImage: "clock",
           value: model.playTime(at: context.date)
         )
       }
+      .fixedSize(horizontal: true, vertical: false)
+      .layoutPriority(1)
     }
   }
 

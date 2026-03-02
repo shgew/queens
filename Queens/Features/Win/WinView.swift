@@ -46,7 +46,7 @@ struct WinView: View {
         metricValueText("\(viewModel.moveCount)")
       }
       metricRow(systemImage: "clock", title: "Time") {
-        metricValueText(viewModel.startedAt.formattedElapsedTime(to: viewModel.solvedAt))
+        metricValueText(viewModel.elapsedTime.formattedElapsedTime())
       }
       if let bestTime = viewModel.bestTime {
         metricRow(systemImage: "trophy", title: "Best") {
@@ -95,8 +95,7 @@ struct WinView: View {
     viewModel: WinViewModel(
       boardSize: 8,
       moveCount: 12,
-      startedAt: .now.addingTimeInterval(-165),
-      solvedAt: .now,
+      elapsedTime: 165,
       onPlayAgain: {}
     )
   )
@@ -107,8 +106,7 @@ struct WinView: View {
     viewModel: WinViewModel(
       boardSize: 8,
       moveCount: 12,
-      startedAt: .now.addingTimeInterval(-165),
-      solvedAt: .now,
+      elapsedTime: 165,
       bestTime: 165,
       isNewBest: true,
       onPlayAgain: {}

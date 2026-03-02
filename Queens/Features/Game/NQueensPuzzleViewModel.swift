@@ -67,8 +67,10 @@ extension NQueensPuzzleViewModel {
   }
 
   func playTime(at date: Date) -> String {
-    let endDate = winViewModel?.solvedAt ?? date
-    return startedAt.formattedElapsedTime(to: endDate)
+    if let elapsedTime = winViewModel?.elapsedTime {
+      return elapsedTime.formattedElapsedTime()
+    }
+    return date.timeIntervalSince(startedAt).formattedElapsedTime()
   }
 
   func cellState(for position: Position) -> BoardView.CellState {
@@ -146,7 +148,7 @@ extension NQueensPuzzleViewModel {
     soundPlayer.play(.win)
     withAnimation(Self.animation) {
       winViewModel = makeWinViewModel(
-        solvedAt: solvedAt,
+        elapsedTime: elapsed,
         bestTime: bestTime,
         isNewBest: isNewBest
       )
@@ -154,15 +156,14 @@ extension NQueensPuzzleViewModel {
   }
 
   private func makeWinViewModel(
-    solvedAt: Date,
+    elapsedTime: TimeInterval,
     bestTime: TimeInterval?,
     isNewBest: Bool
   ) -> WinViewModel {
     WinViewModel(
       boardSize: game.board.size,
       moveCount: game.moves.count,
-      startedAt: game.startedAt,
-      solvedAt: solvedAt,
+      elapsedTime: elapsedTime,
       bestTime: bestTime,
       isNewBest: isNewBest,
       onPlayAgain: { [weak self] in

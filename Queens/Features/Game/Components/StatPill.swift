@@ -19,7 +19,7 @@ struct StatPill: View {
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding(12)
-    .glassEffect(.regular, in: .rect(cornerRadius: 14.0))
+    .glassEffect(in: .rect(cornerRadius: 14.0))
   }
 }
 

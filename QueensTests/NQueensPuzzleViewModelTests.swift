@@ -77,16 +77,16 @@ struct NQueensPuzzleViewModelTests {
 
   @Test func `play time formats elapsed time`() {
     let time = vm.playTime(at: vm.startedAt.addingTimeInterval(125))
-    #expect(time == "02:05")
+    #expect(time == 125.formattedElapsedTime())
   }
 
-  @Test func `play time uses solved at when present`() throws {
+  @Test func `play time uses solved elapsed time when present`() throws {
     solve4Queens()
-    let solvedAt = try #require(vm.winViewModel).solvedAt
+    let solvedElapsedTime = try #require(vm.winViewModel).elapsedTime
 
-    // Even with a far-future date, should use solvedAt
-    let time = vm.playTime(at: solvedAt.addingTimeInterval(9999))
-    let expected = vm.startedAt.formattedElapsedTime(to: solvedAt)
+    // Even with a far-future date, should use solved elapsed time.
+    let time = vm.playTime(at: vm.startedAt.addingTimeInterval(9999))
+    let expected = solvedElapsedTime.formattedElapsedTime()
     #expect(time == expected)
   }
 

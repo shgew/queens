@@ -9,8 +9,7 @@ struct WinViewModelTests {
     let vm = WinViewModel(
       boardSize: 4,
       moveCount: 5,
-      startedAt: .now,
-      solvedAt: .now,
+      elapsedTime: 15,
       onPlayAgain: { called = true }
     )
 
