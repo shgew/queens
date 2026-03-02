@@ -14,12 +14,12 @@ final class BestTimesStoreStub: BestTimesStoring {
     self.isNewBest = isNewBest
   }
 
-  func bestTime(for _: Int) async -> TimeInterval? {
+  func bestTime(for _: Int) -> TimeInterval? {
     bestTime
   }
 
   @discardableResult
-  func record(time _: TimeInterval, for _: Int) async -> Bool {
+  func record(time _: TimeInterval, for _: Int) -> Bool {
     isNewBest
   }
 }

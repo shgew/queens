@@ -67,13 +67,13 @@ Swift Package Manager (package-level tests):
   - `Game`: session orchestration (`board + problem + history + timing`)
   - `GameAudio`: sound playback abstraction and implementation
   - `Logging`: shared logging helpers
-- Persistence for best times uses SwiftData behind the `BestTimesStoring` protocol to keep storage swappable in tests/previews.
+- Persistence for best times uses `UserDefaults` behind the `BestTimesStoring` protocol to keep storage swappable in tests/previews.
 - Conflict highlighting is computed in the domain layer (`NQueensProblem.Diagnostic`) and only rendered in UI.
 
 ## Testing Strategy
 
 - View-model tests validate gameplay flow, win interactions, and elapsed-time formatting.
-- Store tests validate best-time persistence rules (top-10 retention, ordering, board-size separation).
+- Store tests validate best-time persistence rules (new-best replacement and board-size separation).
 - Package tests validate low-level modules (`Board`, `Game`) and N-Queens correctness scenarios.
 - Performance checks for N-Queens conflict evaluation live in benchmark-oriented XCTest cases.
 

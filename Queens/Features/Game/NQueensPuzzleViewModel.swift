@@ -90,7 +90,7 @@ extension NQueensPuzzleViewModel {
     placePiece(at: position)
 
     if game.isSolved {
-      await handleSolved()
+      handleSolved()
     }
   }
 
@@ -139,11 +139,11 @@ extension NQueensPuzzleViewModel {
     soundPlayer.play(.invalidMove)
   }
 
-  private func handleSolved() async {
+  private func handleSolved() {
     let solvedAt = Date.now
     let elapsed = solvedAt.timeIntervalSince(game.startedAt)
-    let isNewBest = await bestTimesStore.record(time: elapsed, for: game.board.size)
-    let bestTime = await bestTimesStore.bestTime(for: game.board.size)
+    let isNewBest = bestTimesStore.record(time: elapsed, for: game.board.size)
+    let bestTime = bestTimesStore.bestTime(for: game.board.size)
     soundPlayer.play(.win)
     withAnimation(Self.animation) {
       winViewModel = makeWinViewModel(

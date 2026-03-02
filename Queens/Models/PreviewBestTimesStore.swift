@@ -1,12 +1,12 @@
 import Foundation
 
 struct PreviewBestTimesStore: BestTimesStoring {
-  func bestTime(for boardSize: Int) async -> TimeInterval? {
+  func bestTime(for boardSize: Int) -> TimeInterval? {
     previewBestTimes[boardSize]
   }
 
   @discardableResult
-  func record(time: TimeInterval, for boardSize: Int) async -> Bool {
+  func record(time _: TimeInterval, for _: Int) -> Bool {
     false
   }
 }
