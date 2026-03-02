@@ -23,32 +23,37 @@ An iOS puzzle game based on the N-Queens problem. Place N queens on an N×N ches
 
 ## Test
 
-Xcode:
-
 1. Open `Queens.xcodeproj`.
 2. Select the `Queens` scheme.
 3. Run tests with `Cmd+U`.
 
 ## Gameplay
 
-- Select board size (`4...32`)
-- Tap to place or remove queens
-- Real-time conflict highlighting
-- Win screen on solve
+- [x] Select board size (`4...32`)
+- [x] Tap to place or remove queens
+- [x] Real-time conflict highlighting
+- [x] Win screen on solve
 
 ## UI
 
-- Dynamic chessboard for any board size
-- Queens visually distinct
-- Conflicting placements clearly marked
-- Simple, clean, extensible design
+- [x] Dynamic chessboard for any board size
+- [x] Queens visually distinct
+- [x] Conflicting placements clearly marked
+- [x] Simple, clean, extensible design
 
 ## Nice-to-Haves
 
-- Queens-left counter
-- Restart / reset
-- Best times per board size
-- SFX and animations on placement and victory
+- [x] Queens-left counter
+- [x] Restart / reset
+- [x] Best times per board size
+- [x] SFX and animations on placement and victory
+
+## Submission Checklist
+
+- [x] README includes how to build, run, and test
+- [x] README includes architecture decisions
+- [x] Built with Swift + SwiftUI
+- [ ] Short app demo video
 
 ## Architecture Decisions
 
