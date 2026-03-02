@@ -22,12 +22,9 @@ extension NQueensProblem {
   /// Uses bitmask tracking across rows, columns, diagonals, and
   /// anti-diagonals for O(*n*) detection where *n* is the number of queens.
   func computeConflicts(on board: Board) -> Set<Position> {
-    var queens: [Position] = []
-    queens.reserveCapacity(board.occupiedSquares.count)
-    for (position, occupant) in board.occupiedSquares where occupant.piece == .queen {
-      queens.append(position)
-    }
-    guard queens.count > 1 else { return [] }
+    let queens = board.occupiedSquares.lazy
+      .filter { $0.value.piece == .queen }
+      .map(\.key)
 
     let diagonalOffset = board.size - 1
 
