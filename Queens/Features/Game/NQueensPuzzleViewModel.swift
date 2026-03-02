@@ -8,7 +8,6 @@ import Problems
 import SwiftUI
 
 @Observable
-@MainActor
 final class NQueensPuzzleViewModel {
   static let supportedBoardSizes = NQueensProblem.supportedBoardSizes
   private static let occupant = Occupant(piece: .queen, side: .white)
@@ -76,7 +75,7 @@ extension NQueensPuzzleViewModel {
     conflicts.contains(position) ? .conflicting : .normal
   }
 
-  func squareTapped(at position: Position) async {
+  func squareTapped(at position: Position) {
     if game.board.occupiedSquares[position] == Self.occupant {
       removePiece(at: position)
       return
@@ -178,7 +177,7 @@ extension NQueensPuzzleViewModel {
   static var live: NQueensPuzzleViewModel {
     NQueensPuzzleViewModel(
       soundPlayer: GameSoundPlayer(),
-      bestTimesStore: BestTimesStore.live
+      bestTimesStore: BestTimesStore()
     )
   }
 

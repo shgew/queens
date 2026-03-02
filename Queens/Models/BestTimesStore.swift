@@ -1,6 +1,6 @@
 import Foundation
 
-struct BestTimesStore: BestTimesStoring {
+final class BestTimesStore: BestTimesStoring {
   private let userDefaults: UserDefaults
   private let keyPrefix: String
 
@@ -14,8 +14,7 @@ struct BestTimesStore: BestTimesStoring {
 
   func bestTime(for boardSize: Int) -> TimeInterval? {
     let key = storageKey(for: boardSize)
-    guard userDefaults.object(forKey: key) != nil else { return nil }
-    return userDefaults.double(forKey: key)
+    return userDefaults.object(forKey: key).flatMap { $0 as? TimeInterval }
   }
 
   @discardableResult
@@ -33,9 +32,4 @@ extension BestTimesStore {
   private func storageKey(for boardSize: Int) -> String {
     "\(keyPrefix).\(boardSize)"
   }
-}
-
-extension BestTimesStore {
-  @MainActor
-  static let live = BestTimesStore()
 }
