@@ -50,23 +50,17 @@ struct NQueensPuzzleView: View {
         systemImage: "figure.walk",
         value: "\(model.moveCount)"
       )
-      if model.winViewModel == nil {
-        TimelineView(.periodic(from: .now, by: 0.01)) { context in
-          timerPill(at: context.date)
-        }
-      } else {
-        timerPill()
+      TimelineView(
+        .animation(minimumInterval: 1.0 / 30.0, paused: model.winViewModel != nil)
+      ) { context in
+        StatPill(
+          systemImage: "clock",
+          value: model.playTime(at: context.date)
+        )
+        .fixedSize(horizontal: true, vertical: false)
+        .layoutPriority(1)
       }
     }
-  }
-
-  private func timerPill(at date: Date = .now) -> some View {
-    StatPill(
-      systemImage: "clock",
-      value: model.playTime(at: date)
-    )
-    .fixedSize(horizontal: true, vertical: false)
-    .layoutPriority(1)
   }
 
   private var controlsRow: some View {
