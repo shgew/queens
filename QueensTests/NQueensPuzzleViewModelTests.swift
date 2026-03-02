@@ -6,6 +6,7 @@ import Testing
 
 @testable import Queens
 
+@MainActor
 struct NQueensPuzzleViewModelTests {
   let spy = SpyGameSoundPlayer()
   let vm: NQueensPuzzleViewModel
