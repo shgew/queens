@@ -45,7 +45,7 @@ public struct Game<P: Problem>: Sendable {
 
   /// Applies a move to the board, records it, and re-evaluates.
   public mutating func apply(move: Move) {
-    execute(move: move)
+    board.apply(move: move)
     moves.append(move)
     evaluation = problem.evaluate(on: board, moves: moves)
     logMoveApplied(moveCount: moves.count, solved: isSolved)
@@ -57,13 +57,9 @@ public struct Game<P: Problem>: Sendable {
       logger.debug("Undo ignored because no moves are available")
       return
     }
-    execute(move: move.opposite)
+    board.apply(move: move.opposite)
     evaluation = problem.evaluate(on: board, moves: moves)
     logMoveUndone(moveCount: moves.count, solved: isSolved)
-  }
-
-  private mutating func execute(move: Move) {
-    board.apply(move: move)
   }
 
   /// Clears the board, move history, and resets the start time.
