@@ -50,6 +50,7 @@ struct NQueensPuzzleView: View {
         systemImage: "figure.walk",
         value: "\(model.moveCount)"
       )
+      Spacer()
       TimelineView(
         .animation(minimumInterval: 1.0 / 30.0, paused: model.winViewModel != nil)
       ) { context in
@@ -57,8 +58,6 @@ struct NQueensPuzzleView: View {
           systemImage: "clock",
           value: model.playTime(at: context.date)
         )
-        .fixedSize(horizontal: true, vertical: false)
-        .layoutPriority(1)
       }
     }
   }

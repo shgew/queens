@@ -17,7 +17,6 @@ struct StatPill: View {
         .font(.subheadline.weight(.semibold))
         .foregroundStyle(.secondary)
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
     .padding(12)
     .glassEffect(in: .rect(cornerRadius: 14.0))
   }
